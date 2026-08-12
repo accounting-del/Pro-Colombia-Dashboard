@@ -326,7 +326,9 @@ function totalGastado() {
 }
 
 function totalGastadoPorCiudad(ciudad) {
-  return FACTURAS.filter(f => f.ciudad === ciudad).reduce((acc, f) => acc + f.valorUSD, 0);
+  return NECESIDADES_POR_CIUDAD[ciudad]
+    ? NECESIDADES_POR_CIUDAD[ciudad].reduce((acc, n) => acc + n.gastadoUSD, 0)
+    : 0;
 }
 
 function totalFamilias() {
