@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pro Colombia — Así avanza tu ayuda</title>
+<style>
+  :root {
+    --azul: #003893;
+    --azul-oscuro: #0A1F4D;
+    --azul-profundo: #071638;
+    --amarillo: #FFCD00;
+    --amarillo-suave: #FFF3C4;
+    --rojo: #CE1126;
+    --rojo-suave: #FDE8EA;
+    --verde: #1F9D55;
+    --verde-suave: #E3F5EB;
+    --fondo: #F6F7FB;
+    --tarjeta: #FFFFFF;
+    --texto: #1A2233;
+    --texto-suave: #5A6478;
+    --borde: #E3E7F0;
+    --radio: 16px;
+    --sombra: 0 2px 12px rgba(10, 31, 77, 0.08);
+    --sombra-alta: 0 8px 30px rgba(10, 31, 77, 0.18);
+    --fuente: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--fuente); background: var(--fondo); color: var(--texto); line-height: 1.5; }
+  .oculto { display: none !important; }
+
+  .encabezado {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 20px; background: var(--azul-profundo); color: #fff;
+  }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 16px; }
+  .logo strong { color: var(--amarillo); font-weight: 800; }
+  .logo-icono { font-size: 22px; }
+  .encabezado-derecha { margin-left: auto; font-size: 12px; color: rgba(255,255,255,0.75); }
+
+  .hero {
+    background: linear-gradient(160deg, var(--azul-oscuro), var(--azul) 70%);
+    color: #fff; padding: 32px 20px 44px; text-align: center;
+  }
+  .hero-etiqueta {
+    display: inline-block; background: rgba(206,17,38,0.9);
+    padding: 5px 14px; border-radius: 999px; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 14px;
+  }
+  .hero-titulo { font-size: clamp(24px, 5vw, 32px); font-weight: 800; letter-spacing: -0.3px; max-width: 560px; margin: 0 auto; }
+  .hero-titulo em { font-style: normal; color: var(--amarillo); }
+  .hero-subtitulo { margin-top: 10px; font-size: 15px; color: rgba(255,255,255,0.85); max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  .franja-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    max-width: 700px; margin: -28px auto 0; padding: 0 20px; position: relative;
+  }
+  .stat {
+    background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra);
+    padding: 16px 8px; text-align: center;
+  }
+  .stat strong { display: block; font-size: 24px; font-weight: 800; color: var(--azul); }
+  .stat span { font-size: 11px; color: var(--texto-suave); display: block; margin-top: 2px; }
+
+  .contenedor { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+  .contenedor-angosta { max-width: 700px; margin: 0 auto; padding: 0 20px; }
+
+  .seccion-titulo { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
+  .seccion-subtitulo { font-size: 13px; color: var(--texto-suave); margin-bottom: 18px; }
+
+  /* ===== Necesidades por categoria (estilo donante) ===== */
+  .necesidades-grilla { display: grid; gap: 12px; margin-bottom: 40px; }
+  .tarjeta-necesidad {
+    background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra); padding: 18px;
+  }
+  .nec-encabezado { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .nec-icono { font-size: 24px; }
+  .nec-titulo { font-size: 15px; font-weight: 800; }
+  .nec-impacto { font-size: 13px; color: var(--texto-suave); margin-bottom: 10px; }
+  .nec-impacto strong { color: var(--azul); }
+  .barra-fondo { background: var(--borde); border-radius: 999px; height: 10px; overflow: hidden; }
+  .barra-relleno { height: 10px; border-radius: 999px; transition: width 0.3s ease; }
+  .nec-falta { font-size: 12px; color: var(--rojo); font-weight: 700; margin-top: 8px; }
+  .nec-completo { font-size: 12px; color: var(--verde); font-weight: 700; margin-top: 8px; }
+
+  /* ===== Inversion por ciudad ===== */
+  .ciudades-grilla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 40px; }
+  .tarjeta-ciudad {
+    background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra); padding: 16px;
+  }
+  .ciudad-nombre { font-size: 14px; font-weight: 800; margin-bottom: 6px; }
+  .ciudad-monto { font-size: 20px; font-weight: 800; color: var(--azul); }
+  .ciudad-meta { font-size: 11px; color: var(--texto-suave); margin-top: 2px; margin-bottom: 8px; }
+
+  /* ===== Tabs de ciudad para categorias ===== */
+  .tabs-ciudad { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 2px solid var(--borde); }
+  .tab-ciudad {
+    background: none; border: none; font-family: inherit; font-size: 14px; font-weight: 700;
+    color: var(--texto-suave); padding: 10px 14px; cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+  }
+  .tab-ciudad.activo { color: var(--azul); border-bottom-color: var(--amarillo); }
+
+  /* ===== Timeline de entregas ===== */
+  .timeline { position: relative; padding-left: 4px; margin-bottom: 40px; }
+  .timeline-item {
+    background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra);
+    padding: 16px; margin-bottom: 14px; display: flex; gap: 14px;
+  }
+  .timeline-foto {
+    width: 72px; height: 72px; border-radius: 12px; object-fit: cover; flex-shrink: 0; background: var(--borde);
+  }
+  .timeline-foto-vacia {
+    width: 72px; height: 72px; border-radius: 12px; flex-shrink: 0; background: var(--fondo);
+    display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--texto-suave);
+  }
+  .timeline-fecha { font-size: 11px; color: var(--texto-suave); font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+  .timeline-texto { font-size: 14px; font-weight: 600; }
+  .timeline-ciudad { font-size: 12px; color: var(--texto-suave); margin-top: 4px; }
+
+  /* ===== Gratitud / donantes ===== */
+  .gratitud {
+    background: linear-gradient(160deg, var(--azul-oscuro), var(--azul) 70%);
+    color: #fff; border-radius: var(--radio); padding: 26px 20px; text-align: center; margin-bottom: 40px;
+  }
+  .gratitud-numero { font-size: 30px; font-weight: 800; color: var(--amarillo); }
+  .gratitud-texto { font-size: 14px; color: rgba(255,255,255,0.9); margin-top: 4px; }
+
+  /* ===== Detalle financiero (secundario, colapsable) ===== */
+  .detalle-financiero {
+    border-top: 2px solid var(--borde); padding-top: 20px;
+  }
+  .detalle-toggle {
+    display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+    background: none; border: none; width: 100%; padding: 0; font-family: inherit;
+  }
+  .detalle-toggle span.titulo { font-size: 14px; font-weight: 700; color: var(--texto-suave); }
+  .detalle-toggle span.flecha { font-size: 12px; color: var(--texto-suave); transition: transform 0.2s ease; }
+  .detalle-toggle.abierto span.flecha { transform: rotate(180deg); }
+  .detalle-contenido { margin-top: 16px; }
+  .detalle-fila {
+    display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--borde);
+    color: var(--texto-suave);
+  }
+  .detalle-fila strong { color: var(--texto); font-weight: 600; }
+
+  .pie { text-align: center; padding: 30px 20px; color: var(--texto-suave); font-size: 12px; }
+
+  @media (max-width: 480px) {
+    .franja-stats { grid-template-columns: 1fr 1fr; }
+    .franja-stats .stat:last-child { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+
+<header class="encabezado">
+  <div class="logo"><span class="logo-icono">🤝</span> Pro Colombia <strong>Así avanza tu ayuda</strong></div>
+  <div class="encabezado-derecha" id="ultima-actualizacion"></div>
+</header>
+
+<div class="hero">
+  <span class="hero-etiqueta">🇨🇴 Emergencia · Sismo M 7,4 · Occidente y Eje Cafetero</span>
+  <div class="hero-titulo" style="color:#fff;">¡Gracias Donantes!</div>
+  <div class="hero-subtitulo">Aquí puedes ver exactamente en qué se está usando tu donación.</div>
+</div>
+
+<div class="franja-stats" id="franja-stats"></div>
+
+<div class="contenedor">
+
+  <div class="gratitud" id="gratitud"></div>
+
+  <div class="seccion-titulo">Inversión por ciudad</div>
+  <div class="seccion-subtitulo">Toca una ciudad para ver el detalle de esa zona.</div>
+  <div class="tabs-ciudad" id="tabs-ciudad-categorias"></div>
+  <div class="ciudades-grilla" id="ciudades-grilla"></div>
+
+  <div class="seccion-titulo">¿En qué se está usando tu donación?</div>
+  <div class="seccion-subtitulo">Cada categoría muestra cuánto hemos podido conseguir hasta ahora.</div>
+  <div class="necesidades-grilla" id="necesidades-grilla"></div>
+
+  <div class="seccion-titulo">Últimas entregas</div>
+  <div class="seccion-subtitulo">Así se ve la ayuda llegando a las familias afectadas.</div>
+  <div class="timeline" id="timeline"></div>
+
+  <div class="detalle-financiero">
+    <button class="detalle-toggle" id="toggle-financiero">
+      <span class="titulo">Ver el detalle financiero completo</span>
+      <span class="flecha">▾</span>
+    </button>
+    <div class="detalle-contenido oculto" id="detalle-contenido"></div>
+  </div>
+
+</div>
+
+<div class="pie">
+  Pro Colombia es una iniciativa de ayuda humanitaria comunitaria. Cada compra queda registrada y verificada.
+</div>
+
+<script>
+// =========================================================================
+// DATOS — Claude actualiza este bloque cada vez que se registra una entrega
+// =========================================================================
+
+const TOTAL_RECAUDADO_USD = 75250;
+const TOTAL_DONANTES = 14; // filas en "Donaciones Recibidas"
+
+// Presupuesto recaudado disponible por ciudad
+const PRESUPUESTOS = {
+  Cali: { total: 37625 },
+  Pereira: { total: 37625 }
+};
+
+// Categorías traducidas a lenguaje de impacto (no contable), con presupuesto
+// y gasto REAL separados por ciudad (según presupuesto_pro_colombia.xlsx)
+const NECESIDADES_POR_CIUDAD = {
+  Cali: [
+    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 6773, gastadoUSD: 0, unidadTexto: "kits alimentarios entregados", unidadesEntregadas: 0 },
+    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "artículos de higiene entregados", unidadesEntregadas: 0 },
+    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 4891, gastadoUSD: 0, unidadTexto: "artículos de refugio entregados", unidadesEntregadas: 0 },
+    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 4891, gastadoUSD: 0, unidadTexto: "kits de salud entregados", unidadesEntregadas: 0 },
+    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3010, gastadoUSD: 0, unidadTexto: "familias con acceso a cocina/energía", unidadesEntregadas: 0 },
+    { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 4515, gastadoUSD: 0, unidadTexto: "brigadistas equipados", unidadesEntregadas: 0 },
+    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "brigadistas protegidos", unidadesEntregadas: 0 },
+    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1505, gastadoUSD: 0, unidadTexto: "operativos de limpieza", unidadesEntregadas: 0 },
+    { icono: "🚚", categoriaOriginal: "9. Maquinaria y transporte", nombre: "Transporte de ayuda", presupuestoUSD: 3010, gastadoUSD: 0, unidadTexto: "viajes de transporte de ayuda", unidadesEntregadas: 0 },
+    { icono: "🐾", categoriaOriginal: "10. Mascotas y animales", nombre: "Mascotas y animales", presupuestoUSD: 753, gastadoUSD: 0, unidadTexto: "familias con mascotas apoyadas", unidadesEntregadas: 0 }
+  ],
+  Pereira: [
+    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 8278, gastadoUSD: 0, unidadTexto: "kits alimentarios entregados", unidadesEntregadas: 0 },
+    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4891, gastadoUSD: 1077, unidadTexto: "artículos de higiene entregados (pañales, toallitas, crema)", unidadesEntregadas: 200 },
+    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 6020, gastadoUSD: 2160, unidadTexto: "artículos de refugio entregados (carpas y carretillas)", unidadesEntregadas: 45 },
+    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 6020, gastadoUSD: 0, unidadTexto: "kits de salud entregados", unidadesEntregadas: 0 },
+    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3386, gastadoUSD: 0, unidadTexto: "familias con acceso a cocina/energía", unidadesEntregadas: 0 },
+    { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "brigadistas equipados", unidadesEntregadas: 0 },
+    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 3763, gastadoUSD: 0, unidadTexto: "brigadistas protegidos", unidadesEntregadas: 0 },
+    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1129, gastadoUSD: 0, unidadTexto: "operativos de limpieza", unidadesEntregadas: 0 }
+  ]
+};
+
+let ciudadActivaCategorias = "Todas";
+
+// Cada entrega: { fecha, texto, ciudad, fotoUrl (opcional, base64 o link) }
+const ENTREGAS = [
+  { fecha: "2026-08-12", texto: "45 artículos de refugio (carpas y carretillas) comprados para familias en Pereira", ciudad: "Pereira", fotoUrl: null },
+  { fecha: "2026-08-12", texto: "200 artículos de higiene (pañales, toallitas, crema) comprados para familias en Pereira", ciudad: "Pereira", fotoUrl: null }
+];
+
+// Detalle financiero, para quien quiera profundizar
+const FACTURAS = [
+  { proveedor: "Homecenter", categoria: "3. Refugio, ropa y descanso", valorUSD: 2160, fecha: "2026-08-12", numeroFactura: "FACTURA 9903151421133", ciudad: "Pereira", estado: "Verificada" },
+  { proveedor: "WH Distribuciones", categoria: "2. Higiene y saneamiento", valorUSD: 1077, fecha: "2026-08-12", numeroFactura: "Sistema POS FO 556", ciudad: "Pereira", estado: "Verificada" }
+];
+
+// =========================================================================
+// RENDER
+// =========================================================================
+
+function fmtUSD(n) {
+  return "$" + Math.round(n).toLocaleString("en-US");
+}
+
+function totalGastado() {
+  return Object.values(NECESIDADES_POR_CIUDAD).flat().reduce((acc, n) => acc + n.gastadoUSD, 0);
+}
+
+function totalGastadoPorCiudad(ciudad) {
+  return FACTURAS.filter(f => f.ciudad === ciudad).reduce((acc, f) => acc + f.valorUSD, 0);
+}
+
+function totalFamilias() {
+  return ENTREGAS.length;
+}
+
+function renderCiudades() {
+  const todas = Object.keys(NECESIDADES_POR_CIUDAD);
+  const ciudades = ciudadActivaCategorias === "Todas" ? todas : [ciudadActivaCategorias];
+  document.getElementById("ciudades-grilla").innerHTML = ciudades.map(c => {
+    const gastado = totalGastadoPorCiudad(c);
+    const presupuesto = PRESUPUESTOS[c].total;
+    const pct = presupuesto > 0 ? Math.min(100, (gastado / presupuesto) * 100) : 0;
+    return `
+      <div class="tarjeta-ciudad">
+        <div class="ciudad-nombre">📍 ${c}</div>
+        <div class="ciudad-monto">${fmtUSD(gastado)}</div>
+        <div class="ciudad-meta">invertido de ${fmtUSD(presupuesto)} recaudados para esta zona</div>
+        <div class="barra-fondo"><div class="barra-relleno" style="width:${pct}%;background:var(--azul);"></div></div>
+      </div>
+    `;
+  }).join("");
+  document.getElementById("ciudades-grilla").style.gridTemplateColumns = ciudades.length === 1 ? "1fr" : "1fr 1fr";
+}
+
+function renderStats() {
+  document.getElementById("franja-stats").innerHTML = `
+    <div class="stat"><strong>${fmtUSD(TOTAL_RECAUDADO_USD)}</strong><span>Recaudado gracias a ustedes</span></div>
+    <div class="stat"><strong>${fmtUSD(totalGastado())}</strong><span>Invertido en ayuda</span></div>
+    <div class="stat"><strong>${ENTREGAS.length}</strong><span>Entregas registradas</span></div>
+  `;
+}
+
+function renderGratitud() {
+  document.getElementById("gratitud").innerHTML = `
+    <div class="gratitud-numero">💛 La ayuda está llegando</div>
+    <div class="gratitud-texto">Cada aporte ya se está transformando en ayuda real para las familias afectadas.</div>
+  `;
+}
+
+function categoriasCombinadas() {
+  // Combina Cali + Pereira por categoriaOriginal, sumando presupuesto y gasto
+  const mapa = {};
+  Object.keys(NECESIDADES_POR_CIUDAD).forEach(ciudad => {
+    NECESIDADES_POR_CIUDAD[ciudad].forEach(n => {
+      if (!mapa[n.categoriaOriginal]) {
+        mapa[n.categoriaOriginal] = { ...n, presupuestoUSD: 0, gastadoUSD: 0, unidadesEntregadas: 0 };
+      }
+      mapa[n.categoriaOriginal].presupuestoUSD += n.presupuestoUSD;
+      mapa[n.categoriaOriginal].gastadoUSD += n.gastadoUSD;
+      mapa[n.categoriaOriginal].unidadesEntregadas += n.unidadesEntregadas;
+      // Si alguna ciudad tiene un texto de impacto más específico (con detalle entre paréntesis), úsalo
+      if (n.gastadoUSD > 0) mapa[n.categoriaOriginal].unidadTexto = n.unidadTexto;
+    });
+  });
+  return Object.values(mapa);
+}
+
+function renderTabsCategorias() {
+  const ciudades = ["Todas", ...Object.keys(NECESIDADES_POR_CIUDAD)];
+  document.getElementById("tabs-ciudad-categorias").innerHTML = ciudades.map(c =>
+    `<button class="tab-ciudad ${c === ciudadActivaCategorias ? "activo" : ""}" data-ciudad="${c}">${c}</button>`
+  ).join("");
+  document.querySelectorAll(".tab-ciudad").forEach(btn => {
+    btn.addEventListener("click", () => {
+      ciudadActivaCategorias = btn.dataset.ciudad;
+      renderTabsCategorias();
+      renderCiudades();
+      renderNecesidades();
+    });
+  });
+}
+
+function renderNecesidades() {
+  const lista = ciudadActivaCategorias === "Todas"
+    ? categoriasCombinadas()
+    : NECESIDADES_POR_CIUDAD[ciudadActivaCategorias];
+
+  document.getElementById("necesidades-grilla").innerHTML = lista.map(n => {
+    const pct = n.presupuestoUSD > 0 ? Math.min(100, (n.gastadoUSD / n.presupuestoUSD) * 100) : 0;
+    let color = "var(--rojo)";
+    if (pct >= 90) color = "var(--verde)";
+    else if (pct >= 40) color = "var(--amarillo)";
+    return `
+      <div class="tarjeta-necesidad">
+        <div class="nec-encabezado">
+          <span class="nec-icono">${n.icono}</span>
+          <span class="nec-titulo">${n.nombre}</span>
+        </div>
+        <div class="nec-impacto"><strong>${n.unidadesEntregadas}</strong> ${n.unidadTexto} hasta ahora</div>
+        <div class="barra-fondo"><div class="barra-relleno" style="width:${pct}%;background:${color};"></div></div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderTimeline() {
+  if (ENTREGAS.length === 0) {
+    document.getElementById("timeline").innerHTML = `
+      <div class="timeline-item">
+        <div class="timeline-foto-vacia">📦</div>
+        <div>
+          <div class="timeline-fecha">Próximamente</div>
+          <div class="timeline-texto">Aún no hay entregas registradas. En cuanto la primera ayuda llegue a una familia, aparecerá aquí con foto.</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  const ordenadas = ENTREGAS.slice().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+  document.getElementById("timeline").innerHTML = ordenadas.map(e => `
+    <div class="timeline-item">
+      ${e.fotoUrl
+        ? `<img class="timeline-foto" src="${e.fotoUrl}" alt="Foto de la entrega" />`
+        : `<div class="timeline-foto-vacia">📦</div>`}
+      <div>
+        <div class="timeline-fecha">${new Date(e.fecha).toLocaleDateString("es-CO", { day: "numeric", month: "long" })}</div>
+        <div class="timeline-texto">${e.texto}</div>
+        <div class="timeline-ciudad">📍 ${e.ciudad}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderDetalleFinanciero() {
+  if (FACTURAS.length === 0) {
+    document.getElementById("detalle-contenido").innerHTML = `
+      <p style="font-size:13px;color:var(--texto-suave);">Aún no hay facturas registradas en el detalle financiero.</p>
+    `;
+    return;
+  }
+  document.getElementById("detalle-contenido").innerHTML = FACTURAS.map(f => `
+    <div class="detalle-fila">
+      <span><strong>${f.proveedor}</strong> — ${f.categoria.replace(/^\d+\.\s*/, "")} · ${f.numeroFactura || ""} · ${f.ciudad || ""}</span>
+      <span>${fmtUSD(f.valorUSD)} · ${f.estado}</span>
+    </div>
+  `).join("");
+}
+
+document.getElementById("toggle-financiero").addEventListener("click", function() {
+  this.classList.toggle("abierto");
+  document.getElementById("detalle-contenido").classList.toggle("oculto");
+});
+
+function renderTodo() {
+  renderStats();
+  renderGratitud();
+  renderCiudades();
+  renderTabsCategorias();
+  renderNecesidades();
+  renderTimeline();
+  renderDetalleFinanciero();
+  document.getElementById("ultima-actualizacion").textContent =
+    "Actualizado " + new Date().toLocaleString("es-CO", { dateStyle: "medium", timeStyle: "short" });
+}
+
+renderTodo();
+</script>
+
+</body>
+</html>
