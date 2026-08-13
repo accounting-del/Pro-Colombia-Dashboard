@@ -283,7 +283,7 @@ async function leerPestanaCompras(nombrePestana, ciudad) {
     if (!categoria) continue; // filas sin categoría (ej. ítems sueltos) se omiten de la agregación
     if (!datosPorCategoria[categoria]) datosPorCategoria[categoria] = { costoTotalCOP: 0, items: 0 };
     datosPorCategoria[categoria].costoTotalCOP += costoTotal;
-    datosPorCategoria[categoria].items += 1;
+    datosPorCategoria[categoria].items += Number(unidades) || 0;
     itemsIndividuales.push({
       ciudad, categoria, item: itemNombre, unidades,
       valorUSD: Math.round(costoTotal / TRM_SHEET),
