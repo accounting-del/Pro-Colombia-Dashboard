@@ -187,7 +187,7 @@
 
   <div class="detalle-financiero">
     <button class="detalle-toggle" id="toggle-financiero">
-      <span class="titulo">Ver el detalle financiero completo</span>
+      <span class="titulo">Ver el detalle de cada compra</span>
       <span class="flecha">▾</span>
     </button>
     <div class="detalle-contenido oculto" id="detalle-contenido"></div>
@@ -307,10 +307,11 @@ const ENTREGAS = [
   { fecha: "2026-08-12", texto: "200 artículos de higiene (pañales, toallitas, crema) comprados para familias en Pereira", ciudad: "Pereira", fotoUrl: null }
 ];
 
-// Detalle financiero, para quien quiera profundizar
-const FACTURAS = [
-  { proveedor: "Homecenter", categoria: "3. Refugio, ropa y descanso", valorUSD: 2160, fecha: "2026-08-12", numeroFactura: "FACTURA 9903151421133", ciudad: "Pereira", estado: "Verificada" },
-  { proveedor: "WH Distribuciones", categoria: "2. Higiene y saneamiento", valorUSD: 1077, fecha: "2026-08-12", numeroFactura: "Sistema POS FO 556", ciudad: "Pereira", estado: "Verificada" }
+// Detalle de compras, ítem por ítem, para quien quiera ver exactamente qué se compró
+const ITEMS = [
+  { ciudad: "Pereira", categoria: "3. Refugio, ropa y descanso", item: "Carpas y carretilla plástica", unidades: 45, valorUSD: 2160, proveedor: "Homecenter", numeroFactura: "FACTURA 9903151421133", fecha: "2026-08-12", estado: "Verificada" },
+  { ciudad: "Pereira", categoria: "2. Higiene y saneamiento", item: "Pañales, toallitas y crema", unidades: 200, valorUSD: 1077, proveedor: "WH Distribuciones", numeroFactura: "Sistema POS FO 556", fecha: "2026-08-12", estado: "Verificada" },
+  { ciudad: "Cali", categoria: "4. Salud y necesidades especiales", item: "Silla sanitaria con rodachines", unidades: 1, valorUSD: 129, proveedor: "Medicalhelpcasamedica", numeroFactura: "CNPEQ3MDH09GC", fecha: "2026-08-12", estado: "Verificada" }
 ];
 
 // =========================================================================
@@ -454,16 +455,17 @@ function renderTimeline() {
 }
 
 function renderDetalleFinanciero() {
-  if (FACTURAS.length === 0) {
+  if (ITEMS.length === 0) {
     document.getElementById("detalle-contenido").innerHTML = `
-      <p style="font-size:13px;color:var(--texto-suave);">Aún no hay facturas registradas en el detalle financiero.</p>
+      <p style="font-size:13px;color:var(--texto-suave);">Aún no hay compras registradas en el detalle.</p>
     `;
     return;
   }
-  document.getElementById("detalle-contenido").innerHTML = FACTURAS.map(f => `
+  const ordenados = ITEMS.slice().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+  document.getElementById("detalle-contenido").innerHTML = ordenados.map(i => `
     <div class="detalle-fila">
-      <span><strong>${f.proveedor}</strong> — ${f.categoria.replace(/^\d+\.\s*/, "")} · ${f.numeroFactura || ""} · ${f.ciudad || ""}</span>
-      <span>${fmtUSD(f.valorUSD)} · ${f.estado}</span>
+      <span><strong>${i.item}</strong> (${i.unidades} un.) — ${i.proveedor} · ${i.numeroFactura || ""} · ${i.ciudad}</span>
+      <span>${fmtUSD(i.valorUSD)} · ${i.estado}</span>
     </div>
   `).join("");
 }
