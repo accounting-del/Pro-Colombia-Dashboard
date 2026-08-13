@@ -258,7 +258,7 @@ let ciudadActivaCategorias = "Todas";
 const SHEET_ID = "1PB_Q4T7fx4lCrvhntVXObcetSNPyUT7d55EMRSfO8EM";
 const TRM_SHEET = 3100;
 
-async function leerPestanaCompras(nombrePestana) {
+async function leerPestanaCompras(nombrePestana, ciudad) {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(nombrePestana)}`;
   const res = await fetch(url);
   const texto = await res.text();
@@ -269,34 +269,50 @@ async function leerPestanaCompras(nombrePestana) {
   // Estructura real del Sheet: fila 6 = encabezados (índice 5), datos desde fila 7 (índice 6)
   // Columnas: A=# B=Categoria C=Item D=Unidades E=PrecioUnit F=CostoTotal G=Proveedor H=NOrden
   const datosPorCategoria = {};
+  const itemsIndividuales = [];
   for (let i = 6; i < filas.length; i++) {
     const celdas = filas[i].c;
     if (!celdas) continue;
-    const item = celdas[2] ? celdas[2].v : null;
-    if (item === "TOTAL" || item === null) break; // se detiene al llegar a la fila TOTAL o a vacío tras los datos
+    const itemNombre = celdas[2] ? celdas[2].v : null;
+    if (itemNombre === "TOTAL" || itemNombre === null) break; // se detiene al llegar a la fila TOTAL o a vacío tras los datos
     const categoria = celdas[1] ? celdas[1].v : null;
+    const unidades = celdas[3] ? celdas[3].v : "";
     const costoTotal = celdas[5] ? Number(celdas[5].v) : 0;
+    const proveedor = celdas[6] ? celdas[6].v : "";
+    const numeroOrden = celdas[7] ? celdas[7].v : "";
     if (!categoria) continue; // filas sin categoría (ej. ítems sueltos) se omiten de la agregación
     if (!datosPorCategoria[categoria]) datosPorCategoria[categoria] = { costoTotalCOP: 0, items: 0 };
     datosPorCategoria[categoria].costoTotalCOP += costoTotal;
     datosPorCategoria[categoria].items += 1;
+    itemsIndividuales.push({
+      ciudad, categoria, item: itemNombre, unidades,
+      valorUSD: Math.round(costoTotal / TRM_SHEET),
+      proveedor, numeroFactura: numeroOrden, fecha: null, estado: "Verificada"
+    });
   }
-  return datosPorCategoria;
+  return { datosPorCategoria, itemsIndividuales };
 }
 
 async function cargarDatosEnVivo() {
   try {
     const [cali, pereira] = await Promise.all([
-      leerPestanaCompras("Compras Cali"),
-      leerPestanaCompras("Compras Pereira")
+      leerPestanaCompras("Compras Cali", "Cali"),
+      leerPestanaCompras("Compras Pereira", "Pereira")
     ]);
-    aplicarDatosVivos("Cali", cali);
-    aplicarDatosVivos("Pereira", pereira);
+    aplicarDatosVivos("Cali", cali.datosPorCategoria);
+    aplicarDatosVivos("Pereira", pereira.datosPorCategoria);
+    // Agrega los ítems reales del Sheet al detalle desplegable de cada categoría
+    ITEMS.push(...cali.itemsIndividuales, ...pereira.itemsIndividuales);
     renderTodo();
   } catch (e) {
     // Si falla la lectura en vivo (Sheet no público, pestaña renombrada, etc.)
-    // el dashboard sigue mostrando los últimos valores fijos conocidos.
+    // el dashboard sigue mostrando los últimos valores fijos conocidos, y se
+    // muestra el error en pantalla para poder diagnosticarlo sin abrir la consola.
     console.warn("No se pudo leer el Sheet en vivo, usando últimos datos guardados:", e);
+    const banner = document.createElement("div");
+    banner.style.cssText = "background:#CE1126;color:#fff;padding:10px 16px;font-size:12px;text-align:center;";
+    banner.textContent = "⚠️ No se pudo conectar con el Google Sheet en vivo: " + e.message + " — mostrando últimos datos guardados.";
+    document.body.insertBefore(banner, document.body.firstChild);
   }
 }
 
@@ -316,10 +332,10 @@ const ENTREGAS = [
   { fecha: "2026-08-12", texto: "200 artículos de higiene (pañales, toallitas, crema) comprados para familias en Pereira", ciudad: "Pereira", fotoUrl: null }
 ];
 
-// Detalle de compras, ítem por ítem, para quien quiera ver exactamente qué se compró
+// Detalle de compras, ítem por ítem. Los de Cali/Pereira se agregan automáticamente
+// al cargar en vivo desde el Sheet (ver cargarDatosEnVivo). Aquí solo van compras
+// que aún no están en el Sheet o que se registran manualmente desde el chat.
 const ITEMS = [
-  { ciudad: "Pereira", categoria: "3. Refugio, ropa y descanso", item: "Carpas y carretilla plástica", unidades: 45, valorUSD: 2160, proveedor: "Homecenter", numeroFactura: "FACTURA 9903151421133", fecha: "2026-08-12", estado: "Verificada" },
-  { ciudad: "Pereira", categoria: "2. Higiene y saneamiento", item: "Pañales, toallitas y crema", unidades: 200, valorUSD: 1077, proveedor: "WH Distribuciones", numeroFactura: "Sistema POS FO 556", fecha: "2026-08-12", estado: "Verificada" },
   { ciudad: "Cali", categoria: "4. Salud y necesidades especiales", item: "Silla sanitaria con rodachines", unidades: 1, valorUSD: 129, proveedor: "Medicalhelpcasamedica", numeroFactura: "CNPEQ3MDH09GC", fecha: "2026-08-12", estado: "Verificada" }
 ];
 
