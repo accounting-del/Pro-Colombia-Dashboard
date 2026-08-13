@@ -380,11 +380,15 @@ function renderCiudades() {
   document.getElementById("ciudades-grilla").style.gridTemplateColumns = ciudades.length === 1 ? "1fr" : "1fr 1fr";
 }
 
+function totalEntregas() {
+  return Object.values(NECESIDADES_POR_CIUDAD).flat().reduce((acc, n) => acc + n.unidadesEntregadas, 0);
+}
+
 function renderStats() {
   document.getElementById("franja-stats").innerHTML = `
     <div class="stat"><strong>${fmtUSD(TOTAL_RECAUDADO_USD)}</strong><span>Recaudado gracias a ustedes</span></div>
     <div class="stat"><strong>${fmtUSD(totalGastado())}</strong><span>Invertido en ayuda</span></div>
-    <div class="stat"><strong>${ITEMS.length}</strong><span>Entregas registradas</span></div>
+    <div class="stat"><strong>${totalEntregas()}</strong><span>Entregas registradas</span></div>
   `;
 }
 
