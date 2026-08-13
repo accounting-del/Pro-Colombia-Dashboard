@@ -239,8 +239,8 @@ const NECESIDADES_POR_CIUDAD = {
   ],
   Pereira: [
     { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 8278, gastadoUSD: 0, unidadTexto: "kits alimentarios entregados", unidadesEntregadas: 0 },
-    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4891, gastadoUSD: 1077, unidadTexto: "artículos de higiene entregados (pañales, toallitas, crema)", unidadesEntregadas: 200 },
-    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 6020, gastadoUSD: 2160, unidadTexto: "artículos de refugio entregados (carpas y carretillas)", unidadesEntregadas: 45 },
+    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4891, gastadoUSD: 1077, unidadTexto: "artículos de higiene entregados", unidadesEntregadas: 200 },
+    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 6020, gastadoUSD: 2160, unidadTexto: "artículos de refugio entregados", unidadesEntregadas: 45 },
     { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 6020, gastadoUSD: 0, unidadTexto: "kits de salud entregados", unidadesEntregadas: 0 },
     { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3386, gastadoUSD: 0, unidadTexto: "familias con acceso a cocina/energía", unidadesEntregadas: 0 },
     { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "brigadistas equipados", unidadesEntregadas: 0 },
@@ -384,7 +384,7 @@ function renderStats() {
   document.getElementById("franja-stats").innerHTML = `
     <div class="stat"><strong>${fmtUSD(TOTAL_RECAUDADO_USD)}</strong><span>Recaudado gracias a ustedes</span></div>
     <div class="stat"><strong>${fmtUSD(totalGastado())}</strong><span>Invertido en ayuda</span></div>
-    <div class="stat"><strong>${ENTREGAS.length}</strong><span>Entregas registradas</span></div>
+    <div class="stat"><strong>${ITEMS.length}</strong><span>Entregas registradas</span></div>
   `;
 }
 
