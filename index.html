@@ -73,7 +73,16 @@
   .necesidades-grilla { display: grid; gap: 12px; margin-bottom: 40px; }
   .tarjeta-necesidad {
     background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra); padding: 18px;
+    cursor: pointer;
   }
+  .nec-detalle { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--borde); display: none; }
+  .nec-detalle.abierto { display: block; }
+  .nec-detalle-fila {
+    display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0;
+    color: var(--texto-suave);
+  }
+  .nec-detalle-fila strong { color: var(--texto); font-weight: 600; }
+  .nec-toggle-hint { font-size: 11px; color: var(--azul); margin-top: 8px; font-weight: 600; }
   .nec-encabezado { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .nec-icono { font-size: 24px; }
   .nec-titulo { font-size: 15px; font-weight: 800; }
@@ -403,27 +412,52 @@ function renderTabsCategorias() {
   });
 }
 
+function itemsDeCategoria(categoriaOriginal) {
+  return ITEMS.filter(i => {
+    const coincideCiudad = ciudadActivaCategorias === "Todas" || i.ciudad === ciudadActivaCategorias;
+    return i.categoria === categoriaOriginal && coincideCiudad;
+  });
+}
+
 function renderNecesidades() {
   const lista = ciudadActivaCategorias === "Todas"
     ? categoriasCombinadas()
     : NECESIDADES_POR_CIUDAD[ciudadActivaCategorias];
 
-  document.getElementById("necesidades-grilla").innerHTML = lista.map(n => {
+  document.getElementById("necesidades-grilla").innerHTML = lista.map((n, idx) => {
     const pct = n.presupuestoUSD > 0 ? Math.min(100, (n.gastadoUSD / n.presupuestoUSD) * 100) : 0;
     let color = "var(--rojo)";
     if (pct >= 90) color = "var(--verde)";
     else if (pct >= 40) color = "var(--amarillo)";
+    const items = itemsDeCategoria(n.categoriaOriginal);
+    const detalleHtml = items.length > 0
+      ? items.map(i => `
+          <div class="nec-detalle-fila">
+            <span><strong>${i.item}</strong> (${i.unidades} un.) — ${i.proveedor} · ${i.ciudad}</span>
+            <span>${fmtUSD(i.valorUSD)}</span>
+          </div>
+        `).join("")
+      : `<div class="nec-detalle-fila">Aún no hay compras registradas en esta categoría.</div>`;
     return `
-      <div class="tarjeta-necesidad">
+      <div class="tarjeta-necesidad" data-idx="${idx}">
         <div class="nec-encabezado">
           <span class="nec-icono">${n.icono}</span>
           <span class="nec-titulo">${n.nombre}</span>
         </div>
         <div class="nec-impacto"><strong>${n.unidadesEntregadas}</strong> ${n.unidadTexto} hasta ahora</div>
         <div class="barra-fondo"><div class="barra-relleno" style="width:${pct}%;background:${color};"></div></div>
+        <div class="nec-toggle-hint">Toca para ver el detalle de compras ▾</div>
+        <div class="nec-detalle" id="nec-detalle-${idx}">${detalleHtml}</div>
       </div>
     `;
   }).join("");
+
+  document.querySelectorAll(".tarjeta-necesidad").forEach(card => {
+    card.addEventListener("click", () => {
+      const detalle = card.querySelector(".nec-detalle");
+      detalle.classList.toggle("abierto");
+    });
+  });
 }
 
 function renderTimeline() {
