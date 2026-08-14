@@ -128,6 +128,28 @@
   .timeline-texto { font-size: 14px; font-weight: 600; }
   .timeline-ciudad { font-size: 12px; color: var(--texto-suave); margin-top: 4px; }
 
+  /* ===== Galeria de fotos ===== */
+  .galeria-grilla {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 40px;
+  }
+  .galeria-item {
+    position: relative; border-radius: 12px; overflow: hidden; box-shadow: var(--sombra); aspect-ratio: 1;
+    cursor: pointer; background: var(--borde);
+  }
+  .galeria-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .galeria-caption {
+    position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(7,22,56,0.85));
+    color: #fff; font-size: 11px; padding: 16px 8px 6px; line-height: 1.3;
+  }
+  .galeria-vacia { grid-column: 1 / -1; }
+  .lightbox-fondo {
+    display: none; position: fixed; inset: 0; background: rgba(7,22,56,0.9); z-index: 100;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .lightbox-fondo.abierto { display: flex; }
+  .lightbox-fondo img { max-width: 100%; max-height: 80vh; border-radius: 12px; }
+  .lightbox-cerrar { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 28px; cursor: pointer; background: none; border: none; }
+
   /* ===== Gratitud / donantes ===== */
   .gratitud {
     background: linear-gradient(160deg, var(--azul-oscuro), var(--azul) 70%);
@@ -195,6 +217,10 @@
   <div class="seccion-subtitulo" id="txt-subtitulo-timeline">Así se ve la ayuda llegando a las familias afectadas.</div>
   <div class="timeline" id="timeline"></div>
 
+  <div class="seccion-titulo" id="txt-titulo-galeria">Galería de fotos</div>
+  <div class="seccion-subtitulo" id="txt-subtitulo-galeria">Imágenes reales de la ayuda en terreno.</div>
+  <div class="galeria-grilla" id="galeria-grilla"></div>
+
   <div class="detalle-financiero">
     <button class="detalle-toggle" id="toggle-financiero">
       <span class="titulo" id="txt-toggle-financiero">Ver el detalle de cada compra</span>
@@ -207,6 +233,11 @@
 
 <div class="pie" id="txt-pie">
   Pro Colombia es una iniciativa de ayuda humanitaria comunitaria. Cada compra queda registrada y verificada.
+</div>
+
+<div class="lightbox-fondo" id="lightbox-fondo">
+  <button class="lightbox-cerrar" id="lightbox-cerrar">✕</button>
+  <img id="lightbox-img" src="" alt="Foto ampliada" />
 </div>
 
 <script>
@@ -281,6 +312,9 @@ const TEXTOS = {
     subtituloTimeline: "Así se ve la ayuda llegando a las familias afectadas.",
     timelineVacioTitulo: "Próximamente",
     timelineVacioTexto: "Aún no hay entregas registradas. En cuanto la primera ayuda llegue a una familia, aparecerá aquí con foto.",
+    tituloGaleria: "Galería de fotos",
+    subtituloGaleria: "Imágenes reales de la ayuda en terreno.",
+    galeriaVacia: "Aún no hay fotos publicadas. Pronto vas a ver aquí imágenes reales de la ayuda entregada.",
     toggleFinanciero: "Ver el detalle de cada compra",
     sinItems: "Aún no hay compras registradas en el detalle.",
     pie: "Pro Colombia es una iniciativa de ayuda humanitaria comunitaria. Cada compra queda registrada y verificada.",
@@ -310,6 +344,9 @@ const TEXTOS = {
     subtituloTimeline: "This is what the aid looks like reaching affected families.",
     timelineVacioTitulo: "Coming soon",
     timelineVacioTexto: "No deliveries recorded yet. As soon as the first aid reaches a family, it will appear here with a photo.",
+    tituloGaleria: "Photo gallery",
+    subtituloGaleria: "Real images of the aid on the ground.",
+    galeriaVacia: "No photos posted yet. You'll soon see real images of the aid delivered here.",
     toggleFinanciero: "See the detail of every purchase",
     sinItems: "No purchases recorded in the detail yet.",
     pie: "Pro Colombia is a community humanitarian aid initiative. Every purchase is recorded and verified.",
@@ -357,6 +394,8 @@ function aplicarTraduccionesEstaticas() {
   document.getElementById("txt-subtitulo-categorias").textContent = t("subtituloCategorias");
   document.getElementById("txt-titulo-timeline").textContent = t("tituloTimeline");
   document.getElementById("txt-subtitulo-timeline").textContent = t("subtituloTimeline");
+  document.getElementById("txt-titulo-galeria").textContent = t("tituloGaleria");
+  document.getElementById("txt-subtitulo-galeria").textContent = t("subtituloGaleria");
   document.getElementById("txt-toggle-financiero").textContent = t("toggleFinanciero");
   document.getElementById("txt-pie").textContent = t("pie");
 }
@@ -424,10 +463,10 @@ async function leerDonacionesRecibidas() {
   let idxValor = -1, idxNombre = -1;
   cols.forEach((col, i) => {
     const label = (col && col.label ? col.label : "").trim().toLowerCase();
-    if (label === "valor") idxValor = i;
+    if (label === "valor" || label === "usd") idxValor = i;
     if (label === "nombre") idxNombre = i;
   });
-  if (idxValor === -1) idxValor = 3; // respaldo: columna D
+  if (idxValor === -1) idxValor = 5; // respaldo: columna F (USD)
   if (idxNombre === -1) idxNombre = 1; // respaldo: columna B
 
   let total = 0;
@@ -484,6 +523,12 @@ function aplicarDatosVivos(ciudad, datosPorCategoria) {
 const ENTREGAS = [
   { fecha: "2026-08-12", texto: "45 artículos de refugio (carpas y carretillas) comprados para familias en Pereira", ciudad: "Pereira", fotoUrl: null },
   { fecha: "2026-08-12", texto: "200 artículos de higiene (pañales, toallitas, crema) comprados para familias en Pereira", ciudad: "Pereira", fotoUrl: null }
+];
+
+// Galería de fotos. "src" debe apuntar a un archivo dentro de la carpeta
+// /fotos del mismo repo (ej. "fotos/entrega-cali-1.jpg"), subido a GitHub.
+const FOTOS = [
+  // { src: "fotos/entrega-cali-1.jpg", caption: "Entrega de kits de aseo en Cali", ciudad: "Cali" }
 ];
 
 // Detalle de compras, ítem por ítem. Los de Cali/Pereira se agregan automáticamente
@@ -684,6 +729,38 @@ function renderTimeline() {
   `).join("");
 }
 
+function renderGaleria() {
+  if (FOTOS.length === 0) {
+    document.getElementById("galeria-grilla").innerHTML = `
+      <div class="galeria-vacia" style="text-align:center;padding:30px 10px;color:var(--texto-suave);font-size:13px;">
+        📷 ${t("galeriaVacia")}
+      </div>
+    `;
+    return;
+  }
+  document.getElementById("galeria-grilla").innerHTML = FOTOS.map((f, idx) => `
+    <div class="galeria-item" data-idx="${idx}">
+      <img src="${f.src}" alt="${f.caption}" loading="lazy" />
+      <div class="galeria-caption">${f.caption}${f.ciudad ? " · " + f.ciudad : ""}</div>
+    </div>
+  `).join("");
+  document.querySelectorAll(".galeria-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const foto = FOTOS[item.dataset.idx];
+      document.getElementById("lightbox-img").src = foto.src;
+      document.getElementById("lightbox-img").alt = foto.caption;
+      document.getElementById("lightbox-fondo").classList.add("abierto");
+    });
+  });
+}
+
+document.getElementById("lightbox-cerrar").addEventListener("click", () => {
+  document.getElementById("lightbox-fondo").classList.remove("abierto");
+});
+document.getElementById("lightbox-fondo").addEventListener("click", (ev) => {
+  if (ev.target.id === "lightbox-fondo") document.getElementById("lightbox-fondo").classList.remove("abierto");
+});
+
 function renderDetalleFinanciero() {
   if (ITEMS.length === 0) {
     document.getElementById("detalle-contenido").innerHTML = `
@@ -712,6 +789,7 @@ function renderTodo() {
   renderTabsCategorias();
   renderNecesidades();
   renderTimeline();
+  renderGaleria();
   renderDetalleFinanciero();
   document.getElementById("ultima-actualizacion").textContent =
     "Actualizado " + new Date().toLocaleString("es-CO", { dateStyle: "medium", timeStyle: "short" });
