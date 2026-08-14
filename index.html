@@ -419,21 +419,20 @@ async function leerDonacionesRecibidas() {
   const filas = json.table.rows;
   const cols = json.table.cols;
 
-  // Busca dinámicamente en qué columna está "Valor" y "Nombre",
-  // por si hay columnas ocultas de por medio (ej. columna C oculta).
+  // Los encabezados vienen en json.table.cols (label), no en la primera fila
+  // de "rows" — Google ya separa encabezado de datos automáticamente.
   let idxValor = -1, idxNombre = -1;
-  const encabezados = filas[0] && filas[0].c ? filas[0].c : [];
-  encabezados.forEach((celda, i) => {
-    const v = celda && celda.v ? String(celda.v).trim().toLowerCase() : "";
-    if (v === "valor") idxValor = i;
-    if (v === "nombre") idxNombre = i;
+  cols.forEach((col, i) => {
+    const label = (col && col.label ? col.label : "").trim().toLowerCase();
+    if (label === "valor") idxValor = i;
+    if (label === "nombre") idxNombre = i;
   });
   if (idxValor === -1) idxValor = 3; // respaldo: columna D
   if (idxNombre === -1) idxNombre = 1; // respaldo: columna B
 
   let total = 0;
   let donantes = 0;
-  for (let i = 1; i < filas.length; i++) {
+  for (let i = 0; i < filas.length; i++) {
     const celdas = filas[i].c;
     if (!celdas) continue;
     const nombre = celdas[idxNombre] ? celdas[idxNombre].v : null;
