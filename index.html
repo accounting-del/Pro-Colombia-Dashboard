@@ -165,14 +165,15 @@
 <body>
 
 <header class="encabezado">
-  <div class="logo"><span class="logo-icono">🤝</span> Pro Colombia <strong>Así avanza tu ayuda</strong></div>
-  <div class="encabezado-derecha" id="ultima-actualizacion"></div>
+  <div class="logo"><span class="logo-icono">🤝</span> Pro Colombia <strong id="logo-subtitulo">Así avanza tu ayuda</strong></div>
+  <button id="boton-idioma" style="margin-left:auto;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🇺🇸 English</button>
+  <div class="encabezado-derecha" id="ultima-actualizacion" style="margin-left:12px;"></div>
 </header>
 
 <div class="hero">
-  <span class="hero-etiqueta">🇨🇴 Emergencia · Sismo M 7,4 · Occidente y Eje Cafetero</span>
-  <div class="hero-titulo" style="color:#fff;">¡Gracias Donantes!</div>
-  <div class="hero-subtitulo">Aquí puedes ver exactamente en qué se está usando tu donación.</div>
+  <span class="hero-etiqueta" id="txt-hero-etiqueta">🇨🇴 Emergencia · Sismo M 7,4 · Occidente y Eje Cafetero</span>
+  <div class="hero-titulo" style="color:#fff;" id="txt-hero-titulo">¡Gracias Donantes!</div>
+  <div class="hero-subtitulo" id="txt-hero-subtitulo">Aquí puedes ver exactamente en qué se está usando tu donación.</div>
 </div>
 
 <div class="franja-stats" id="franja-stats"></div>
@@ -181,22 +182,22 @@
 
   <div class="gratitud" id="gratitud"></div>
 
-  <div class="seccion-titulo">Inversión por ciudad</div>
-  <div class="seccion-subtitulo">Toca una ciudad para ver el detalle de esa zona.</div>
+  <div class="seccion-titulo" id="txt-titulo-ciudad">Inversión por ciudad</div>
+  <div class="seccion-subtitulo" id="txt-subtitulo-ciudad">Toca una ciudad para ver el detalle de esa zona.</div>
   <div class="tabs-ciudad" id="tabs-ciudad-categorias"></div>
   <div class="ciudades-grilla" id="ciudades-grilla"></div>
 
-  <div class="seccion-titulo">¿En qué se está usando tu donación?</div>
-  <div class="seccion-subtitulo">Cada categoría muestra cuánto hemos podido conseguir hasta ahora.</div>
+  <div class="seccion-titulo" id="txt-titulo-categorias">¿En qué se está usando tu donación?</div>
+  <div class="seccion-subtitulo" id="txt-subtitulo-categorias">Cada categoría muestra cuánto hemos podido conseguir hasta ahora.</div>
   <div class="necesidades-grilla" id="necesidades-grilla"></div>
 
-  <div class="seccion-titulo">Últimas entregas</div>
-  <div class="seccion-subtitulo">Así se ve la ayuda llegando a las familias afectadas.</div>
+  <div class="seccion-titulo" id="txt-titulo-timeline">Últimas entregas</div>
+  <div class="seccion-subtitulo" id="txt-subtitulo-timeline">Así se ve la ayuda llegando a las familias afectadas.</div>
   <div class="timeline" id="timeline"></div>
 
   <div class="detalle-financiero">
     <button class="detalle-toggle" id="toggle-financiero">
-      <span class="titulo">Ver el detalle de cada compra</span>
+      <span class="titulo" id="txt-toggle-financiero">Ver el detalle de cada compra</span>
       <span class="flecha">▾</span>
     </button>
     <div class="detalle-contenido oculto" id="detalle-contenido"></div>
@@ -204,7 +205,7 @@
 
 </div>
 
-<div class="pie">
+<div class="pie" id="txt-pie">
   Pro Colombia es una iniciativa de ayuda humanitaria comunitaria. Cada compra queda registrada y verificada.
 </div>
 
@@ -226,28 +227,145 @@ const PRESUPUESTOS = {
 // y gasto REAL separados por ciudad (según presupuesto_pro_colombia.xlsx)
 const NECESIDADES_POR_CIUDAD = {
   Cali: [
-    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 6773, gastadoUSD: 0, unidadTexto: "kits alimentarios entregados", unidadesEntregadas: 0 },
-    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "artículos de higiene entregados", unidadesEntregadas: 0 },
-    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 4891, gastadoUSD: 0, unidadTexto: "artículos de refugio entregados", unidadesEntregadas: 0 },
-    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 4891, gastadoUSD: 0, unidadTexto: "kits de salud entregados", unidadesEntregadas: 0 },
-    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3010, gastadoUSD: 0, unidadTexto: "familias con acceso a cocina/energía", unidadesEntregadas: 0 },
-    { icono: "🛠️", categoriaOriginal: "Herramientas y Equipo de Rescate", nombre: "Herramientas y equipo de rescate", presupuestoUSD: 4515, gastadoUSD: 0, unidadTexto: "artículos de rescate entregados", unidadesEntregadas: 0 },
-    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "brigadistas protegidos", unidadesEntregadas: 0 },
-    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1505, gastadoUSD: 0, unidadTexto: "operativos de limpieza", unidadesEntregadas: 0 },
-    { icono: "🚚", categoriaOriginal: "9. Maquinaria y transporte", nombre: "Transporte de ayuda", presupuestoUSD: 3010, gastadoUSD: 0, unidadTexto: "viajes de transporte de ayuda", unidadesEntregadas: 0 },
-    { icono: "🐾", categoriaOriginal: "10. Mascotas y animales", nombre: "Mascotas y animales", presupuestoUSD: 753, gastadoUSD: 0, unidadTexto: "familias con mascotas apoyadas", unidadesEntregadas: 0 }
+    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 6773, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 4891, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 4891, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3010, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🛠️", categoriaOriginal: "Herramientas y Equipo de Rescate", nombre: "Herramientas y equipo de rescate", presupuestoUSD: 4515, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1505, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🚚", categoriaOriginal: "9. Maquinaria y transporte", nombre: "Transporte de ayuda", presupuestoUSD: 3010, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🐾", categoriaOriginal: "10. Mascotas y animales", nombre: "Mascotas y animales", presupuestoUSD: 753, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 }
   ],
   Pereira: [
-    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 8278, gastadoUSD: 0, unidadTexto: "kits alimentarios entregados", unidadesEntregadas: 0 },
-    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4891, gastadoUSD: 1077, unidadTexto: "artículos de higiene entregados", unidadesEntregadas: 200 },
-    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 6020, gastadoUSD: 2160, unidadTexto: "artículos de refugio entregados", unidadesEntregadas: 45 },
-    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 6020, gastadoUSD: 0, unidadTexto: "kits de salud entregados", unidadesEntregadas: 0 },
-    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3386, gastadoUSD: 0, unidadTexto: "familias con acceso a cocina/energía", unidadesEntregadas: 0 },
-    { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "brigadistas equipados", unidadesEntregadas: 0 },
-    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 3763, gastadoUSD: 0, unidadTexto: "brigadistas protegidos", unidadesEntregadas: 0 },
-    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1129, gastadoUSD: 0, unidadTexto: "operativos de limpieza", unidadesEntregadas: 0 }
+    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 8278, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4891, gastadoUSD: 1077, unidadTexto: "suministros entregados", unidadesEntregadas: 200 },
+    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 6020, gastadoUSD: 2160, unidadTexto: "suministros entregados", unidadesEntregadas: 45 },
+    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 6020, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3386, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 3763, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1129, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 }
   ]
 };
+
+// =========================================================================
+// IDIOMA — Español / English
+// =========================================================================
+
+let idiomaActivo = "es";
+
+const TEXTOS = {
+  es: {
+    logoSubtitulo: "Así avanza tu ayuda",
+    botonIdioma: "🇺🇸 English",
+    heroEtiqueta: "🇨🇴 Emergencia · Sismo M 7,4 · Occidente y Eje Cafetero",
+    heroTitulo: "¡Gracias Donantes!",
+    heroSubtitulo: "Aquí puedes ver exactamente en qué se está usando tu donación.",
+    statRecaudado: "Recaudado gracias a ustedes",
+    statInvertido: "Invertido en ayuda",
+    statEntregas: "Entregas registradas",
+    gratitudTitulo: "💛 La ayuda está llegando",
+    gratitudTexto: "Cada aporte ya se está transformando en ayuda real para las familias afectadas.",
+    tituloCiudad: "Inversión por ciudad",
+    subtituloCiudad: "Toca una ciudad para ver el detalle de esa zona.",
+    tabTodas: "Todas",
+    ciudadMeta: (presupuesto) => `invertido de ${presupuesto} recaudados para esta zona`,
+    tituloCategorias: "¿En qué se está usando tu donación?",
+    subtituloCategorias: "Cada categoría muestra cuánto hemos podido conseguir hasta ahora.",
+    hastaAhora: "hasta ahora",
+    tocaDetalle: "Toca para ver el detalle de compras ▾",
+    sinCompras: "Aún no hay compras registradas en esta categoría.",
+    tituloTimeline: "Últimas entregas",
+    subtituloTimeline: "Así se ve la ayuda llegando a las familias afectadas.",
+    timelineVacioTitulo: "Próximamente",
+    timelineVacioTexto: "Aún no hay entregas registradas. En cuanto la primera ayuda llegue a una familia, aparecerá aquí con foto.",
+    toggleFinanciero: "Ver el detalle de cada compra",
+    sinItems: "Aún no hay compras registradas en el detalle.",
+    pie: "Pro Colombia es una iniciativa de ayuda humanitaria comunitaria. Cada compra queda registrada y verificada.",
+    actualizado: "Actualizado"
+  },
+  en: {
+    logoSubtitulo: "Your Help in Action",
+    botonIdioma: "🇨🇴 Español",
+    heroEtiqueta: "🇨🇴 Emergency · M 7.4 Earthquake · Western Colombia & Coffee Region",
+    heroTitulo: "Thank You, Donors!",
+    heroSubtitulo: "Here you can see exactly how your donation is being used.",
+    statRecaudado: "Raised thanks to you",
+    statInvertido: "Invested in aid",
+    statEntregas: "Deliveries recorded",
+    gratitudTitulo: "💛 Help is arriving",
+    gratitudTexto: "Every contribution is already becoming real help for affected families.",
+    tituloCiudad: "Investment by city",
+    subtituloCiudad: "Tap a city to see the detail for that area.",
+    tabTodas: "All",
+    ciudadMeta: (presupuesto) => `invested out of ${presupuesto} raised for this area`,
+    tituloCategorias: "What is your donation being used for?",
+    subtituloCategorias: "Each category shows how much we've been able to raise so far.",
+    hastaAhora: "so far",
+    tocaDetalle: "Tap to see purchase details ▾",
+    sinCompras: "No purchases recorded in this category yet.",
+    tituloTimeline: "Latest deliveries",
+    subtituloTimeline: "This is what the aid looks like reaching affected families.",
+    timelineVacioTitulo: "Coming soon",
+    timelineVacioTexto: "No deliveries recorded yet. As soon as the first aid reaches a family, it will appear here with a photo.",
+    toggleFinanciero: "See the detail of every purchase",
+    sinItems: "No purchases recorded in the detail yet.",
+    pie: "Pro Colombia is a community humanitarian aid initiative. Every purchase is recorded and verified.",
+    actualizado: "Updated"
+  }
+};
+
+function t(clave) {
+  return TEXTOS[idiomaActivo][clave];
+}
+
+const CATEGORIA_EN = {
+  "1. Agua y alimentos": { nombre: "Water and food", unidadTexto: "supplies delivered" },
+  "2. Higiene y saneamiento": { nombre: "Hygiene and sanitation", unidadTexto: "supplies delivered" },
+  "3. Refugio, ropa y descanso": { nombre: "Shelter and rest", unidadTexto: "supplies delivered" },
+  "4. Salud y necesidades especiales": { nombre: "Health", unidadTexto: "supplies delivered" },
+  "5. Cocina, energía y comunicación": { nombre: "Cooking and energy", unidadTexto: "supplies delivered" },
+  "Herramientas y Equipo de Rescate": { nombre: "Tools and rescue equipment", unidadTexto: "supplies delivered" },
+  "6. Herramientas y consumibles": { nombre: "Rebuilding supplies", unidadTexto: "supplies delivered" },
+  "7. Protección de brigadistas": { nombre: "Responder protection", unidadTexto: "supplies delivered" },
+  "8. Limpieza y logística": { nombre: "Cleanup and logistics", unidadTexto: "supplies delivered" },
+  "9. Maquinaria y transporte": { nombre: "Aid transportation", unidadTexto: "supplies delivered" },
+  "10. Mascotas y animales": { nombre: "Pets and animals", unidadTexto: "supplies delivered" }
+};
+
+function nombreCategoria(n) {
+  if (idiomaActivo === "en" && CATEGORIA_EN[n.categoriaOriginal]) return CATEGORIA_EN[n.categoriaOriginal].nombre;
+  return n.nombre;
+}
+
+function unidadTextoCategoria(n) {
+  if (idiomaActivo === "en" && CATEGORIA_EN[n.categoriaOriginal]) return CATEGORIA_EN[n.categoriaOriginal].unidadTexto;
+  return n.unidadTexto;
+}
+
+function aplicarTraduccionesEstaticas() {
+  document.getElementById("logo-subtitulo").textContent = t("logoSubtitulo");
+  document.getElementById("boton-idioma").textContent = t("botonIdioma");
+  document.getElementById("txt-hero-etiqueta").textContent = t("heroEtiqueta");
+  document.getElementById("txt-hero-titulo").textContent = t("heroTitulo");
+  document.getElementById("txt-hero-subtitulo").textContent = t("heroSubtitulo");
+  document.getElementById("txt-titulo-ciudad").textContent = t("tituloCiudad");
+  document.getElementById("txt-subtitulo-ciudad").textContent = t("subtituloCiudad");
+  document.getElementById("txt-titulo-categorias").textContent = t("tituloCategorias");
+  document.getElementById("txt-subtitulo-categorias").textContent = t("subtituloCategorias");
+  document.getElementById("txt-titulo-timeline").textContent = t("tituloTimeline");
+  document.getElementById("txt-subtitulo-timeline").textContent = t("subtituloTimeline");
+  document.getElementById("txt-toggle-financiero").textContent = t("toggleFinanciero");
+  document.getElementById("txt-pie").textContent = t("pie");
+}
+
+document.getElementById("boton-idioma").addEventListener("click", () => {
+  idiomaActivo = idiomaActivo === "es" ? "en" : "es";
+  aplicarTraduccionesEstaticas();
+  renderTodo();
+});
 
 let ciudadActivaCategorias = "Todas";
 
@@ -372,7 +490,7 @@ function renderCiudades() {
       <div class="tarjeta-ciudad">
         <div class="ciudad-nombre">📍 ${c}</div>
         <div class="ciudad-monto">${fmtUSD(gastado)}</div>
-        <div class="ciudad-meta">invertido de ${fmtUSD(presupuesto)} recaudados para esta zona</div>
+        <div class="ciudad-meta">${t("ciudadMeta")(fmtUSD(presupuesto))}</div>
         <div class="barra-fondo"><div class="barra-relleno" style="width:${pct}%;background:var(--azul);"></div></div>
       </div>
     `;
@@ -386,16 +504,16 @@ function totalEntregas() {
 
 function renderStats() {
   document.getElementById("franja-stats").innerHTML = `
-    <div class="stat"><strong>${fmtUSD(TOTAL_RECAUDADO_USD)}</strong><span>Recaudado gracias a ustedes</span></div>
-    <div class="stat"><strong>${fmtUSD(totalGastado())}</strong><span>Invertido en ayuda</span></div>
-    <div class="stat"><strong>${totalEntregas()}</strong><span>Entregas registradas</span></div>
+    <div class="stat"><strong>${fmtUSD(TOTAL_RECAUDADO_USD)}</strong><span>${t("statRecaudado")}</span></div>
+    <div class="stat"><strong>${fmtUSD(totalGastado())}</strong><span>${t("statInvertido")}</span></div>
+    <div class="stat"><strong>${totalEntregas()}</strong><span>${t("statEntregas")}</span></div>
   `;
 }
 
 function renderGratitud() {
   document.getElementById("gratitud").innerHTML = `
-    <div class="gratitud-numero">💛 La ayuda está llegando</div>
-    <div class="gratitud-texto">Cada aporte ya se está transformando en ayuda real para las familias afectadas.</div>
+    <div class="gratitud-numero">${t("gratitudTitulo")}</div>
+    <div class="gratitud-texto">${t("gratitudTexto")}</div>
   `;
 }
 
@@ -419,9 +537,10 @@ function categoriasCombinadas() {
 
 function renderTabsCategorias() {
   const ciudades = ["Todas", ...Object.keys(NECESIDADES_POR_CIUDAD)];
-  document.getElementById("tabs-ciudad-categorias").innerHTML = ciudades.map(c =>
-    `<button class="tab-ciudad ${c === ciudadActivaCategorias ? "activo" : ""}" data-ciudad="${c}">${c}</button>`
-  ).join("");
+  document.getElementById("tabs-ciudad-categorias").innerHTML = ciudades.map(c => {
+    const etiqueta = c === "Todas" ? t("tabTodas") : c;
+    return `<button class="tab-ciudad ${c === ciudadActivaCategorias ? "activo" : ""}" data-ciudad="${c}">${etiqueta}</button>`;
+  }).join("");
   document.querySelectorAll(".tab-ciudad").forEach(btn => {
     btn.addEventListener("click", () => {
       ciudadActivaCategorias = btn.dataset.ciudad;
@@ -440,9 +559,10 @@ function itemsDeCategoria(categoriaOriginal) {
 }
 
 function renderNecesidades() {
-  const lista = ciudadActivaCategorias === "Todas"
+  const listaCompleta = ciudadActivaCategorias === "Todas"
     ? categoriasCombinadas()
     : NECESIDADES_POR_CIUDAD[ciudadActivaCategorias];
+  const lista = listaCompleta.filter(n => n.unidadesEntregadas > 0);
 
   document.getElementById("necesidades-grilla").innerHTML = lista.map((n, idx) => {
     const pct = n.presupuestoUSD > 0 ? Math.min(100, (n.gastadoUSD / n.presupuestoUSD) * 100) : 0;
@@ -457,16 +577,16 @@ function renderNecesidades() {
             <span>${fmtUSD(i.valorUSD)}</span>
           </div>
         `).join("")
-      : `<div class="nec-detalle-fila">Aún no hay compras registradas en esta categoría.</div>`;
+      : `<div class="nec-detalle-fila">${t("sinCompras")}</div>`;
     return `
       <div class="tarjeta-necesidad" data-idx="${idx}">
         <div class="nec-encabezado">
           <span class="nec-icono">${n.icono}</span>
-          <span class="nec-titulo">${n.nombre}</span>
+          <span class="nec-titulo">${nombreCategoria(n)}</span>
         </div>
-        <div class="nec-impacto"><strong>${n.unidadesEntregadas}</strong> ${n.unidadTexto} hasta ahora</div>
+        <div class="nec-impacto"><strong>${n.unidadesEntregadas}</strong> ${unidadTextoCategoria(n)} ${t("hastaAhora")}</div>
         <div class="barra-fondo"><div class="barra-relleno" style="width:${pct}%;background:${color};"></div></div>
-        <div class="nec-toggle-hint">Toca para ver el detalle de compras ▾</div>
+        <div class="nec-toggle-hint">${t("tocaDetalle")}</div>
         <div class="nec-detalle" id="nec-detalle-${idx}">${detalleHtml}</div>
       </div>
     `;
@@ -486,8 +606,8 @@ function renderTimeline() {
       <div class="timeline-item">
         <div class="timeline-foto-vacia">📦</div>
         <div>
-          <div class="timeline-fecha">Próximamente</div>
-          <div class="timeline-texto">Aún no hay entregas registradas. En cuanto la primera ayuda llegue a una familia, aparecerá aquí con foto.</div>
+          <div class="timeline-fecha">${t("timelineVacioTitulo")}</div>
+          <div class="timeline-texto">${t("timelineVacioTexto")}</div>
         </div>
       </div>
     `;
@@ -497,10 +617,10 @@ function renderTimeline() {
   document.getElementById("timeline").innerHTML = ordenadas.map(e => `
     <div class="timeline-item">
       ${e.fotoUrl
-        ? `<img class="timeline-foto" src="${e.fotoUrl}" alt="Foto de la entrega" />`
+        ? `<img class="timeline-foto" src="${e.fotoUrl}" alt="delivery photo" />`
         : `<div class="timeline-foto-vacia">📦</div>`}
       <div>
-        <div class="timeline-fecha">${new Date(e.fecha).toLocaleDateString("es-CO", { day: "numeric", month: "long" })}</div>
+        <div class="timeline-fecha">${new Date(e.fecha).toLocaleDateString(idiomaActivo === "en" ? "en-US" : "es-CO", { day: "numeric", month: "long" })}</div>
         <div class="timeline-texto">${e.texto}</div>
         <div class="timeline-ciudad">📍 ${e.ciudad}</div>
       </div>
@@ -511,7 +631,7 @@ function renderTimeline() {
 function renderDetalleFinanciero() {
   if (ITEMS.length === 0) {
     document.getElementById("detalle-contenido").innerHTML = `
-      <p style="font-size:13px;color:var(--texto-suave);">Aún no hay compras registradas en el detalle.</p>
+      <p style="font-size:13px;color:var(--texto-suave);">${t("sinItems")}</p>
     `;
     return;
   }
@@ -541,6 +661,7 @@ function renderTodo() {
     "Actualizado " + new Date().toLocaleString("es-CO", { dateStyle: "medium", timeStyle: "short" });
 }
 
+aplicarTraduccionesEstaticas();
 renderTodo();
 cargarDatosEnVivo();
 </script>
