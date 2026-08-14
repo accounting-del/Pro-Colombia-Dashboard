@@ -214,7 +214,7 @@
 // DATOS — Claude actualiza este bloque cada vez que se registra una entrega
 // =========================================================================
 
-const TOTAL_RECAUDADO_USD = 75250;
+let TOTAL_RECAUDADO_USD = 75250; // valor inicial; se actualiza en vivo desde "Donaciones Recibidas"
 const TOTAL_DONANTES = 14; // filas en "Donaciones Recibidas"
 
 // Presupuesto recaudado disponible por ciudad
@@ -411,16 +411,53 @@ async function leerPestanaCompras(nombrePestana, ciudad) {
   return { datosPorCategoria, itemsIndividuales };
 }
 
+async function leerDonacionesRecibidas() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent("Donaciones Recibidas")}`;
+  const res = await fetch(url);
+  const texto = await res.text();
+  const json = JSON.parse(texto.substring(texto.indexOf("{"), texto.lastIndexOf("}") + 1));
+  const filas = json.table.rows;
+  const cols = json.table.cols;
+
+  // Busca dinámicamente en qué columna está "Valor" y "Nombre",
+  // por si hay columnas ocultas de por medio (ej. columna C oculta).
+  let idxValor = -1, idxNombre = -1;
+  const encabezados = filas[0] && filas[0].c ? filas[0].c : [];
+  encabezados.forEach((celda, i) => {
+    const v = celda && celda.v ? String(celda.v).trim().toLowerCase() : "";
+    if (v === "valor") idxValor = i;
+    if (v === "nombre") idxNombre = i;
+  });
+  if (idxValor === -1) idxValor = 3; // respaldo: columna D
+  if (idxNombre === -1) idxNombre = 1; // respaldo: columna B
+
+  let total = 0;
+  let donantes = 0;
+  for (let i = 1; i < filas.length; i++) {
+    const celdas = filas[i].c;
+    if (!celdas) continue;
+    const nombre = celdas[idxNombre] ? celdas[idxNombre].v : null;
+    if (nombre === "Total" || nombre === null) break; // se detiene en la fila "Total" o al acabarse los datos
+    const valor = celdas[idxValor] ? Number(celdas[idxValor].v) : 0;
+    total += valor;
+    donantes += 1;
+  }
+  return { total, donantes };
+}
+
 async function cargarDatosEnVivo() {
   try {
-    const [cali, pereira] = await Promise.all([
+    const [cali, pereira, donaciones] = await Promise.all([
       leerPestanaCompras("Compras Cali", "Cali"),
-      leerPestanaCompras("Compras Pereira", "Pereira")
+      leerPestanaCompras("Compras Pereira", "Pereira"),
+      leerDonacionesRecibidas()
     ]);
     aplicarDatosVivos("Cali", cali.datosPorCategoria);
     aplicarDatosVivos("Pereira", pereira.datosPorCategoria);
     // Agrega los ítems reales del Sheet al detalle desplegable de cada categoría
     ITEMS.push(...cali.itemsIndividuales, ...pereira.itemsIndividuales);
+    // Actualiza el total recaudado con la suma real de "Donaciones Recibidas"
+    TOTAL_RECAUDADO_USD = donaciones.total;
     renderTodo();
   } catch (e) {
     // Si falla la lectura en vivo (Sheet no público, pestaña renombrada, etc.)
@@ -502,12 +539,32 @@ function totalEntregas() {
   return Object.values(NECESIDADES_POR_CIUDAD).flat().reduce((acc, n) => acc + n.unidadesEntregadas, 0);
 }
 
+function animarNumero(el, valorFinal, esMoneda) {
+  const duracion = 1200;
+  const inicio = performance.now();
+  function paso(ahora) {
+    const progreso = Math.min(1, (ahora - inicio) / duracion);
+    // easing suave (ease-out)
+    const avance = 1 - Math.pow(1 - progreso, 3);
+    const valorActual = Math.round(valorFinal * avance);
+    el.textContent = esMoneda ? fmtUSD(valorActual) : valorActual.toLocaleString("en-US");
+    if (progreso < 1) requestAnimationFrame(paso);
+  }
+  requestAnimationFrame(paso);
+}
+
 function renderStats() {
+  const recaudado = TOTAL_RECAUDADO_USD;
+  const invertido = totalGastado();
+  const entregas = totalEntregas();
   document.getElementById("franja-stats").innerHTML = `
-    <div class="stat"><strong>${fmtUSD(TOTAL_RECAUDADO_USD)}</strong><span>${t("statRecaudado")}</span></div>
-    <div class="stat"><strong>${fmtUSD(totalGastado())}</strong><span>${t("statInvertido")}</span></div>
-    <div class="stat"><strong>${totalEntregas()}</strong><span>${t("statEntregas")}</span></div>
+    <div class="stat"><strong id="stat-recaudado">${fmtUSD(0)}</strong><span>${t("statRecaudado")}</span></div>
+    <div class="stat"><strong id="stat-invertido">${fmtUSD(0)}</strong><span>${t("statInvertido")}</span></div>
+    <div class="stat"><strong id="stat-entregas">0</strong><span>${t("statEntregas")}</span></div>
   `;
+  animarNumero(document.getElementById("stat-recaudado"), recaudado, true);
+  animarNumero(document.getElementById("stat-invertido"), invertido, true);
+  animarNumero(document.getElementById("stat-entregas"), entregas, false);
 }
 
 function renderGratitud() {
