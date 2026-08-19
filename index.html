@@ -53,8 +53,8 @@
   .hero-subtitulo { margin-top: 10px; font-size: 15px; color: rgba(255,255,255,0.85); max-width: 480px; margin-left: auto; margin-right: auto; }
 
   .franja-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-    max-width: 700px; margin: -28px auto 0; padding: 0 20px; position: relative;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    max-width: 760px; margin: -28px auto 0; padding: 0 20px; position: relative;
   }
   .stat {
     background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra);
@@ -94,7 +94,7 @@
   .nec-completo { font-size: 12px; color: var(--verde); font-weight: 700; margin-top: 8px; }
 
   /* ===== Inversion por ciudad ===== */
-  .ciudades-grilla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 40px; }
+  .ciudades-grilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 40px; }
   .tarjeta-ciudad {
     background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra); padding: 16px;
   }
@@ -180,7 +180,6 @@
 
   @media (max-width: 480px) {
     .franja-stats { grid-template-columns: 1fr 1fr; }
-    .franja-stats .stat:last-child { grid-column: 1 / -1; }
   }
 </style>
 </head>
@@ -248,11 +247,10 @@
 let TOTAL_RECAUDADO_USD = 75250; // valor inicial; se actualiza en vivo desde "Donaciones Recibidas"
 const TOTAL_DONANTES = 14; // filas en "Donaciones Recibidas"
 
-// Presupuesto recaudado disponible por ciudad
-const PRESUPUESTOS = {
-  Cali: { total: 37625 },
-  Pereira: { total: 37625 }
-};
+// Gasto real por ciudad (en USD), calculado en vivo desde "Consolidado de Compras".
+// Ya no hay un presupuesto fijo 50/50 asignado por ciudad — cada ciudad recibe
+// lo que efectivamente necesita, sin un tope preasignado.
+let GASTADO_POR_CIUDAD = { Cali: 0, Pereira: 0 };
 
 // Categorías traducidas a lenguaje de impacto (no contable), con presupuesto
 // y gasto REAL separados por ciudad (según presupuesto_pro_colombia.xlsx)
@@ -278,6 +276,19 @@ const NECESIDADES_POR_CIUDAD = {
     { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
     { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 3763, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
     { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1129, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 }
+  ],
+  Armenia: [
+    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🛠️", categoriaOriginal: "Herramientas y Equipo de Rescate", nombre: "Herramientas y equipo de rescate", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🚚", categoriaOriginal: "9. Maquinaria y transporte", nombre: "Transporte de ayuda", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
+    { icono: "🐾", categoriaOriginal: "10. Mascotas y animales", nombre: "Mascotas y animales", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 }
   ]
 };
 
@@ -297,12 +308,13 @@ const TEXTOS = {
     statRecaudado: "Recaudado gracias a ustedes",
     statInvertido: "Invertido en ayuda",
     statEntregas: "Suministros entregados",
+    balanceTexto: "Balance disponible",
     gratitudTitulo: "💛 La ayuda está llegando",
     gratitudTexto: "Cada aporte ya se está transformando en ayuda real para las familias afectadas.",
     tituloCiudad: "Inversión por ciudad",
     subtituloCiudad: "Toca una ciudad para ver el detalle de esa zona.",
     tabTodas: "Todas",
-    ciudadMeta: (presupuesto) => `invertido de ${presupuesto} recaudados para esta zona`,
+    ciudadMeta: (pct) => `${pct}% del total invertido hasta ahora`,
     tituloCategorias: "¿En qué se está usando tu donación?",
     subtituloCategorias: "Cada categoría muestra cuánto hemos podido conseguir hasta ahora.",
     hastaAhora: "hasta ahora",
@@ -329,12 +341,13 @@ const TEXTOS = {
     statRecaudado: "Raised thanks to you",
     statInvertido: "Invested in aid",
     statEntregas: "Supplies delivered",
+    balanceTexto: "Available balance",
     gratitudTitulo: "💛 Help is arriving",
     gratitudTexto: "Every contribution is already becoming real help for affected families.",
     tituloCiudad: "Investment by city",
     subtituloCiudad: "Tap a city to see the detail for that area.",
     tabTodas: "All",
-    ciudadMeta: (presupuesto) => `invested out of ${presupuesto} raised for this area`,
+    ciudadMeta: (pct) => `${pct}% of total invested so far`,
     tituloCategorias: "What is your donation being used for?",
     subtituloCategorias: "Each category shows how much we've been able to raise so far.",
     hastaAhora: "so far",
@@ -415,39 +428,65 @@ let ciudadActivaCategorias = "Todas";
 const SHEET_ID = "1PB_Q4T7fx4lCrvhntVXObcetSNPyUT7d55EMRSfO8EM";
 const TRM_SHEET = 3100;
 
-async function leerPestanaCompras(nombrePestana, ciudad) {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(nombrePestana)}`;
+async function leerConsolidadoCompras() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent("Consolidado de Compras")}`;
   const res = await fetch(url);
   const texto = await res.text();
-  // La respuesta viene envuelta en "google.visualization.Query.setResponse(...)"
   const json = JSON.parse(texto.substring(texto.indexOf("{"), texto.lastIndexOf("}") + 1));
   const filas = json.table.rows;
+  const cols = json.table.cols;
 
-  // Estructura real del Sheet: fila 6 = encabezados (índice 5), datos desde fila 7 (índice 6)
-  // Columnas: A=# B=Categoria C=Item D=Unidades E=PrecioUnit F=CostoTotal G=Proveedor H=NOrden
-  const datosPorCategoria = {};
+  // Busca cada columna por su nombre de encabezado, no por posición fija,
+  // para no romperse si se reordenan o agregan columnas en el futuro.
+  const idx = { ciudad: -1, categoria: -1, subcategoria: -1, item: -1, unidades: -1, costoTotal: -1, proveedor: -1, numeroOrden: -1 };
+  cols.forEach((col, i) => {
+    const label = (col && col.label ? col.label : "").trim().toLowerCase();
+    if (label === "ciudad") idx.ciudad = i;
+    if (label === "categoria" || label === "categoría") idx.categoria = i;
+    if (label === "subcategoria" || label === "subcategoría") idx.subcategoria = i;
+    if (label === "item" || label === "ítem") idx.item = i;
+    if (label.startsWith("unidades")) idx.unidades = i;
+    if (label === "costo total") idx.costoTotal = i;
+    if (label === "proveedor") idx.proveedor = i;
+    if (label.startsWith("n de orden") || label.startsWith("n° de orden")) idx.numeroOrden = i;
+  });
+
+  // Datos agrupados por ciudad y categoría, más el detalle de cada ítem individual
+  const datosPorCiudadYCategoria = {}; // { Cali: { "categoria": { costoTotalCOP, items } } }
   const itemsIndividuales = [];
-  for (let i = 6; i < filas.length; i++) {
+  const totalPorCiudad = {}; // { Cali: costoTotalCOP, Pereira: costoTotalCOP }
+
+  for (let i = 0; i < filas.length; i++) {
     const celdas = filas[i].c;
     if (!celdas) continue;
-    const itemNombre = celdas[2] ? celdas[2].v : null;
-    if (itemNombre === "TOTAL" || itemNombre === null) break; // se detiene al llegar a la fila TOTAL o a vacío tras los datos
-    const categoria = celdas[1] ? celdas[1].v : null;
-    const unidades = celdas[3] ? celdas[3].v : "";
-    const costoTotal = celdas[5] ? Number(celdas[5].v) : 0;
-    const proveedor = celdas[6] ? celdas[6].v : "";
-    const numeroOrden = celdas[7] ? celdas[7].v : "";
-    if (!categoria) continue; // filas sin categoría (ej. ítems sueltos) se omiten de la agregación
-    if (!datosPorCategoria[categoria]) datosPorCategoria[categoria] = { costoTotalCOP: 0, items: 0 };
-    datosPorCategoria[categoria].costoTotalCOP += costoTotal;
-    datosPorCategoria[categoria].items += Number(unidades) || 0;
+    const ciudad = idx.ciudad >= 0 && celdas[idx.ciudad] ? celdas[idx.ciudad].v : null;
+    const itemNombre = idx.item >= 0 && celdas[idx.item] ? celdas[idx.item].v : null;
+    if (!ciudad || !itemNombre) continue; // se salta filas vacías o de cierre, sin romper la lectura
+
+    const categoria = idx.categoria >= 0 && celdas[idx.categoria] ? celdas[idx.categoria].v : null;
+    const subcategoria = idx.subcategoria >= 0 && celdas[idx.subcategoria] ? celdas[idx.subcategoria].v : "";
+    const unidades = idx.unidades >= 0 && celdas[idx.unidades] ? celdas[idx.unidades].v : "";
+    const costoTotal = idx.costoTotal >= 0 && celdas[idx.costoTotal] ? Number(celdas[idx.costoTotal].v) : 0;
+    const proveedor = idx.proveedor >= 0 && celdas[idx.proveedor] ? celdas[idx.proveedor].v : "";
+    const numeroOrden = idx.numeroOrden >= 0 && celdas[idx.numeroOrden] ? celdas[idx.numeroOrden].v : "";
+
+    totalPorCiudad[ciudad] = (totalPorCiudad[ciudad] || 0) + costoTotal;
+
+    if (categoria) {
+      if (!datosPorCiudadYCategoria[ciudad]) datosPorCiudadYCategoria[ciudad] = {};
+      if (!datosPorCiudadYCategoria[ciudad][categoria]) datosPorCiudadYCategoria[ciudad][categoria] = { costoTotalCOP: 0, items: 0 };
+      datosPorCiudadYCategoria[ciudad][categoria].costoTotalCOP += costoTotal;
+      datosPorCiudadYCategoria[ciudad][categoria].items += Number(unidades) || 0;
+    }
+
     itemsIndividuales.push({
-      ciudad, categoria, item: itemNombre, unidades,
+      ciudad, categoria: categoria || "(sin categoría)", subcategoria, item: itemNombre, unidades,
       valorUSD: Math.round(costoTotal / TRM_SHEET),
       proveedor, numeroFactura: numeroOrden, fecha: null, estado: "Verificada"
     });
   }
-  return { datosPorCategoria, itemsIndividuales };
+
+  return { datosPorCiudadYCategoria, itemsIndividuales, totalPorCiudad };
 }
 
 async function leerDonacionesRecibidas() {
@@ -485,15 +524,19 @@ async function leerDonacionesRecibidas() {
 
 async function cargarDatosEnVivo() {
   try {
-    const [cali, pereira, donaciones] = await Promise.all([
-      leerPestanaCompras("Compras Cali", "Cali"),
-      leerPestanaCompras("Compras Pereira", "Pereira"),
+    const [consolidado, donaciones] = await Promise.all([
+      leerConsolidadoCompras(),
       leerDonacionesRecibidas()
     ]);
-    aplicarDatosVivos("Cali", cali.datosPorCategoria);
-    aplicarDatosVivos("Pereira", pereira.datosPorCategoria);
+    Object.keys(consolidado.datosPorCiudadYCategoria).forEach(ciudad => {
+      if (NECESIDADES_POR_CIUDAD[ciudad]) {
+        aplicarDatosVivos(ciudad, consolidado.datosPorCiudadYCategoria[ciudad]);
+      }
+    });
+    // Guarda el total gastado real por ciudad (ya no hay presupuesto fijo 50/50)
+    GASTADO_POR_CIUDAD = consolidado.totalPorCiudad;
     // Agrega los ítems reales del Sheet al detalle desplegable de cada categoría
-    ITEMS.push(...cali.itemsIndividuales, ...pereira.itemsIndividuales);
+    ITEMS.push(...consolidado.itemsIndividuales);
     // Actualiza el total recaudado con la suma real de "Donaciones Recibidas"
     TOTAL_RECAUDADO_USD = donaciones.total;
     renderTodo();
@@ -547,7 +590,7 @@ function fmtUSD(n) {
 }
 
 function totalGastado() {
-  return Object.values(NECESIDADES_POR_CIUDAD).flat().reduce((acc, n) => acc + n.gastadoUSD, 0);
+  return Object.values(GASTADO_POR_CIUDAD).reduce((a, b) => a + b, 0);
 }
 
 function totalGastadoPorCiudad(ciudad) {
@@ -561,22 +604,19 @@ function totalFamilias() {
 }
 
 function renderCiudades() {
-  const todas = Object.keys(NECESIDADES_POR_CIUDAD);
+  const todas = [...new Set([...Object.keys(NECESIDADES_POR_CIUDAD), ...Object.keys(GASTADO_POR_CIUDAD)])];
   const ciudades = ciudadActivaCategorias === "Todas" ? todas : [ciudadActivaCategorias];
+  const totalGeneral = Object.values(GASTADO_POR_CIUDAD).reduce((a, b) => a + b, 0);
   document.getElementById("ciudades-grilla").innerHTML = ciudades.map(c => {
-    const gastado = totalGastadoPorCiudad(c);
-    const presupuesto = PRESUPUESTOS[c].total;
-    const pct = presupuesto > 0 ? Math.min(100, (gastado / presupuesto) * 100) : 0;
+    const gastado = GASTADO_POR_CIUDAD[c] || 0;
+    const pct = totalGeneral > 0 ? Math.min(100, (gastado / totalGeneral) * 100) : 0;
     return `
       <div class="tarjeta-ciudad">
         <div class="ciudad-nombre">📍 ${c}</div>
         <div class="ciudad-monto">${fmtUSD(gastado)}</div>
-        <div class="ciudad-meta">${t("ciudadMeta")(fmtUSD(presupuesto))}</div>
-        <div class="barra-fondo"><div class="barra-relleno" style="width:${pct}%;background:var(--azul);"></div></div>
       </div>
     `;
   }).join("");
-  document.getElementById("ciudades-grilla").style.gridTemplateColumns = ciudades.length === 1 ? "1fr" : "1fr 1fr";
 }
 
 function totalEntregas() {
@@ -601,14 +641,18 @@ function renderStats() {
   const recaudado = TOTAL_RECAUDADO_USD;
   const invertido = totalGastado();
   const entregas = totalEntregas();
+  const balance = recaudado - invertido;
+  const esNegativo = balance < 0;
   document.getElementById("franja-stats").innerHTML = `
     <div class="stat"><strong id="stat-recaudado">${fmtUSD(0)}</strong><span>${t("statRecaudado")}</span></div>
     <div class="stat"><strong id="stat-invertido">${fmtUSD(0)}</strong><span>${t("statInvertido")}</span></div>
     <div class="stat"><strong id="stat-entregas">0</strong><span>${t("statEntregas")}</span></div>
+    <div class="stat"><strong id="stat-balance" style="color:${esNegativo ? "var(--rojo)" : "var(--verde)"};">${fmtUSD(0)}</strong><span>${t("balanceTexto")}</span></div>
   `;
   animarNumero(document.getElementById("stat-recaudado"), recaudado, true);
   animarNumero(document.getElementById("stat-invertido"), invertido, true);
   animarNumero(document.getElementById("stat-entregas"), entregas, false);
+  animarNumero(document.getElementById("stat-balance"), balance, true);
 }
 
 function renderGratitud() {
@@ -674,7 +718,7 @@ function renderNecesidades() {
     const detalleHtml = items.length > 0
       ? items.map(i => `
           <div class="nec-detalle-fila">
-            <span><strong>${i.item}</strong> (${i.unidades} un.) — ${i.proveedor} · ${i.ciudad}</span>
+            <span><strong>${i.item}</strong>${i.subcategoria ? " (" + i.subcategoria + ")" : ""} — ${i.unidades} un. · ${i.proveedor} · ${i.ciudad}</span>
             <span>${fmtUSD(i.valorUSD)}</span>
           </div>
         `).join("")
@@ -771,7 +815,7 @@ function renderDetalleFinanciero() {
   const ordenados = ITEMS.slice().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
   document.getElementById("detalle-contenido").innerHTML = ordenados.map(i => `
     <div class="detalle-fila">
-      <span><strong>${i.item}</strong> (${i.unidades} un.) — ${i.proveedor} · ${i.numeroFactura || ""} · ${i.ciudad}</span>
+      <span><strong>${i.item}</strong>${i.subcategoria ? " (" + i.subcategoria + ")" : ""} (${i.unidades} un.) — ${i.proveedor} · ${i.numeroFactura || ""} · ${i.ciudad}</span>
       <span>${fmtUSD(i.valorUSD)} · ${i.estado}</span>
     </div>
   `).join("");
