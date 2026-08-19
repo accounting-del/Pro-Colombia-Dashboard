@@ -83,9 +83,10 @@
   }
   .nec-detalle-fila strong { color: var(--texto); font-weight: 600; }
   .nec-toggle-hint { font-size: 11px; color: var(--azul); margin-top: 8px; font-weight: 600; }
-  .nec-encabezado { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .nec-icono { font-size: 24px; }
-  .nec-titulo { font-size: 15px; font-weight: 800; }
+  .nec-encabezado { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .nec-icono { font-size: 22px; }
+  .nec-titulo { font-size: 14px; font-weight: 800; }
+  .nec-monto { font-size: 16px; font-weight: 800; color: var(--azul); margin-left: auto; }
   .nec-impacto { font-size: 13px; color: var(--texto-suave); margin-bottom: 10px; }
   .nec-impacto strong { color: var(--azul); }
   .barra-fondo { background: var(--borde); border-radius: 999px; height: 10px; overflow: hidden; }
@@ -595,6 +596,44 @@ function renderTabsCategorias() {
 }
 
 // Ícono aproximado según palabras clave de la subcategoría (o categoría, si no hay subcategoría)
+// Traducción de subcategorías/categorías conocidas al inglés.
+// Si aparece una subcategoría nueva que no está aquí, se muestra tal cual
+// viene del Sheet (en español) hasta que se agregue su traducción.
+const GRUPO_EN = {
+  "Refugio y campin": "Shelter and camping",
+  "Herramientas y equipo de rescate": "Tools and rescue equipment",
+  "Herramientas y Equipo de Rescate": "Tools and rescue equipment",
+  "Pañales para bebés": "Baby diapers",
+  "Pañales para bebes": "Baby diapers",
+  "Pañitos húmedos": "Baby wipes",
+  "Pañitos humedos": "Baby wipes",
+  "Cremas y lociones": "Creams and lotions",
+  "Colchones": "Mattresses",
+  "Snacks y bocadillos": "Snacks",
+  "Lácteos": "Dairy",
+  "Lacteos": "Dairy",
+  "Bebidas": "Beverages",
+  "Panela y endulzantes": "Panela and sweeteners",
+  "Servicios de pedido": "Delivery services",
+  "Transporte y flete": "Transport and freight",
+  "(sin categoría)": "(uncategorized)",
+  "1. Agua y alimentos": "Water and food",
+  "2. Higiene y saneamiento": "Hygiene and sanitation",
+  "3. Refugio, ropa y descanso": "Shelter and rest",
+  "4. Salud y necesidades especiales": "Health",
+  "5. Cocina, energía y comunicación": "Cooking and energy",
+  "6. Herramientas y consumibles": "Rebuilding supplies",
+  "7. Protección de brigadistas": "Responder protection",
+  "8. Limpieza y logística": "Cleanup and logistics",
+  "9. Maquinaria y transporte": "Aid transportation",
+  "10. Mascotas y animales": "Pets and animals"
+};
+
+function nombreGrupoTraducido(nombre) {
+  if (idiomaActivo === "en" && GRUPO_EN[nombre]) return GRUPO_EN[nombre];
+  return nombre;
+}
+
 function iconoParaGrupo(nombre) {
   const n = (nombre || "").toLowerCase();
   if (n.includes("agua") || n.includes("hidrat")) return "💧";
@@ -612,11 +651,11 @@ function iconoParaGrupo(nombre) {
 }
 
 // Agrupa ITEMS por subcategoría (o categoría si no hay subcategoría), filtrando por ciudad activa
-function gruposPorSubcategoria() {
+function gruposPorCategoria() {
   const mapa = {};
   ITEMS.forEach(i => {
     if (ciudadActivaCategorias !== "Todas" && i.ciudad !== ciudadActivaCategorias) return;
-    const clave = i.subcategoria || i.categoria || "(sin categoría)";
+    const clave = i.categoria || "(sin categoría)";
     if (!mapa[clave]) mapa[clave] = { nombre: clave, gastadoUSD: 0, unidadesEntregadas: 0, icono: iconoParaGrupo(clave) };
     mapa[clave].gastadoUSD += i.valorUSD;
     mapa[clave].unidadesEntregadas += Number(i.unidades) || 0;
@@ -627,20 +666,20 @@ function gruposPorSubcategoria() {
 function itemsDeGrupo(nombreGrupo) {
   return ITEMS.filter(i => {
     const coincideCiudad = ciudadActivaCategorias === "Todas" || i.ciudad === ciudadActivaCategorias;
-    const clave = i.subcategoria || i.categoria || "(sin categoría)";
+    const clave = i.categoria || "(sin categoría)";
     return clave === nombreGrupo && coincideCiudad;
   });
 }
 
 function renderNecesidades() {
-  const lista = gruposPorSubcategoria();
+  const lista = gruposPorCategoria();
 
   document.getElementById("necesidades-grilla").innerHTML = lista.map((n, idx) => {
     const items = itemsDeGrupo(n.nombre);
     const detalleHtml = items.length > 0
       ? items.map(i => `
           <div class="nec-detalle-fila">
-            <span><strong>${i.item}</strong> — ${i.unidades} un. · ${i.proveedor} · ${i.ciudad}</span>
+            <span><strong>${i.item}</strong>${i.subcategoria ? " (" + nombreGrupoTraducido(i.subcategoria) + ")" : ""} — ${i.unidades} un. · ${i.proveedor} · ${i.ciudad}</span>
             <span>${fmtUSD(i.valorUSD)}</span>
           </div>
         `).join("")
@@ -649,9 +688,10 @@ function renderNecesidades() {
       <div class="tarjeta-necesidad" data-idx="${idx}">
         <div class="nec-encabezado">
           <span class="nec-icono">${n.icono}</span>
-          <span class="nec-titulo">${n.nombre}</span>
+          <span class="nec-titulo">${nombreGrupoTraducido(n.nombre)}</span>
+          <span class="nec-monto">${fmtUSD(n.gastadoUSD)}</span>
         </div>
-        <div class="nec-impacto"><strong>${n.unidadesEntregadas}</strong> ${t("statEntregas").toLowerCase()} · ${fmtUSD(n.gastadoUSD)}</div>
+        <div class="nec-impacto"><strong>${n.unidadesEntregadas}</strong> ${t("statEntregas").toLowerCase()}</div>
         <div class="nec-toggle-hint">${t("tocaDetalle")}</div>
         <div class="nec-detalle" id="nec-detalle-${idx}">${detalleHtml}</div>
       </div>
