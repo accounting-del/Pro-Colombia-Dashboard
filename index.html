@@ -77,8 +77,13 @@
   }
   .nec-detalle { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--borde); display: none; }
   .nec-detalle.abierto { display: block; }
+  .nec-subcategoria {
+    display: flex; justify-content: space-between; font-size: 12px; font-weight: 800;
+    color: var(--azul); margin: 14px 0 4px; text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .nec-subcategoria:first-child { margin-top: 0; }
   .nec-detalle-fila {
-    display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0;
+    display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0 6px 10px;
     color: var(--texto-suave);
   }
   .nec-detalle-fila strong { color: var(--texto); font-weight: 600; }
@@ -600,37 +605,81 @@ function renderTabsCategorias() {
 // Si aparece una subcategoría nueva que no está aquí, se muestra tal cual
 // viene del Sheet (en español) hasta que se agregue su traducción.
 const GRUPO_EN = {
-  "Refugio y campin": "Shelter and camping",
-  "Herramientas y equipo de rescate": "Tools and rescue equipment",
-  "Herramientas y Equipo de Rescate": "Tools and rescue equipment",
-  "Pañales para bebés": "Baby diapers",
-  "Pañales para bebes": "Baby diapers",
-  "Pañitos húmedos": "Baby wipes",
-  "Pañitos humedos": "Baby wipes",
-  "Cremas y lociones": "Creams and lotions",
-  "Colchones": "Mattresses",
-  "Snacks y bocadillos": "Snacks",
-  "Lácteos": "Dairy",
-  "Lacteos": "Dairy",
-  "Bebidas": "Beverages",
-  "Panela y endulzantes": "Panela and sweeteners",
-  "Servicios de pedido": "Delivery services",
-  "Transporte y flete": "Transport and freight",
-  "(sin categoría)": "(uncategorized)",
-  "1. Agua y alimentos": "Water and food",
-  "2. Higiene y saneamiento": "Hygiene and sanitation",
-  "3. Refugio, ropa y descanso": "Shelter and rest",
-  "4. Salud y necesidades especiales": "Health",
-  "5. Cocina, energía y comunicación": "Cooking and energy",
-  "6. Herramientas y consumibles": "Rebuilding supplies",
-  "7. Protección de brigadistas": "Responder protection",
-  "8. Limpieza y logística": "Cleanup and logistics",
-  "9. Maquinaria y transporte": "Aid transportation",
-  "10. Mascotas y animales": "Pets and animals"
+  "refugio y camping": "Shelter and camping",
+  "herramientas y equipo de rescate": "Tools and rescue equipment",
+  "herramientas y equipo": "Tools and equipment",
+  "herramientas electricas": "Power tools",
+  "herramientas manuales": "Hand tools",
+  "materiales de construccion": "Construction materials",
+  "pañales para bebe": "Baby diapers",
+  "pañales para adulto": "Adult diapers",
+  "pañitos humedos": "Baby wipes",
+  "cremas y lociones": "Creams and lotions",
+  "colchones": "Mattresses",
+  "toallas y mantillas": "Towels and blankets",
+  "cobijas y cobertores": "Blankets and covers",
+  "ropa para bebe": "Baby clothes",
+  "snacks y bocadillos": "Snacks",
+  "lacteos": "Dairy",
+  "bebidas": "Beverages",
+  "panela y endulzantes": "Panela and sweeteners",
+  "granos y legumbres": "Grains and legumes",
+  "pastas, cereales y harinas": "Pasta, cereals and flours",
+  "enlatados y conservas": "Canned goods",
+  "agua embotellada": "Bottled water",
+  "hidratacion oral": "Oral rehydration",
+  "servicios de pedido": "Delivery services",
+  "servicios de pedido/envio": "Delivery/shipping services",
+  "transporte y flete": "Transport and freight",
+  "afeitado": "Shaving",
+  "jabones": "Soaps",
+  "desodorantes": "Deodorants",
+  "cuidado capilar": "Hair care",
+  "cuidado dental": "Dental care",
+  "papel higienico": "Toilet paper",
+  "proteccion femenina": "Feminine hygiene products",
+  "bolsas y empaques": "Bags and packaging",
+  "analgesicos y antiinflamatorios": "Pain relievers and anti-inflammatories",
+  "antibioticos": "Antibiotics",
+  "antihistaminicos": "Antihistamines",
+  "medicamentos cronicos/digestivos": "Chronic/digestive medications",
+  "insumos medicos varios": "Miscellaneous medical supplies",
+  "otros salud": "Other health",
+  "equipo de proteccion personal (epp)": "Personal protective equipment (PPE)",
+  "iluminacion": "Lighting",
+  "iluminacion y energia": "Lighting and energy",
+  "alimento para mascotas": "Pet food",
+  "hospedaje": "Lodging",
+  "pendiente de giro": "Pending transfer",
+  "solicitud confirmada": "Confirmed request",
+  "(sin categoria)": "(uncategorized)",
+  "1. agua y alimentos": "Water and food",
+  "2. higiene y saneamiento": "Hygiene and sanitation",
+  "3. refugio, ropa y descanso": "Shelter and rest",
+  "4. salud y necesidades especiales": "Health",
+  "5. cocina, energia y comunicacion": "Cooking and energy",
+  "6. herramientas y consumibles": "Rebuilding supplies",
+  "herramientas y equipo de rescate": "Tools and rescue equipment",
+  "7. proteccion de brigadistas": "Responder protection",
+  "8. limpieza y logistica": "Cleanup and logistics",
+  "9. maquinaria y transporte": "Aid transportation",
+  "10. mascotas y animales": "Pets and animals",
+  "devolucion": "Refund"
 };
 
+// Quita tildes, pasa a minúsculas y recorta espacios, para que la traducción
+// funcione aunque el texto del Sheet tenga variaciones de escritura
+function normalizarClave(texto) {
+  return (texto || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().trim();
+}
+
 function nombreGrupoTraducido(nombre) {
-  if (idiomaActivo === "en" && GRUPO_EN[nombre]) return GRUPO_EN[nombre];
+  if (idiomaActivo === "en") {
+    const traduccion = GRUPO_EN[normalizarClave(nombre)];
+    if (traduccion) return traduccion;
+  }
   return nombre;
 }
 
@@ -655,19 +704,21 @@ function gruposPorCategoria() {
   const mapa = {};
   ITEMS.forEach(i => {
     if (ciudadActivaCategorias !== "Todas" && i.ciudad !== ciudadActivaCategorias) return;
-    const clave = i.categoria || "(sin categoría)";
+    if (!i.categoria) return; // los ítems sin categoría no generan tarjeta propia
+    const clave = i.categoria;
     if (!mapa[clave]) mapa[clave] = { nombre: clave, gastadoUSD: 0, unidadesEntregadas: 0, icono: iconoParaGrupo(clave) };
     mapa[clave].gastadoUSD += i.valorUSD;
     mapa[clave].unidadesEntregadas += Number(i.unidades) || 0;
   });
-  return Object.values(mapa).sort((a, b) => b.gastadoUSD - a.gastadoUSD);
+  return Object.values(mapa)
+    .filter(n => n.gastadoUSD > 0) // nunca mostrar categorías en $0
+    .sort((a, b) => b.gastadoUSD - a.gastadoUSD);
 }
 
 function itemsDeGrupo(nombreGrupo) {
   return ITEMS.filter(i => {
     const coincideCiudad = ciudadActivaCategorias === "Todas" || i.ciudad === ciudadActivaCategorias;
-    const clave = i.categoria || "(sin categoría)";
-    return clave === nombreGrupo && coincideCiudad;
+    return i.categoria === nombreGrupo && coincideCiudad;
   });
 }
 
@@ -677,12 +728,7 @@ function renderNecesidades() {
   document.getElementById("necesidades-grilla").innerHTML = lista.map((n, idx) => {
     const items = itemsDeGrupo(n.nombre);
     const detalleHtml = items.length > 0
-      ? items.map(i => `
-          <div class="nec-detalle-fila">
-            <span><strong>${i.item}</strong>${i.subcategoria ? " (" + nombreGrupoTraducido(i.subcategoria) + ")" : ""} — ${i.unidades} un. · ${i.proveedor} · ${i.ciudad}</span>
-            <span>${fmtUSD(i.valorUSD)}</span>
-          </div>
-        `).join("")
+      ? construirDetallePorSubcategoria(items)
       : `<div class="nec-detalle-fila">${t("sinCompras")}</div>`;
     return `
       <div class="tarjeta-necesidad" data-idx="${idx}">
@@ -704,6 +750,30 @@ function renderNecesidades() {
       detalle.classList.toggle("abierto");
     });
   });
+}
+
+// Agrupa los ítems de una categoría por subcategoría, con encabezado y subtotal
+function construirDetallePorSubcategoria(items) {
+  const grupos = {};
+  const orden = [];
+  items.forEach(i => {
+    const clave = i.subcategoria || "(sin subcategoría)";
+    if (!grupos[clave]) { grupos[clave] = { items: [], total: 0 }; orden.push(clave); }
+    grupos[clave].items.push(i);
+    grupos[clave].total += i.valorUSD;
+  });
+  return orden.map(clave => `
+    <div class="nec-subcategoria">
+      <span>${nombreGrupoTraducido(clave)}</span>
+      <span>${fmtUSD(grupos[clave].total)}</span>
+    </div>
+    ${grupos[clave].items.map(i => `
+      <div class="nec-detalle-fila">
+        <span><strong>${i.item}</strong> — ${i.unidades} un. · ${i.proveedor} · ${i.ciudad}</span>
+        <span>${fmtUSD(i.valorUSD)}</span>
+      </div>
+    `).join("")}
+  `).join("");
 }
 
 function renderTimeline() {
