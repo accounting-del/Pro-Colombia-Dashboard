@@ -252,46 +252,6 @@ const TOTAL_DONANTES = 14; // filas en "Donaciones Recibidas"
 // lo que efectivamente necesita, sin un tope preasignado.
 let GASTADO_POR_CIUDAD = { Cali: 0, Pereira: 0 };
 
-// Categorías traducidas a lenguaje de impacto (no contable), con presupuesto
-// y gasto REAL separados por ciudad (según presupuesto_pro_colombia.xlsx)
-const NECESIDADES_POR_CIUDAD = {
-  Cali: [
-    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 6773, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 4891, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 4891, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3010, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🛠️", categoriaOriginal: "Herramientas y Equipo de Rescate", nombre: "Herramientas y equipo de rescate", presupuestoUSD: 4515, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1505, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🚚", categoriaOriginal: "9. Maquinaria y transporte", nombre: "Transporte de ayuda", presupuestoUSD: 3010, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🐾", categoriaOriginal: "10. Mascotas y animales", nombre: "Mascotas y animales", presupuestoUSD: 753, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 }
-  ],
-  Pereira: [
-    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 8278, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 4891, gastadoUSD: 1077, unidadTexto: "suministros entregados", unidadesEntregadas: 200 },
-    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 6020, gastadoUSD: 2160, unidadTexto: "suministros entregados", unidadesEntregadas: 45 },
-    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 6020, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 3386, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 4139, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 3763, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 1129, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 }
-  ],
-  Armenia: [
-    { icono: "💧", categoriaOriginal: "1. Agua y alimentos", nombre: "Agua y alimentos", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🧼", categoriaOriginal: "2. Higiene y saneamiento", nombre: "Higiene y saneamiento", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🏠", categoriaOriginal: "3. Refugio, ropa y descanso", nombre: "Refugio y descanso", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🩺", categoriaOriginal: "4. Salud y necesidades especiales", nombre: "Salud", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🔥", categoriaOriginal: "5. Cocina, energía y comunicación", nombre: "Cocina y energía", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🛠️", categoriaOriginal: "6. Herramientas y consumibles", nombre: "Reconstrucción", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🛠️", categoriaOriginal: "Herramientas y Equipo de Rescate", nombre: "Herramientas y equipo de rescate", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🦺", categoriaOriginal: "7. Protección de brigadistas", nombre: "Protección de brigadistas", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🧹", categoriaOriginal: "8. Limpieza y logística", nombre: "Limpieza y logística", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🚚", categoriaOriginal: "9. Maquinaria y transporte", nombre: "Transporte de ayuda", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 },
-    { icono: "🐾", categoriaOriginal: "10. Mascotas y animales", nombre: "Mascotas y animales", presupuestoUSD: 0, gastadoUSD: 0, unidadTexto: "suministros entregados", unidadesEntregadas: 0 }
-  ]
-};
-
 // =========================================================================
 // IDIOMA — Español / English
 // =========================================================================
@@ -369,30 +329,6 @@ const TEXTOS = {
 
 function t(clave) {
   return TEXTOS[idiomaActivo][clave];
-}
-
-const CATEGORIA_EN = {
-  "1. Agua y alimentos": { nombre: "Water and food", unidadTexto: "supplies delivered" },
-  "2. Higiene y saneamiento": { nombre: "Hygiene and sanitation", unidadTexto: "supplies delivered" },
-  "3. Refugio, ropa y descanso": { nombre: "Shelter and rest", unidadTexto: "supplies delivered" },
-  "4. Salud y necesidades especiales": { nombre: "Health", unidadTexto: "supplies delivered" },
-  "5. Cocina, energía y comunicación": { nombre: "Cooking and energy", unidadTexto: "supplies delivered" },
-  "Herramientas y Equipo de Rescate": { nombre: "Tools and rescue equipment", unidadTexto: "supplies delivered" },
-  "6. Herramientas y consumibles": { nombre: "Rebuilding supplies", unidadTexto: "supplies delivered" },
-  "7. Protección de brigadistas": { nombre: "Responder protection", unidadTexto: "supplies delivered" },
-  "8. Limpieza y logística": { nombre: "Cleanup and logistics", unidadTexto: "supplies delivered" },
-  "9. Maquinaria y transporte": { nombre: "Aid transportation", unidadTexto: "supplies delivered" },
-  "10. Mascotas y animales": { nombre: "Pets and animals", unidadTexto: "supplies delivered" }
-};
-
-function nombreCategoria(n) {
-  if (idiomaActivo === "en" && CATEGORIA_EN[n.categoriaOriginal]) return CATEGORIA_EN[n.categoriaOriginal].nombre;
-  return n.nombre;
-}
-
-function unidadTextoCategoria(n) {
-  if (idiomaActivo === "en" && CATEGORIA_EN[n.categoriaOriginal]) return CATEGORIA_EN[n.categoriaOriginal].unidadTexto;
-  return n.unidadTexto;
 }
 
 function aplicarTraduccionesEstaticas() {
@@ -528,14 +464,11 @@ async function cargarDatosEnVivo() {
       leerConsolidadoCompras(),
       leerDonacionesRecibidas()
     ]);
-    Object.keys(consolidado.datosPorCiudadYCategoria).forEach(ciudad => {
-      if (NECESIDADES_POR_CIUDAD[ciudad]) {
-        aplicarDatosVivos(ciudad, consolidado.datosPorCiudadYCategoria[ciudad]);
-      }
-    });
     // Guarda el total gastado real por ciudad (ya no hay presupuesto fijo 50/50)
-    GASTADO_POR_CIUDAD = consolidado.totalPorCiudad;
-    // Agrega los ítems reales del Sheet al detalle desplegable de cada categoría
+    GASTADO_POR_CIUDAD = Object.fromEntries(
+      Object.entries(consolidado.totalPorCiudad).map(([ciudad, cop]) => [ciudad, Math.round(cop / TRM_SHEET)])
+    );
+    // Agrega los ítems reales del Sheet al detalle desplegable de cada categoría/subcategoría
     ITEMS.push(...consolidado.itemsIndividuales);
     // Actualiza el total recaudado con la suma real de "Donaciones Recibidas"
     TOTAL_RECAUDADO_USD = donaciones.total;
@@ -552,16 +485,6 @@ async function cargarDatosEnVivo() {
   }
 }
 
-function aplicarDatosVivos(ciudad, datosPorCategoria) {
-  NECESIDADES_POR_CIUDAD[ciudad].forEach(n => {
-    const real = datosPorCategoria[n.categoriaOriginal];
-    if (real) {
-      n.gastadoUSD = Math.round(real.costoTotalCOP / TRM_SHEET);
-      n.unidadesEntregadas = real.items;
-    }
-  });
-}
-
 // Cada entrega: { fecha, texto, ciudad, fotoUrl (opcional, base64 o link) }
 const ENTREGAS = [
   { fecha: "2026-08-12", texto: "45 artículos de refugio (carpas y carretillas) comprados para familias en Pereira", ciudad: "Pereira", fotoUrl: null },
@@ -574,11 +497,11 @@ const FOTOS = [
   // { src: "fotos/entrega-cali-1.jpg", caption: "Entrega de kits de aseo en Cali", ciudad: "Cali" }
 ];
 
-// Detalle de compras, ítem por ítem. Los de Cali/Pereira se agregan automáticamente
-// al cargar en vivo desde el Sheet (ver cargarDatosEnVivo). Aquí solo van compras
-// que aún no están en el Sheet o que se registran manualmente desde el chat.
+// Detalle de compras, ítem por ítem. Se agregan automáticamente al cargar en
+// vivo desde el Sheet (ver cargarDatosEnVivo). Aquí solo van compras que aún
+// no están en el Sheet o que se registran manualmente desde el chat.
 const ITEMS = [
-  { ciudad: "Cali", categoria: "4. Salud y necesidades especiales", item: "Silla sanitaria con rodachines", unidades: 1, valorUSD: 129, proveedor: "Medicalhelpcasamedica", numeroFactura: "CNPEQ3MDH09GC", fecha: "2026-08-12", estado: "Verificada" }
+  { ciudad: "Cali", categoria: "4. Salud y necesidades especiales", subcategoria: "", item: "Silla sanitaria con rodachines", unidades: 1, valorUSD: 129, proveedor: "Medicalhelpcasamedica", numeroFactura: "CNPEQ3MDH09GC", fecha: "2026-08-12", estado: "Verificada" }
 ];
 
 // =========================================================================
@@ -593,23 +516,15 @@ function totalGastado() {
   return Object.values(GASTADO_POR_CIUDAD).reduce((a, b) => a + b, 0);
 }
 
-function totalGastadoPorCiudad(ciudad) {
-  return NECESIDADES_POR_CIUDAD[ciudad]
-    ? NECESIDADES_POR_CIUDAD[ciudad].reduce((acc, n) => acc + n.gastadoUSD, 0)
-    : 0;
-}
-
 function totalFamilias() {
   return ENTREGAS.length;
 }
 
 function renderCiudades() {
-  const todas = [...new Set([...Object.keys(NECESIDADES_POR_CIUDAD), ...Object.keys(GASTADO_POR_CIUDAD)])];
+  const todas = [...new Set([...Object.keys(GASTADO_POR_CIUDAD), ...ITEMS.map(i => i.ciudad)])];
   const ciudades = ciudadActivaCategorias === "Todas" ? todas : [ciudadActivaCategorias];
-  const totalGeneral = Object.values(GASTADO_POR_CIUDAD).reduce((a, b) => a + b, 0);
   document.getElementById("ciudades-grilla").innerHTML = ciudades.map(c => {
     const gastado = GASTADO_POR_CIUDAD[c] || 0;
-    const pct = totalGeneral > 0 ? Math.min(100, (gastado / totalGeneral) * 100) : 0;
     return `
       <div class="tarjeta-ciudad">
         <div class="ciudad-nombre">📍 ${c}</div>
@@ -620,7 +535,7 @@ function renderCiudades() {
 }
 
 function totalEntregas() {
-  return Object.values(NECESIDADES_POR_CIUDAD).flat().reduce((acc, n) => acc + n.unidadesEntregadas, 0);
+  return ITEMS.reduce((acc, i) => acc + (Number(i.unidades) || 0), 0);
 }
 
 function animarNumero(el, valorFinal, esMoneda) {
@@ -662,26 +577,9 @@ function renderGratitud() {
   `;
 }
 
-function categoriasCombinadas() {
-  // Combina Cali + Pereira por categoriaOriginal, sumando presupuesto y gasto
-  const mapa = {};
-  Object.keys(NECESIDADES_POR_CIUDAD).forEach(ciudad => {
-    NECESIDADES_POR_CIUDAD[ciudad].forEach(n => {
-      if (!mapa[n.categoriaOriginal]) {
-        mapa[n.categoriaOriginal] = { ...n, presupuestoUSD: 0, gastadoUSD: 0, unidadesEntregadas: 0 };
-      }
-      mapa[n.categoriaOriginal].presupuestoUSD += n.presupuestoUSD;
-      mapa[n.categoriaOriginal].gastadoUSD += n.gastadoUSD;
-      mapa[n.categoriaOriginal].unidadesEntregadas += n.unidadesEntregadas;
-      // Si alguna ciudad tiene un texto de impacto más específico (con detalle entre paréntesis), úsalo
-      if (n.gastadoUSD > 0) mapa[n.categoriaOriginal].unidadTexto = n.unidadTexto;
-    });
-  });
-  return Object.values(mapa);
-}
-
 function renderTabsCategorias() {
-  const ciudades = ["Todas", ...Object.keys(NECESIDADES_POR_CIUDAD)];
+  const todas = [...new Set([...Object.keys(GASTADO_POR_CIUDAD), ...ITEMS.map(i => i.ciudad)])];
+  const ciudades = ["Todas", ...todas];
   document.getElementById("tabs-ciudad-categorias").innerHTML = ciudades.map(c => {
     const etiqueta = c === "Todas" ? t("tabTodas") : c;
     return `<button class="tab-ciudad ${c === ciudadActivaCategorias ? "activo" : ""}" data-ciudad="${c}">${etiqueta}</button>`;
@@ -696,29 +594,53 @@ function renderTabsCategorias() {
   });
 }
 
-function itemsDeCategoria(categoriaOriginal) {
+// Ícono aproximado según palabras clave de la subcategoría (o categoría, si no hay subcategoría)
+function iconoParaGrupo(nombre) {
+  const n = (nombre || "").toLowerCase();
+  if (n.includes("agua") || n.includes("hidrat")) return "💧";
+  if (n.includes("higien") || n.includes("pañal") || n.includes("crema") || n.includes("toallit") || n.includes("aseo")) return "🧼";
+  if (n.includes("refugio") || n.includes("campin") || n.includes("carpa") || n.includes("colchón") || n.includes("colchon") || n.includes("ropa")) return "🏠";
+  if (n.includes("herramient") || n.includes("rescate")) return "🛠️";
+  if (n.includes("salud") || n.includes("médic") || n.includes("medic")) return "🩺";
+  if (n.includes("cocina") || n.includes("energ")) return "🔥";
+  if (n.includes("protec") || n.includes("brigad")) return "🦺";
+  if (n.includes("limpieza")) return "🧹";
+  if (n.includes("transporte") || n.includes("camion") || n.includes("camión") || n.includes("grúa") || n.includes("grua") || n.includes("maquinaria")) return "🚚";
+  if (n.includes("mascota") || n.includes("animal")) return "🐾";
+  if (n.includes("snack") || n.includes("bocad") || n.includes("bebida") || n.includes("lácte") || n.includes("lacte") || n.includes("panela") || n.includes("té") || n.includes("leche") || n.includes("alimen")) return "🍎";
+  return "📦";
+}
+
+// Agrupa ITEMS por subcategoría (o categoría si no hay subcategoría), filtrando por ciudad activa
+function gruposPorSubcategoria() {
+  const mapa = {};
+  ITEMS.forEach(i => {
+    if (ciudadActivaCategorias !== "Todas" && i.ciudad !== ciudadActivaCategorias) return;
+    const clave = i.subcategoria || i.categoria || "(sin categoría)";
+    if (!mapa[clave]) mapa[clave] = { nombre: clave, gastadoUSD: 0, unidadesEntregadas: 0, icono: iconoParaGrupo(clave) };
+    mapa[clave].gastadoUSD += i.valorUSD;
+    mapa[clave].unidadesEntregadas += Number(i.unidades) || 0;
+  });
+  return Object.values(mapa).sort((a, b) => b.gastadoUSD - a.gastadoUSD);
+}
+
+function itemsDeGrupo(nombreGrupo) {
   return ITEMS.filter(i => {
     const coincideCiudad = ciudadActivaCategorias === "Todas" || i.ciudad === ciudadActivaCategorias;
-    return i.categoria === categoriaOriginal && coincideCiudad;
+    const clave = i.subcategoria || i.categoria || "(sin categoría)";
+    return clave === nombreGrupo && coincideCiudad;
   });
 }
 
 function renderNecesidades() {
-  const listaCompleta = ciudadActivaCategorias === "Todas"
-    ? categoriasCombinadas()
-    : NECESIDADES_POR_CIUDAD[ciudadActivaCategorias];
-  const lista = listaCompleta.filter(n => n.unidadesEntregadas > 0);
+  const lista = gruposPorSubcategoria();
 
   document.getElementById("necesidades-grilla").innerHTML = lista.map((n, idx) => {
-    const pct = n.presupuestoUSD > 0 ? Math.min(100, (n.gastadoUSD / n.presupuestoUSD) * 100) : 0;
-    let color = "var(--rojo)";
-    if (pct >= 90) color = "var(--verde)";
-    else if (pct >= 40) color = "var(--amarillo)";
-    const items = itemsDeCategoria(n.categoriaOriginal);
+    const items = itemsDeGrupo(n.nombre);
     const detalleHtml = items.length > 0
       ? items.map(i => `
           <div class="nec-detalle-fila">
-            <span><strong>${i.item}</strong>${i.subcategoria ? " (" + i.subcategoria + ")" : ""} — ${i.unidades} un. · ${i.proveedor} · ${i.ciudad}</span>
+            <span><strong>${i.item}</strong> — ${i.unidades} un. · ${i.proveedor} · ${i.ciudad}</span>
             <span>${fmtUSD(i.valorUSD)}</span>
           </div>
         `).join("")
@@ -727,10 +649,9 @@ function renderNecesidades() {
       <div class="tarjeta-necesidad" data-idx="${idx}">
         <div class="nec-encabezado">
           <span class="nec-icono">${n.icono}</span>
-          <span class="nec-titulo">${nombreCategoria(n)}</span>
+          <span class="nec-titulo">${n.nombre}</span>
         </div>
-        <div class="nec-impacto"><strong>${n.unidadesEntregadas}</strong> ${unidadTextoCategoria(n)} ${t("hastaAhora")}</div>
-        <div class="barra-fondo"><div class="barra-relleno" style="width:${pct}%;background:${color};"></div></div>
+        <div class="nec-impacto"><strong>${n.unidadesEntregadas}</strong> ${t("statEntregas").toLowerCase()} · ${fmtUSD(n.gastadoUSD)}</div>
         <div class="nec-toggle-hint">${t("tocaDetalle")}</div>
         <div class="nec-detalle" id="nec-detalle-${idx}">${detalleHtml}</div>
       </div>
