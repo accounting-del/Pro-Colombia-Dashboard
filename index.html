@@ -26,7 +26,7 @@
     --fuente: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: var(--fuente); background: var(--fondo); color: var(--texto); line-height: 1.5; }
+  body { font-family: var(--fuente); background: var(--fondo); color: var(--texto); line-height: 1.5; overflow-x: hidden; }
   .oculto { display: none !important; }
 
   .encabezado {
@@ -100,13 +100,32 @@
   .nec-completo { font-size: 12px; color: var(--verde); font-weight: 700; margin-top: 8px; }
 
   /* ===== Inversion por ciudad ===== */
-  .ciudades-grilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 40px; }
-  .tarjeta-ciudad {
-    background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra); padding: 16px;
+  .ciudades-grilla {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 28px;
   }
-  .ciudad-nombre { font-size: 14px; font-weight: 800; margin-bottom: 6px; }
-  .ciudad-monto { font-size: 20px; font-weight: 800; color: var(--azul); }
-  .ciudad-meta { font-size: 11px; color: var(--texto-suave); margin-top: 2px; margin-bottom: 8px; }
+  .tarjeta-metric {
+    background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra); padding: 14px 12px;
+  }
+  .ciudad-compacta-nombre {
+    font-size: 13px; font-weight: 800; color: var(--texto); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .tarjeta-metric-label { font-size: 11px; color: var(--texto-suave); margin-bottom: 4px; }
+  .tarjeta-metric-valor { font-size: 19px; font-weight: 800; color: var(--azul); }
+
+  .vista-toggle {
+    display: flex; gap: 6px; background: var(--tarjeta); border-radius: 999px; padding: 4px;
+    box-shadow: var(--sombra); margin-bottom: 18px;
+  }
+  .vista-btn {
+    flex: 1; text-align: center; font-family: inherit; font-size: 12px; font-weight: 700;
+    color: var(--texto-suave); background: none; border: none; padding: 9px 4px; border-radius: 999px;
+    cursor: pointer; line-height: 1.25;
+  }
+  .vista-btn.activo { color: #fff; background: var(--azul); }
+  @media (max-width: 380px) {
+    .vista-btn { font-size: 10.5px; }
+  }
 
   /* ===== Tabs de ciudad para categorias ===== */
   .tabs-ciudad { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 2px solid var(--borde); }
@@ -168,6 +187,22 @@
     background: var(--azul-oscuro); color: #fff; text-align: left; padding: 10px 12px;
     font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 700;
   }
+  .th-filtro-select {
+    background: transparent; border: none; color: #fff; font-family: inherit;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
+    cursor: pointer; width: 100%; padding: 0;
+    text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+  }
+  .th-filtro-select option { color: var(--texto); text-transform: none; font-weight: 600; }
+  .th-filtro-input {
+    width: 100%; box-sizing: border-box; text-overflow: ellipsis; overflow: hidden;
+  }
+  .th-filtro-input {
+    background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.4);
+    color: #fff; font-family: inherit; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px; width: 100%; padding: 2px 0;
+  }
+  .th-filtro-input::placeholder { color: rgba(255,255,255,0.6); text-transform: uppercase; }
   .tabla-entregas td { padding: 10px 12px; border-top: 1px solid var(--borde); vertical-align: top; }
   .tabla-entregas tr:nth-child(even) td { background: var(--fondo); }
   .tabla-entregas .td-total { font-weight: 800; color: var(--azul); white-space: nowrap; }
@@ -188,6 +223,88 @@
     position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(7,22,56,0.85));
     color: #fff; font-size: 10px; padding: 12px 6px 4px; line-height: 1.25;
   }
+
+  .info-bloque {
+    background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra); padding: 14px 16px; margin-bottom: 12px;
+  }
+  .info-titulo { font-size: 12.5px; font-weight: 800; color: var(--texto); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .info-institucion-fila {
+    font-size: 12.5px; color: var(--texto); padding: 7px 0; border-bottom: 1px solid var(--borde);
+  }
+  .info-institucion-fila:last-child { border-bottom: none; }
+  .info-institucion-fila .barrio-tag { color: var(--texto-suave); }
+  .familia-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .familia-pill {
+    font-size: 11px; font-weight: 600; color: var(--azul); background: var(--amarillo-suave);
+    padding: 4px 10px; border-radius: 999px;
+  }
+  .familia-pill-mas { cursor: pointer; background: var(--azul); color: #fff; }
+
+  .solicitud-fila {
+    padding: 9px 0; border-bottom: 1px solid var(--borde); font-size: 12.5px;
+  }
+  .solicitud-fila:last-child { border-bottom: none; }
+  .solicitud-encabezado { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
+  .solicitud-codigo { font-weight: 800; color: var(--texto); }
+  .solicitud-necesidades { color: var(--texto-suave); }
+  .estado-badge {
+    font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .estado-planeacion { background: var(--amarillo-suave); color: #7A5C00; }
+  .estado-proceso { background: #E0ECFB; color: #0C447C; }
+  .estado-resuelto { background: var(--verde-suave); color: var(--verde); }
+  .estado-norequiere { background: var(--borde); color: var(--texto-suave); }
+  .estado-escalado { background: var(--rojo-suave); color: var(--rojo); }
+  .estado-descartado { background: var(--borde); color: var(--texto-suave); }
+  .solicitud-descripcion { font-size: 12px; color: var(--texto); margin-top: 5px; line-height: 1.5; }
+  .solicitud-requerimientos { font-size: 12px; color: var(--azul); font-weight: 600; margin-top: 4px; }
+  .solicitud-meta { font-size: 11px; color: var(--texto-suave); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .solicitud-meta strong { color: var(--texto); font-weight: 700; }
+
+  .csl-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin: 16px 0; }
+  .csl-stat { background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra); padding: 12px 10px; text-align: center; }
+  .csl-stat strong { display: block; font-size: 20px; font-weight: 800; color: var(--azul); }
+  .csl-stat span { font-size: 10.5px; color: var(--texto-suave); }
+
+  .csl-barra { display: flex; height: 10px; border-radius: 999px; overflow: hidden; margin-bottom: 8px; background: var(--borde); }
+  .csl-barra-leyenda { display: flex; flex-wrap: wrap; gap: 10px; font-size: 10.5px; color: var(--texto-suave); margin-bottom: 14px; }
+  .csl-barra-leyenda span { display: flex; align-items: center; gap: 4px; }
+  .csl-barra-punto { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .csl-status-titulo { font-size: 12px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.3px; margin: 18px 0 8px; }
+  .csl-tabla-wrap {
+    overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radio);
+    box-shadow: var(--sombra); margin-bottom: 20px;
+    width: 100vw; max-width: 960px; margin-left: 50%; transform: translateX(-50%);
+  }
+  #csl-tabla { margin-bottom: 0; box-shadow: none; width: 100%; table-layout: fixed; }
+  .csl-tabla-wrap td { vertical-align: top; }
+  .csl-tabla-wrap .td-codigo { font-weight: 700; word-break: break-word; }
+  .csl-tabla-wrap .td-estado { }
+  .csl-tabla-wrap td, .csl-tabla-wrap th { word-break: break-word; }
+
+  .csl-grupo {
+    background: var(--tarjeta); border-radius: var(--radio); box-shadow: var(--sombra);
+    margin-bottom: 10px; overflow: hidden;
+  }
+  .csl-grupo-encabezado {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px; cursor: pointer;
+  }
+  .csl-grupo-titulo { font-size: 13.5px; font-weight: 800; color: var(--texto); }
+  .csl-grupo-total { font-size: 12px; font-weight: 700; color: var(--texto-suave); }
+  .csl-grupo-detalle { padding: 0 16px 14px; border-top: 1px solid var(--borde); }
+  .csl-grupo-detalle.oculto { display: none; }
+  .csl-grupo-detalle .solicitud-fila:first-child { padding-top: 12px; }
+
+  .solicitud-necesidades-principal { font-size: 13px; font-weight: 700; color: var(--texto); margin-top: 4px; }
+  .solicitud-status-tag {
+    display: inline-block; font-size: 10px; font-weight: 600; color: var(--texto-suave);
+    background: var(--fondo); padding: 2px 8px; border-radius: 999px; margin-top: 4px;
+  }
+  .solicitud-ver-detalle { font-size: 11.5px; font-weight: 700; color: var(--azul); margin-top: 6px; cursor: pointer; }
+  .solicitud-detalle { margin-top: 6px; padding-top: 8px; border-top: 1px dashed var(--borde); }
+  .solicitud-detalle.oculto { display: none; }
+  .solicitud-ubicacion { font-size: 11.5px; color: var(--texto-suave); margin-bottom: 4px; }
 
   /* ===== Gratitud / donantes ===== */
   .gratitud {
@@ -225,15 +342,15 @@
 <body>
 
 <header class="encabezado">
-  <div class="logo"><span class="logo-icono">🤝</span> Pro Colombia <strong id="logo-subtitulo">Así avanza tu ayuda</strong></div>
-  <button id="boton-idioma" style="margin-left:auto;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🇺🇸 English</button>
+  <div class="logo"><span class="logo-icono">🤝</span> Pro Colombia <strong id="logo-subtitulo">Your Help in Action</strong></div>
+  <button id="boton-idioma" style="margin-left:auto;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🇨🇴 Español</button>
   <div class="encabezado-derecha" id="ultima-actualizacion" style="margin-left:12px;"></div>
 </header>
 
 <div class="hero">
-  <span class="hero-etiqueta" id="txt-hero-etiqueta">🇨🇴 Emergencia · Sismo M 7,4 · Occidente y Eje Cafetero</span>
-  <div class="hero-titulo" style="color:#fff;" id="txt-hero-titulo">¡Gracias Donantes!</div>
-  <div class="hero-subtitulo" id="txt-hero-subtitulo">Aquí puedes ver exactamente en qué se está usando tu donación.</div>
+  <span class="hero-etiqueta" id="txt-hero-etiqueta">🇨🇴 Emergency · M 7.4 Earthquake · Western Colombia & Coffee Region</span>
+  <div class="hero-titulo" style="color:#fff;" id="txt-hero-titulo">Thank You, Donors!</div>
+  <div class="hero-subtitulo" id="txt-hero-subtitulo">Here you can see exactly how your donation is being used.</div>
 </div>
 
 <div class="franja-stats" id="franja-stats"></div>
@@ -242,23 +359,34 @@
 
   <div class="gratitud" id="gratitud"></div>
 
-  <div class="seccion-titulo" id="txt-titulo-ciudad">Inversión por ciudad</div>
-  <div class="seccion-subtitulo" id="txt-subtitulo-ciudad">Toca una ciudad para ver el detalle de esa zona.</div>
+  <div class="seccion-titulo" id="txt-titulo-ciudad">Investment by city</div>
+  <div class="seccion-subtitulo" id="txt-subtitulo-ciudad">Tap a city to see the detail for that area.</div>
   <div class="tabs-ciudad" id="tabs-ciudad-categorias"></div>
-  <div class="ciudades-grilla" id="ciudades-grilla"></div>
 
-  <div class="seccion-titulo" id="txt-titulo-categorias">¿En qué se está usando tu donación?</div>
-  <div class="seccion-subtitulo" id="txt-subtitulo-categorias">Cada categoría muestra cuánto hemos podido conseguir hasta ahora.</div>
-  <div class="necesidades-grilla" id="necesidades-grilla"></div>
+  <div class="vista-toggle" id="vista-toggle">
+    <button class="vista-btn" data-vista="costos">💰 <span id="txt-vista-costos">Costs</span></button>
+    <button class="vista-btn" data-vista="entregas">📦 <span id="txt-vista-entregas">Deliveries</span></button>
+    <button class="vista-btn" data-vista="csl">🇨🇴 <span id="txt-vista-csl">Colombia Se Levanta</span></button>
+  </div>
 
-  <div class="seccion-titulo" id="txt-titulo-comunidades">Informe de Entregas</div>
-  <div class="seccion-subtitulo" id="txt-subtitulo-comunidades">El trabajo realizado, la tabla de entregas y las fotos de cada ciudad.</div>
-  <div class="tabs-ciudad" id="tabs-ciudad-comunidades"></div>
-  <div id="comunidades-grilla"></div>
+  <div id="vista-costos-contenido">
+    <div class="ciudades-grilla" id="ciudades-grilla"></div>
+    <div class="seccion-subtitulo" id="txt-subtitulo-categorias">Each category shows how much we've been able to raise so far.</div>
+    <div class="necesidades-grilla" id="necesidades-grilla"></div>
+  </div>
+
+  <div id="vista-entregas-contenido" class="oculto">
+    <div id="comunidades-grilla"></div>
+  </div>
+
+  <div id="vista-csl-contenido" class="oculto">
+    <div class="seccion-subtitulo" id="txt-subtitulo-csl"></div>
+    <div class="csl-tabla-wrap"><table class="tabla-entregas" id="csl-tabla"></table></div>
+  </div>
 
   <div class="detalle-financiero">
     <button class="detalle-toggle" id="toggle-financiero">
-      <span class="titulo" id="txt-toggle-financiero">Ver el detalle de cada compra</span>
+      <span class="titulo" id="txt-toggle-financiero">See the detail of every purchase</span>
       <span class="flecha">▾</span>
     </button>
     <div class="detalle-contenido oculto" id="detalle-contenido"></div>
@@ -267,7 +395,7 @@
 </div>
 
 <div class="pie" id="txt-pie">
-  Pro Colombia es una iniciativa de ayuda humanitaria comunitaria. Cada compra queda registrada y verificada.
+  Pro Colombia is a community humanitarian aid initiative. Every purchase is recorded and verified.
 </div>
 
 <div class="lightbox-fondo" id="lightbox-fondo">
@@ -304,12 +432,18 @@ const TEXTOS = {
     statRecaudado: "Recaudado gracias a ustedes",
     statInvertido: "Invertido en ayuda",
     statEntregas: "Suministros entregados",
+    invertidoCiudad: "Invertido",
+    entregasCiudad: "Entregas realizadas",
     balanceTexto: "Balance disponible",
     gratitudTitulo: "💛 La ayuda está llegando",
     gratitudTexto: "Cada aporte ya se está transformando en ayuda real para las familias afectadas.",
     tituloCiudad: "Inversión por ciudad",
     subtituloCiudad: "Toca una ciudad para ver el detalle de esa zona.",
     tabTodas: "Todas",
+    vistaCostos: "Costos",
+    vistaEntregas: "Entregas",
+    vistaCSL: "Colombia Se Levanta",
+    tituloContactoCSL: "Contacto con los solicitantes",
     ciudadMeta: (pct) => `${pct}% del total invertido hasta ahora`,
     tituloCategorias: "¿En qué se está usando tu donación?",
     subtituloCategorias: "Cada categoría muestra cuánto hemos podido conseguir hasta ahora.",
@@ -341,12 +475,18 @@ const TEXTOS = {
     statRecaudado: "Raised thanks to you",
     statInvertido: "Invested in aid",
     statEntregas: "Supplies delivered",
+    invertidoCiudad: "Invested",
+    entregasCiudad: "Deliveries made",
     balanceTexto: "Available balance",
     gratitudTitulo: "💛 Help is arriving",
     gratitudTexto: "Every contribution is already becoming real help for affected families.",
     tituloCiudad: "Investment by city",
     subtituloCiudad: "Tap a city to see the detail for that area.",
     tabTodas: "All",
+    vistaCostos: "Costs",
+    vistaEntregas: "Deliveries",
+    vistaCSL: "Colombia Se Levanta",
+    tituloContactoCSL: "Contact with applicants",
     ciudadMeta: (pct) => `${pct}% of total invested so far`,
     tituloCategorias: "What is your donation being used for?",
     subtituloCategorias: "Each category shows how much we've been able to raise so far.",
@@ -383,10 +523,13 @@ function aplicarTraduccionesEstaticas() {
   document.getElementById("txt-hero-subtitulo").textContent = t("heroSubtitulo");
   document.getElementById("txt-titulo-ciudad").textContent = t("tituloCiudad");
   document.getElementById("txt-subtitulo-ciudad").textContent = t("subtituloCiudad");
-  document.getElementById("txt-titulo-categorias").textContent = t("tituloCategorias");
   document.getElementById("txt-subtitulo-categorias").textContent = t("subtituloCategorias");
-  document.getElementById("txt-titulo-comunidades").textContent = t("tituloComunidades");
-  document.getElementById("txt-subtitulo-comunidades").textContent = t("subtituloComunidades");
+  document.getElementById("txt-vista-costos").textContent = t("vistaCostos");
+  document.getElementById("txt-vista-entregas").textContent = t("vistaEntregas");
+  document.getElementById("txt-vista-csl").textContent = t("vistaCSL");
+  document.getElementById("txt-subtitulo-csl").innerHTML = idiomaActivo === "en"
+    ? `Aid requests received through the <a href="https://ColombiaSeLevanta.com" target="_blank" rel="noopener">ColombiaSeLevanta.com</a> platform, where anyone affected can ask for help and a volunteer can take it on.`
+    : `Solicitudes de ayuda recibidas a través de la plataforma <a href="https://ColombiaSeLevanta.com" target="_blank" rel="noopener">ColombiaSeLevanta.com</a>, donde cualquier persona afectada puede pedir ayuda y un voluntario tomarla.`;
   document.getElementById("txt-toggle-financiero").textContent = t("toggleFinanciero");
   document.getElementById("txt-pie").textContent = t("pie");
 }
@@ -397,8 +540,28 @@ document.getElementById("boton-idioma").addEventListener("click", () => {
   renderTodo();
 });
 
-let ciudadActivaCategorias = "Todas";
-let ciudadActivaComunidades = "Todas";
+let ciudadesSeleccionadas = new Set(); // vacío = "Todas" (sin filtro)
+let vistaActiva = "costos"; // "costos" | "entregas"
+let cslCiudadActiva = "Todas";
+let cslEstadoActivo = "Todas";
+let cslCasoBusqueda = "";
+let cslStatusActivo = "Todas";
+
+function renderVistaToggle() {
+  document.querySelectorAll(".vista-btn").forEach(btn => {
+    btn.classList.toggle("activo", btn.dataset.vista === vistaActiva);
+  });
+  document.getElementById("vista-costos-contenido").classList.toggle("oculto", vistaActiva !== "costos");
+  document.getElementById("vista-entregas-contenido").classList.toggle("oculto", vistaActiva !== "entregas");
+  document.getElementById("vista-csl-contenido").classList.toggle("oculto", vistaActiva !== "csl");
+}
+
+document.querySelectorAll(".vista-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    vistaActiva = btn.dataset.vista;
+    renderVistaToggle();
+  });
+});
 
 // =========================================================================
 // LECTURA EN VIVO DEL GOOGLE SHEET (Compras Cali / Compras Pereira)
@@ -407,10 +570,28 @@ let ciudadActivaComunidades = "Todas";
 const SHEET_ID = "1PB_Q4T7fx4lCrvhntVXObcetSNPyUT7d55EMRSfO8EM";
 const TRM_SHEET = 3100;
 
+// Descarga con anti-caché (evita que el navegador reutilice una respuesta vieja)
+// y hasta 2 reintentos, porque el endpoint de Google a veces falla de forma
+// puntual (timeout, rate limit) y un segundo intento normalmente sí funciona.
+async function fetchConReintento(url, intentos = 3) {
+  let ultimoError;
+  for (let i = 0; i < intentos; i++) {
+    try {
+      const urlSinCache = url + (url.includes("?") ? "&" : "?") + "_t=" + Date.now();
+      const res = await fetch(urlSinCache, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return await res.text();
+    } catch (e) {
+      ultimoError = e;
+      if (i < intentos - 1) await new Promise(r => setTimeout(r, 600 * (i + 1)));
+    }
+  }
+  throw ultimoError;
+}
+
 async function leerConsolidadoCompras() {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent("Consolidado de Compras")}`;
-  const res = await fetch(url);
-  const texto = await res.text();
+  const texto = await fetchConReintento(url);
   const json = JSON.parse(texto.substring(texto.indexOf("{"), texto.lastIndexOf("}") + 1));
   const filas = json.table.rows;
   const cols = json.table.cols;
@@ -470,8 +651,7 @@ async function leerConsolidadoCompras() {
 
 async function leerDonacionesRecibidas() {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent("Donaciones Recibidas")}`;
-  const res = await fetch(url);
-  const texto = await res.text();
+  const texto = await fetchConReintento(url);
   const json = JSON.parse(texto.substring(texto.indexOf("{"), texto.lastIndexOf("}") + 1));
   const filas = json.table.rows;
   const cols = json.table.cols;
@@ -502,28 +682,41 @@ async function leerDonacionesRecibidas() {
 }
 
 async function cargarDatosEnVivo() {
-  try {
-    const [consolidado, donaciones] = await Promise.all([
-      leerConsolidadoCompras(),
-      leerDonacionesRecibidas()
-    ]);
-    // Guarda el total gastado real por ciudad (ya no hay presupuesto fijo 50/50)
+  // Cada pestaña del Sheet se procesa por separado: si una falla, la otra
+  // igual se aplica. Antes, con Promise.all, un fallo en cualquiera de las
+  // dos descartaba las dos — incluyendo el monto recaudado aunque sí hubiera
+  // cargado bien, dejando el dashboard "pegado" en el valor de respaldo.
+  const resultados = await Promise.allSettled([
+    leerConsolidadoCompras(),
+    leerDonacionesRecibidas()
+  ]);
+  const [resConsolidado, resDonaciones] = resultados;
+  const errores = [];
+
+  if (resConsolidado.status === "fulfilled") {
+    const consolidado = resConsolidado.value;
     GASTADO_POR_CIUDAD = Object.fromEntries(
       Object.entries(consolidado.totalPorCiudad).map(([ciudad, cop]) => [ciudad, Math.round(cop / TRM_SHEET)])
     );
-    // Agrega los ítems reales del Sheet al detalle desplegable de cada categoría/subcategoría
     ITEMS.push(...consolidado.itemsIndividuales);
-    // Actualiza el total recaudado con la suma real de "Donaciones Recibidas"
-    TOTAL_RECAUDADO_USD = donaciones.total;
-    renderTodo();
-  } catch (e) {
-    // Si falla la lectura en vivo (Sheet no público, pestaña renombrada, etc.)
-    // el dashboard sigue mostrando los últimos valores fijos conocidos, y se
-    // muestra el error en pantalla para poder diagnosticarlo sin abrir la consola.
-    console.warn("No se pudo leer el Sheet en vivo, usando últimos datos guardados:", e);
+  } else {
+    console.warn("No se pudo leer 'Consolidado de Compras', usando últimos datos guardados:", resConsolidado.reason);
+    errores.push("Consolidado de Compras");
+  }
+
+  if (resDonaciones.status === "fulfilled") {
+    TOTAL_RECAUDADO_USD = resDonaciones.value.total;
+  } else {
+    console.warn("No se pudo leer 'Donaciones Recibidas', usando últimos datos guardados:", resDonaciones.reason);
+    errores.push("Donaciones Recibidas");
+  }
+
+  renderTodo();
+
+  if (errores.length > 0) {
     const banner = document.createElement("div");
     banner.style.cssText = "background:#CE1126;color:#fff;padding:10px 16px;font-size:12px;text-align:center;";
-    banner.textContent = "⚠️ No se pudo conectar con el Google Sheet en vivo: " + e.message + " — mostrando últimos datos guardados.";
+    banner.textContent = "⚠️ No se pudo conectar en vivo con: " + errores.join(", ") + " — mostrando últimos datos guardados para esa parte. Reintentando en la próxima carga.";
     document.body.insertBefore(banner, document.body.firstChild);
   }
 }
@@ -531,6 +724,7 @@ async function cargarDatosEnVivo() {
 // Cada entrega: { fecha, texto, ciudad, fotoUrl (opcional, base64 o link) }
 const ENTREGAS = [
   { fecha: "2026-08-13", texto: "Carolina Hernández Dagua · paquete de toallas · crema dental · cepillo dental · paños · desodorante", ciudad: "Cali", fotoUrl: "fotos/cali/cali_dagua_20260813-063130_00003283.jpg" },
+  { fecha: "2026-08-14", texto: "Entrega avivamiento Valle, colchonetas, agua, pañales y cobijas", ciudad: "Cali", fotoUrl: null },
   { fecha: "2026-08-13", texto: "Johana Labrada Cagua · 2 harinas · 2 lentejas · 4 frijoles · 3 pastas", ciudad: "Cali", fotoUrl: "fotos/cali/cali_cagua_20260813-063300_00003284.jpg" },
   { fecha: "2026-08-13", texto: "2 harina 2lenteja 3 pasta 1 pañales de 5 2 frijoles", ciudad: "Cali", fotoUrl: "fotos/cali/cali_cagua_20260813-063643_00003285.jpg" },
   { fecha: "2026-08-13", texto: "Fidelina marcillo Cagua · kit de aseo · kit me mercados · pañales etapa 5", ciudad: "Cali", fotoUrl: "fotos/cali/cali_cagua_20260813-063930_00003286.jpg" },
@@ -1144,6 +1338,376 @@ const FOTOS = [
 
 // Ayuda entregada agrupada por comunidad/barrio, generada a partir de los
 // registros de campo (nombre + ayuda entregada + foto) de los tres chats.
+// Solicitudes formales recibidas a través de la plataforma externa ColombiaSeLevanta.com
+// (código SOS). Datos reales exportados de la plataforma, con las 391 solicitudes a nivel
+// nacional. Las ciudades con menos de 3 solicitudes se agrupan en "Otras zonas" (su ciudad
+// real queda entre corchetes al inicio del campo ubicación) para no saturar las pestañas.
+const SOLICITUDES = [
+  { ciudad: "Otras zonas", codigo: "SOS-JFEJE", contacto: "Everildis mosquera", ubicacion: "[Unión Panamericana (Chocó)] Corregimiento el dos jurisdicción del municipio de Unión panamericana (Frente al colegio de san rafael el dos)", necesidades: "alimentos, colchoneta, higiene", descripcion: "Las paredes colapsadas y agrietadas sin cocinas y casa en perdida total, solo pude montar esa foto pero hay mas registros fotográficos por mostrar", requerimientos: "Materiales de reconstrucción y apoyo para arriendo", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-87QZ8", contacto: "María Elena Cardona Malagón", ubicacion: "Cra 17#13A - 81 (Casa)", necesidades: "alimentos", descripcion: "Somos 4 adultas y una niña de 7 años, el techo de la casa se cayó, las paredes totalmente agrietadas, nos evacuaron, está inhabitable", requerimientos: "Alojamiento temporal / reubicación", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Sevilla", codigo: "SOS-MYVKQ", contacto: "Valentina parra Murillo", ubicacion: "Manzana 6 casa 1 (El Pinar)", necesidades: "alimentos", descripcion: "Somos 5 personas quede sin trabajo y la casa tengo la pared del patio muy inestable", requerimientos: "Materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-DZ8H2", contacto: "Paola Tatiana Giraldo López", ubicacion: "Calle 12c número 29b-115, Apto 808 (No tengo un sitio fijo, me pueden llamar por favor)", necesidades: "ropa", descripcion: "Hola mi vivienda quedó afectada, el edificio sufrió pero se mantuvo de pie gracias a Dios, la empresa para la que trabajo me ubicó hoy en un hotel y tengo eso cubierto, lo que necesito en realidad es asesoría no sé si jurídica, ya que la copropiedad tiene seguro pero yo no, y no sé cómo debo actuar", requerimientos: "Asesoría legal", status: "Llamada", estado: "Asesorias" },
+  { ciudad: "Sevilla", codigo: "SOS-RY376", contacto: "María yuly zarate muriel", ubicacion: "Calle 63#52-20 Villa de paz (Pasando el cementerio a mano derecha así el fondo)", necesidades: "alimentos, higiene", descripcion: "Somos 3 adultos y dos niñas y la casa quedó con grietas, y también me quedé sin trabajo porque también se derrumbó el restaurante donde trabajaba", requerimientos: "Materiales de reconstrucción y apoyo económico por pérdida de empleo", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Medio San Juan", codigo: "SOS-B4UX2", contacto: "Yina Paola Velásquez", ubicacion: "Barrio comercio", necesidades: "alimentos, colchoneta, ropa", descripcion: "La casa se agrietó en paredes", requerimientos: "Materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-E8ESG", contacto: "Gladys Adriana Becerra Rodríguez", ubicacion: "[Jamundí] Km. 5 Vía Jamundí - Potrerito, Condominio Club Los Cedros, Manzana 1, Casa 6 (Al lado del Hogar Santa Catalina sobre la vía principal)", necesidades: "linterna, higiene", descripcion: "Mi casa está agrietada por dentro y por fuera, necesitamos por favor materiales de construcción (cemento, arena, varillas, pegante, estuco, graniplas, pintura, superboard, etc) para poder reparar todos los daños causados.", requerimientos: "Apoyo económico para reparación de vivienda", status: "Llamada", estado: "Dinero" },
+  { ciudad: "Cali", codigo: "SOS-D5XYZ", contacto: "Claudia García Giraldo", ubicacion: "Av Guadalupe km2.5 rancho de Efra portón azul (Finca pasando ceremonial de mascotas)", necesidades: "agua, alimentos, linterna", descripcion: "Somos 3 personas 1 adulto mayor de 96, 6 mascotas, casa con inestabilidad con daños para reformar", requerimientos: "Alimentos, agua, powerbanks y linterna", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Sevilla", codigo: "SOS-LKXWT", contacto: "Luz Yaneth Muriel García", ubicacion: "Calle 71 A casa 141 B/ popular (Atrás de la escuela por el callejón sito)", necesidades: "alimentos, botiquín, ropa", descripcion: "Mi casa quedó con paredes muy rajadas, paredes inestables", requerimientos: "Materiales de reconstrucción y alimentos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Sevilla", codigo: "SOS-9M8JT", contacto: "Enerieth papamija mosquera", ubicacion: "Carrera 45#53-64 (Casa)", necesidades: "alimentos, bebé", descripcion: "Somos 3 personas, un bb de 6 meses y un niño de 11 años", requerimientos: "Alimentación y apoyo económico para manutención de hijos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-NVZRH", contacto: "Leidy Johana Sánchez tabarez", ubicacion: "Carrera 3 #14-10 (Casa junto a un guadual)", necesidades: "alimentos", descripcion: "Somos 2 niños, 3 adultos mayores y 3 adultos, la casa se colapsó en la parte de la cocina, baño y 1 habitación; la otra parte de la casa quedó inestable e inhabitable por posible colapso", requerimientos: "Alimentación y materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-Y28LA", contacto: "Maria verónica rivas lopez", ubicacion: "[Andagoya (Chocó)] Guarapito villa españa (Esquinera)", necesidades: "alimentos, higiene, ropa", descripcion: "La casa está que se cae", requerimientos: "Sin contacto", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-R8WVV", contacto: "Jaime Sánchez", ubicacion: "MZ c casa 10 segundo piso", necesidades: "alimentos, colchoneta, carpa", descripcion: "Somos 4 personas y la casa donde vivíamos sufrió demasiados daños y nos hizo evacuar la defensa civil, además tenemos 4 gatos y dos perros", requerimientos: "Alimentos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-43HTJ", contacto: "Nelly yuliza gonsales valois", ubicacion: "[El Litoral del San Juan (Chocó)] Diagonal a la alcaldía (Diagonal a la alcaldía municipal)", necesidades: "alimentos, carpa, ropa", descripcion: "Somos 7 personas en total y nuestra casa quedó destruida", requerimientos: "Materiales de reconstrucción y alojamiento temporal", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-24LFA", contacto: "Daniela osorio bedoya", ubicacion: "M 12 casa 9 barrio turbay (Por la casa de piedra)", necesidades: "alimentos, colchoneta", descripcion: "", requerimientos: "Materiales de reconstrucción y alojamiento temporal", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-MX6HP", contacto: "Valentina Benavidez Ortega", ubicacion: "Calle 20 barrio Santa Elena #42 (Casa esquinera frente a la cancha Santa Elena Montenegro)", necesidades: "alimentos, bebé", descripcion: "Somos 6 personas, se nos cayó la mitad de la casa por lo cual no podemos estar en ella", requerimientos: "Sin contacto", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-94D26", contacto: "Reinel Gómez", ubicacion: "Barrio la Isabela mz 8 Casa 15 (Por la escuela de la Isabela)", necesidades: "botiquín", descripcion: "El segundo piso quedó destruido", requerimientos: "Materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-BKKD3", contacto: "Maria Bedoya", ubicacion: "Calle 21 #5-18 (Centro)", necesidades: "colchoneta, carpa, bebé", descripcion: "(no visible en la captura)", requerimientos: "Sin contacto", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-L8U8L", contacto: "Cristian Fernando mosquera", ubicacion: "[Istmina] Calle 24 6A-90 (Casa)", necesidades: "carpa", descripcion: "Somos 3 personas, la casa quedó agrietada", requerimientos: "Materiales de reconstrucción y alojamiento temporal", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Buenaventura", codigo: "SOS-RV76W", contacto: "Maribel", ubicacion: "Carrera 62 casa 12 barrio carmelita (Esquinera)", necesidades: "alimentos, medicamentos, colchoneta", descripcion: "Se me voló la casa, no puedo habitarla", requerimientos: "Materiales de reconstrucción y alojamiento temporal", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-MZJBG", contacto: "Yolanda Inés giraldo orrego", ubicacion: "Calle 16 bis #9a-71 torre 3 apto 401 (Conjunto residencial torres del sol)", necesidades: "agua, alimentos, cobijas", descripcion: "Tuvimos que desalojar nuestro apto, movimiento de paredes y techos, por inseguridad de los cimientos del edificio", requerimientos: "Alojamiento temporal y reposición de bienes perdidos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-VD6FH", contacto: "Martha Lucia Hernández", ubicacion: "Barrio la Isabela Mz6a#4 (Casa esquinera junto al colegio)", necesidades: "carpa", descripcion: "Somos 4 personas, la casita de nosotros se cayó totalmente en la parte de atrás", requerimientos: "Sin contacto", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Medio San Juan", codigo: "SOS-2NUR7", contacto: "Iris uvernis Hinojoza Rivas", ubicacion: "Barrio la vírgen (Casa entrada principal de la calle)", necesidades: "alimentos, botiquín, ropa, agua", descripcion: "Somos 2 personas", requerimientos: "Materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Medio San Juan", codigo: "SOS-JE34H", contacto: "Kelly Yaneth Hinojosa Rivas", ubicacion: "Barrio la virgen (Calle del medio)", necesidades: "agua, alimentos, colchoneta", descripcion: "La casa quedó averiada, se desprendieron varias paredes, el piso se partió", requerimientos: "Materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-36T3R", contacto: "Geraldin borrero", ubicacion: "Cra 95b#2d-03 melendez (Casa esquinera apartamento 103)", necesidades: "bebé", descripcion: "En mi apartamento hubieron daños estructurales, no hemos podido conseguir otro apartamento, también debido al temblor estamos sin poder laborar, no nos han pagado aún, y tenemos una bebé de 1 año (Asignado a: Marcela Arias)", requerimientos: "Pañales y apoyo económico", status: "Llamada", estado: "Resuelto" },
+  { ciudad: "Pereira", codigo: "SOS-6FQMC", contacto: "Walter hernan morales reina", ubicacion: "Carrera 1b # 45-26 (Barrio el triunfo)", necesidades: "alimentos, cobijas, ropa", descripcion: "", requerimientos: "Alimentos, cobijas y carpa", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-SF47C", contacto: "Claudia Patricia Agudelo López", ubicacion: "Conjunto Toledo (vía Condina) torre 2 apto 308 (Vía Condina)", necesidades: "ropa", descripcion: "Requiero recursos para poder pagar deuda de libre inversión que había hecho para remodelar mi apartamento, fruto de toda una vida de trabajo y que no tenía asegurado. Hoy con 60 años es difícil la recuperación de todo porque tengo lo que tenía puesto el día del terremoto", requerimientos: "Apoyo económico y alojamiento", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-M3MAL", contacto: "Darwin Diaz", ubicacion: "Pablo sexto (la 18) (Es invasión, no tiene dirección, llamar al número y coordinar la ubicación)", necesidades: "alimentos, colchoneta, bebé", descripcion: "Son 2 adultos, 2 niños, en condiciones muy mínimas, el piso es de tierra y la casa está a punto de caerse; necesitan pañales etapa #4 y leche para el bebé, y de ser posible materiales para tratar de construir un poco", requerimientos: "Materiales de reconstrucción y artículos para bebé", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Sevilla", codigo: "SOS-SDU93", contacto: "Yuri mariela bedoya valencia", ubicacion: "Calle 60A#44-79 Barrio Brasil (Casa esquinera)", necesidades: "alimentos, colchoneta, higiene", descripcion: "", requerimientos: "Materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Medio San Juan", codigo: "SOS-YWTK2", contacto: "Ludyyuliethmosqueramosquera", ubicacion: "Barrio la virgen", necesidades: "alimentos, higiene", descripcion: "Somos 3 personas, la casa quedó con varias partes del piso y pared agrietada", requerimientos: "Materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-5RXBK", contacto: "Gloria Estella Pérez González", ubicacion: "[Valparaíso (Antioquia)] Calle 10 #569 (Una cuadra arriba del comando de policía)", necesidades: "carpa", descripcion: "Soy una mujer sola y la casa donde habito es en bareque; se desprendió el techo con el sismo del pasado 10 de agosto", requerimientos: "Materiales de reconstrucción y apoyo económico", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Medio San Juan", codigo: "SOS-DN78H", contacto: "Keidy Valois", ubicacion: "Chocó (Andagoya Medio San Juan barrio guarapito)", necesidades: "alimentos, higiene, ropa", descripcion: "Somos 4 personas y nos quedamos sin fuente de ingresos porque el negocio donde trabajaba está agrietado y los dueños lo desalojaron; en mi vivienda hay grietas considerables", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-NCXUL", contacto: "Maryury Correa", ubicacion: "Mz1 cs3 la graciela miraflores (Por la cancha sintética de la graciela)", necesidades: "agua, medicamentos, higiene", descripcion: "Somos una familia de 10 personas perdimos la casa", requerimientos: "", status: "Contactado", estado: "Resuelto" },
+  { ciudad: "Dosquebradas", codigo: "SOS-H6WHK", contacto: "jovanni marin cortés", ubicacion: "VEREDA FRAILES SECTOR LA PLAYITA - PISCINANDO (Fundación rescatados por su sangre)", necesidades: "alimentos, carpa, higiene", descripcion: "20 niños, 45 mujeres y 89 hombres que perdieron su hogar een la fundación. Estamos sin techo, durmiendo en la cancha. El sustento de alimentos lo consiguen las mismas personas residentes pero no en la emergencia no tenemos sustento díario.", requerimientos: "", status: "Contactado", estado: "Resuelto" },
+  { ciudad: "Cali", codigo: "SOS-39URQ", contacto: "Marina Gutiérrez", ubicacion: "CRA 83a #15-7 (edificio negro)", necesidades: "linterna, colchoneta", descripcion: "vivía en el edificio Atalanta en cuarto de legua, después del terremoto el edifici quedó inhabitable", requerimientos: "Alimentación y transporte para movilizar pertenencias", status: "No contactar", estado: "Dinero" },
+  { ciudad: "Pereira", codigo: "SOS-FT2Q6", contacto: "Mercedes Aristizabal", ubicacion: "Corregimiento de Arabia vereda Pérez bajo (Finca yanuba)", necesidades: "alimentos", descripcion: "Material de construcción, tejas", requerimientos: "Materiales de reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Medio San Juan", codigo: "SOS-CYFQT", contacto: "Sonia Damaris Valdes Lozano", ubicacion: "Porvenir", necesidades: "carpa", descripcion: "La casa esta destruida totalmente", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-6T6NE", contacto: "Laura Sánchez romero", ubicacion: "Mañana F casa 22 (Centenario)", necesidades: "medicamentos, ropa", descripcion: "Paciente con cancer acetaminofen 500 con cafeína, enixaparina sódica 40 miligramos", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-S3WW4", contacto: "Consuelo ozorio", ubicacion: "Calle 7 #6 15 (Barrio el gaitan)", necesidades: "medicamentos, higiene", descripcion: "Insulina apidra y lantus , perdí su casa está en el resguardo de Quimbaya 78 años necesita pañales para adulto y cosas de aseo y crema hidratante", requerimientos: "Pañales para adulto Aseo Crema hidratante Medicamentos Insulina apidra y lantus", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-VMKY5", contacto: "Jimena gutierrez", ubicacion: "Carrera 6 # 24-18 (Barrio el rocio)", necesidades: "alimentos, linterna, colchoneta", descripcion: "Somos 3 esposos e hija nuestra casa está con riesgo de colapso. Perdimos parte de nuestros enceres.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-FRJYB", contacto: "Magnolia Molina", ubicacion: "Carrera 624# 14 (Barrio el Rocio)", necesidades: "alimentos, colchoneta, higiene", descripcion: "Somos 2 mi mamá y yo nuestra casa está fracturada no he podido trabajar se dañó el área de Coina y baño necesito pañal para adulto talla m tipo panti para incontinencia , kit de aseo y colcho grande para las dos . Muchas gracias", requerimientos: "Agua y materiales de reparación", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-4KKNA", contacto: "Víctor camposano", ubicacion: "Carrera 6 # 24 18 (Barrio el Rocio)", necesidades: "alimentos", descripcion: "Somos 4 pareja y dos nlñas, muestra casa se fracturó el área de baño y cocina no se puede usar yo no he podido trabajar y soy quien sustento mi familia con el diario que gano , agradezco su ayuda .", requerimientos: "Dinero", status: "Evidencia", estado: "Dinero" },
+  { ciudad: "Quimbaya", codigo: "SOS-8F83E", contacto: "Ingrid Tatiana Varela Rios", ubicacion: "Carrera 6 24#10 (Barrio el Rocio)", necesidades: "alimentos, higiene, bebe", descripcion: "Somos 3 pareja y un niño de 2 años , perdimos el trabajo se deterioro nuestra casa y estamos donde familiares agradezco alimentos cosas de aseo y pañales etapa 4 gracias", requerimientos: "Alimentos bebe aseo", status: "Evidencia", estado: "Resuelto" },
+  { ciudad: "Quimbaya", codigo: "SOS-KGTCP", contacto: "Gloria Inés patiño", ubicacion: "Calle 25# 6 11 bajos (Barrio el Rocio)", necesidades: "alimentos, medicamentos, higiene", descripcion: "Somos 2 mi esposo yo mi esposo necesita medicamento para epilepsia Levetiracetam agradecemos alimentos y cosas de higiene.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-S42ZN", contacto: "Jorge Medina", ubicacion: "Calle 25 # 6 09 (Barrio el Rocio)", necesidades: "alimentos, cobijas, ropa", descripcion: "Somos 3 pareja con una niña de 9 años agradezco ayuda de alimentos mantas y cosas de aseo nuestra casa se destruyó , estamos en uno de los cuartos pero no tenemos gas y sin techo.", requerimientos: "Comida cobijas", status: "Evidencia", estado: "Resuelto" },
+  { ciudad: "Otras zonas", codigo: "SOS-WXW9N", contacto: "Yennifer potes ibarguen", ubicacion: "[Istmina] Barrio san agustin por la pampa (2 piso al lafo de la iglecia pentecostal)", necesidades: "agua, alimentos, colchoneta", descripcion: "Somos 7 personas la casa quedo acrietada", requerimientos: "Reconstrucción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-97DML", contacto: "Fernando molina", ubicacion: "Carrera 6 #24-02 (Barrio el Rocio)", necesidades: "alimentos, higiene", descripcion: "Somos 4 la pareja y dos menores agradecemos su ayuda con alimentos ya que no tengo trabajo debido al terremoto soy el único sustento de mi familia mi casa perdió el techo y tubo daños estructurales", requerimientos: "", status: "Contactado", estado: "En proceso" },
+  { ciudad: "Otras zonas", codigo: "SOS-UTZ6K", contacto: "Rosa Murillo", ubicacion: "[Condoto] Barrio platinero (Detrás del coliseo)", necesidades: "alimentos, colchoneta, cobijas", descripcion: "De todo", requerimientos: "Alimentos linternas higiene colchonetas cobijas", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-8HE3H", contacto: "Jeiner Ibargüen lozano", ubicacion: "[Quibdó] Cabi por los desplazados (Desplazados por la entrada súper jiro en la cancha)", necesidades: "alimentos, colchoneta, ropa", descripcion: "Pues vivo con mi mujer y mi hijo de 2 años de edad y un cuñado. La casa quedó con muchas grietas y desde hay no estamos durmiendo aya y pagamos arriendo", requerimientos: "", status: "Evidencia", estado: "Dinero" },
+  { ciudad: "Santa Rosa de Cabal", codigo: "SOS-J4GDP", contacto: "Clara Ines Alvarez Pelaez", ubicacion: "Calle 12 # 13-75 Unidad Reidencial torre Bolivar Apto 301 (Esquina parque de Bolivar)", necesidades: "alimentos", descripcion: "El apartamento quedo muy averiado, esperando la evaluación oficial y me quede sin trabajo porque tengo una condición especial sindrome de joguer", requerimientos: "Reconstrucción Económica", status: "Llamada", estado: "Dinero" },
+  { ciudad: "Quimbaya", codigo: "SOS-9YS66", contacto: "Ruby Mail un alvarez", ubicacion: "Albergue el casique (Coliceo el casique)", necesidades: "medicamentos", descripcion: "Adulta de 48 años paciente crónica medicamentos propanol , empaglifozina y fluconazol.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Chinchiná", codigo: "SOS-9Y4QF", contacto: "Beatriz Orrego arias", ubicacion: "Carrera 8 #15-63 piso 1 (Costado colegio mitre)", necesidades: "colchoneta, cobijas, carpa", descripcion: "", requerimientos: "Reconstrucción de vivienda Económico", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-7QPHB", contacto: "Jaime Barbosa Alvarez", ubicacion: "Calle 3 #10b 10 Barrio Berlín (Apartamento 203)", necesidades: "alimentos, medicamentos, higiene", descripcion: "Somos mi hijo y yo", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-YELNF", contacto: "María elady Alvarez García", ubicacion: "Carrera 8 #849c (Casa al frente de agencia de madera el pinar)", necesidades: "agua, alimentos, colchoneta", descripcion: "Somos dos personas adultas", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Santa Rosa de Cabal", codigo: "SOS-QQ27P", contacto: "Ingrid Daniela González", ubicacion: "Vereda Fermín López. (Casa la ciega)", necesidades: "linterna, pilas", descripcion: "Hola. Mi situación actualmente es sobre riesgo a nivel de infraestructura en una vivienda rural. Presentamos una fractura de una viga importante. Tejado, piso, tablas, vitrinas.", requerimientos: "Reconstrucción", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-ZYT29", contacto: "Francineth López Osorno", ubicacion: "Vereda el rodeo bajo finca la carmelita (500 metros antes del puente helicoidal)", necesidades: "alimentos", descripcion: "Somos 4 personas Yo tengo enfermedad huerfana y no puedo trabajar ni salir de casa y mis dos hijos apenas llevan 6 días trabajando Se nos quebró todo lo de la cocina y se dañaron los alimentos También nos serviría alimento de perro y gato", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-RSGJY", contacto: "Johanna Andrea Parra Ceballos", ubicacion: "Amucin Mz A casa 8", necesidades: "alimentos, medicamentos, bebe", descripcion: "Cánula pediatrica de 7 metros Jeringa de alimentación Alimento keto Pañales talla m de cinta Mi hija es una niña con condición especial", requerimientos: "Leche de formula para niños Pañales (bebe hasta etapa 5) Carpas olanzapina de 5", status: "Contactado", estado: "Escalado" },
+  { ciudad: "Quimbaya", codigo: "SOS-MFMW3", contacto: "Luz Ariela velez", ubicacion: "Vereda la Carmelita - Finca Marbella (Entrada de la vereda frente a la entrada el parque los arrieros, aparece en Maps como finca Marbella)", necesidades: "alimentos, linterna, higiene", descripcion: "Somos dos personas (Madre e hijo) la vivienda está por colapsar", requerimientos: "Alimentos linternas higiene colchonetas", status: "Evidencia", estado: "Resuelto" },
+  { ciudad: "Montenegro", codigo: "SOS-XX73F", contacto: "José Alberto Caicedo Meneses", ubicacion: "Carrera 8 No. 18-09 barrio Colón (Casa de toda la esquina)", necesidades: "carpa", descripcion: "Somos una familia conformada por 5 personas (4 adultos 1 adolescente), nuestra casa sufrió graves afectaciones en el techo de la casa (se.cayo la mayoría) ocasionando daños en algunos enseres y el vehículo familiar..hace dos días una Comisión técnica nos dijo que no podíamos habitar la casa", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-ULK4K", contacto: "Hermencia trejos", ubicacion: "Mz2csa6 Luis Alberto duque parq industrial (Esquinera)", necesidades: "alimentos, higiene, ropa", descripcion: "Donde vivía sufrió daños estoy de posada", requerimientos: "Alimentos Higiene", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-AVSG5", contacto: "Beatriz Elena Londoño", ubicacion: "Marsella calle 10 n. 11-48 (Casa)", necesidades: "colchoneta", descripcion: "Somos 4 personas dos adultos mayores y nos colapso nuestro techo", requerimientos: "Reconstrucción", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-EGZPF", contacto: "Jackeline Ortiz", ubicacion: "Calarca Quindío llanitos piloto mz 18 casa 15 (Vía.puerto rico)", necesidades: "alimentos, carpa, bebe", descripcion: "Papa mamá y 4.niños.menored", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-ZSZQK", contacto: "Carolina Carmona", ubicacion: "San Marcos mz 3casa 33 piso dos (Casi al frente carnicería los amigos)", necesidades: "alimentos, higiene, ropa", descripcion: "", requerimientos: "Alimento Higiene", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-A8SZG", contacto: "Rosa Viviana González Arroyave", ubicacion: "Corregimiento de combia baja vereda la playa finca yerbabuena (Vía el Pital diagonal a la pesca deportiva los lagos)", necesidades: "alimentos", descripcion: "Somos tres adultos y una menor de edad la casa en la que estamos quedó agrietada en paredes laterales a demás de las interiores y algunos simientos principales agrietados y partes del techo undidos", requerimientos: "Materiales de construcción", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-ANXLR", contacto: "Mónica Alexandra Piedrahíta Moreno", ubicacion: "Reservas de agua bonita (Barrio Monte Prado -union torres amarillas)", necesidades: "carpa", descripcion: "Somos dos adultos de 42 años masculino y una de 34 años femenina y tres menores de edad de 15-7-5 dos femeninas y un masculino Vivía en la torre 7 Torre Toledo 708 y quedó agrietado leve pero los menores no quieren volver del trauma mi esposo y yo nos encontramos sin trabajo gracias", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-UNDLZ", contacto: "Angie valeria Guevara Lopez", ubicacion: "Manzana 11 casa 1 barrio villa del campo (Casa esquina al lado de la salsamentaria)", necesidades: "alimentos", descripcion: "Mi casa esta en excelente estado, pero mi negocio se ve afectado al no poder abrirlo por que en la zona de invico esta en riesgo, por ende no puedo generar ingresos y solucionar la comida de mi mama y mía", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-SK9NV", contacto: "Daniela Sthepania Acosta Burbano", ubicacion: "Carrera 16 N 18 53 Mejia Robledo", necesidades: "alimentos, higiene, ropa", descripcion: "Una madre y su hija, necesitan alimentos y kit de aseo, su casa quedó muy agrietada", requerimientos: "alimentos higiene Económico", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-4BF3M", contacto: "Natalia Velasco", ubicacion: "CRA 11 #9-8 corocito (Casa)", necesidades: "alimentos, higiene, ropa", descripcion: "", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-G67QE", contacto: "Claudia María", ubicacion: "AV Cóndina Km 10 Villanova del Campo BLQ 55 Apto. 201 Vereda El Cóngolo", necesidades: "alimentos, botiquin, colchoneta", descripcion: "La vía de acceso presenta hundimiento y fisuras y dentro de La P.H. hay fisuras en tres ileras de los bloques en la Vía donde están los parqueaderos. Otras comunidades no han sido apoyadas, son invasiones Catalán y Albania Baja, Comuna Ferrocarril. Acceso AV. 30 de Agosto Calle 96", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-WM8EY", contacto: "Maria Nohemy vía de Espinosa", ubicacion: "Palmacera casa 10 (La condina)", necesidades: "alimentos, colchoneta, higiene", descripcion: "Somos 2 una adulta mayor y nieto y estamos donde una familiar porque la quedo inevitable tiene muchas grietas", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-BJBXB", contacto: "Martha Yanet Gomez Florez", ubicacion: "Manzana 29 casa 6 la Cecilia etapa1", necesidades: "alimentos, higiene", descripcion: "Somos cuatro personas y la vivienda quedo muy afectada, alli no podemos dormir, ni habitar , nos dieron posada unos amigos", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-3CVDM", contacto: "Paola y", ubicacion: "Crr12 #21-49 EDF verónica (Una cuadra antes del palacio de justicia)", necesidades: "alimentos, botiquin", descripcion: "Mi edificio está muy averiado el primer y segundo piso con apartamentos en pérdida total y no sé si es avitable o no y meda miedo estar acá y no tengo dinero con que buscar casa tengo una niña de seis años y una de tres el gobernador solo vino una vez y nada más me olvido", requerimientos: "", status: "Contactado", estado: "Resuelto" },
+  { ciudad: "Pereira", codigo: "SOS-KL6KV", contacto: "Gloria yaneth ibarra", ubicacion: "Calle 7-12-32 Corocito (Una falda hacia abajo)", necesidades: "alimentos, higiene, ropa", descripcion: "Es un inquilinato y quedo con grietas nos da miedo entrar porque la cosína esta tarjada y en cualquier momento puede colapsar", requerimientos: "Alimentos Aseo", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-PKS44", contacto: "Magda Viviana toro Guzmán", ubicacion: "Barrio Gibraltar mz 7 casa 19b (Plazoleta del barrio)", necesidades: "alimentos, medicamentos", descripcion: "La casa es de madera y se nos corrió la casa y se dañó el techo y la cocina", requerimientos: "Arreglo de vivienda medicamentos (Omeprazol, naproxen, acetaminofen) alimentos", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Sevilla", codigo: "SOS-NY89K", contacto: "Ana Karina Velez Jurado", ubicacion: "Totoro vereda (Vereda Totoro fincas derrumbadas se necesita material de construccion)", necesidades: "colchoneta, cobijas, carpa", descripcion: "La vereda Totoro de Sevilla Valle quedo afectada y se require reubicar y reconstruir Todo lo que ello implica esta muy Bien y Todo comida y todo", requerimientos: "", status: "Contactado", estado: "Caso no requiere Atender" },
+  { ciudad: "Sevilla", codigo: "SOS-KT7JQ", contacto: "Carolina ortiz tabares", ubicacion: "Cra 50#60-21 (Barrio obrero)", necesidades: "alimentos, higiene", descripcion: "Somos 3 personas, yo y mis dos hijas adolescentes, soy madre soltera, tenia mi negocio soy manicurusta, mi casa q es familiar quedo muy agrietada y el techo muy dañado, tuvimos q salir de allá, ahora no tengo donde trabajar ni un lugar fijo para vivir", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-C885V", contacto: "Lorena Maritza Castro", ubicacion: "Calle 42c#5-23 (Vas esquinera blanca)", necesidades: "alimentos", descripcion: "Somos 5 personas dos de ella son niños pequeños me quedé sin empleo por el terremoto porfavor ayudenme", requerimientos: "Alimentos Aseo", status: "Contactado", estado: "Escalado" },
+  { ciudad: "Armenia", codigo: "SOS-K6M5F", contacto: "Paula Andrea alzate torres", ubicacion: "Carrera 11#16-44 barrio guayaquil (Edificio)", necesidades: "alimentos, colchoneta, cobijas", descripcion: "Somos dos quedamos sin nada", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-E7EY9", contacto: "mariela herrera", ubicacion: "CRA 19 bis 9 46 piso 1 (Pido 1)", necesidades: "alimentos", descripcion: "Viví sola , vendo puerta a puerta y no puedo trabajar por la situación actual , estoy sin dinero para comprar alimentos", requerimientos: "Alimentacion", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-4DAYZ", contacto: "Alexandra Molina", ubicacion: "Vereda mesa bja finca villa ofelia (Paruqeadero de la. Guardería canina)", necesidades: "agua, alimentos, botiquin", descripcion: "Somo 5 personas la casa quedo agrietada", requerimientos: "Alimentacion Higiene", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-LEJSP", contacto: "Alejandra Correa Herrera", ubicacion: "Carrera 2bis #14-24 (Barrio américa, cerca a la iglesia San martín de Porres)", necesidades: "alimentos, higiene, bebe", descripcion: "Somos una familia de 4 personas, mamá, papá, niña de 6 años y niño de 3 meses, nuestro techo gracias a Dios no se afectó, pero si nos encontramos damnificados porque mi esposo es proveedor del hogar y quedó sin empleo temporalmente, y necesitamos con urgencia las ayudas que estamos pidiendo, por fav", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-AP9ZB", contacto: "Adriana Herrera Jiménez Herrera Jiménez", ubicacion: "[La Unión] Calle 11 #1418 barrio Belén (Junto al edificio Polo esquinero)", necesidades: "alimentos", descripcion: "Somos 4 personas 3 adultos una niña Mi casa quedó sin techos paredes agrietadas Perdimos el negocio taller de ciclas y mi emprendimiento de desayunos sorpresa .vitrinas materiales de trabajo Muchas perdidas materiales.motos cicla electrodomésticos Nos tocó desocupar la casa😭por riesgo", requerimientos: "Materiales de reconstrucción (Tejas de estas wpc blancas, perfiles de tubo, cemento)", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-7CEBG", contacto: "Karen Betancur", ubicacion: "San Judas calle 1 18-14 (Casa de 2 pisos)", necesidades: "alimentos, linterna", descripcion: "", requerimientos: "Asesoria", status: "Contactado", estado: "Asesorias" },
+  { ciudad: "Otras zonas", codigo: "SOS-96FGF", contacto: "Dilsa Villanueva oyola", ubicacion: "[Cajamarca (Tolima)] Vereda cedral finca brillante Cajamarca Tolima (Calle 10 numero 6 30 barrio centro Cajamarca)", necesidades: "carpa", descripcion: "Con el temblor a Mi mamá sele a grito la casa y esta daliada esta que se cae en la vereda el cedral finca brillante en Cajamarca Tolima contadtar a dilsa Villanueva", requerimientos: "Materiales de reconstrucción", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-QQSKD", contacto: "Anyi Marcela Bonilla Riaño", ubicacion: "Carrera 24 bis # 73-81 barrio coliseo por la Juan 23 (Más abajo del el parque los leones al frente del hotel)", necesidades: "alimentos, higiene", descripcion: "Soy madre soltera de 2 niños vivimos los 3 no e podido salir a trabajar ya que el lugar donde trabajo está en reparación", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-P6MD7", contacto: "Paola Andrea Moncada Acevedo", ubicacion: "Rocio alto casa 130 (En diagonal de la ferretería de Don julio)", necesidades: "alimentos, cobijas, higiene", descripcion: "Hemos quedado en la interperie , todo el techo de la vivienda colapso y parte de las paredes. Hemos quedado para empezar de cero.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-LPT7Q", contacto: "Paola Andrea alvarez", ubicacion: "Barrio terranova el alba m e casa 20 (Junto a la tienda)", necesidades: "alimentos, carpa, higiene", descripcion: "Trabajaba vendiendo chuzos soy discapacitada de una rodilla tengo 69 años pago arrendo y somos 4 y no hay forma de trabajar a la casa no le paso nada pero el trabajo senos daño ya que no se puede sacar venta ya", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-PEWXN", contacto: "Adriana sabogal", ubicacion: "Calle 25 12 22 barrio Rincon Santo (Casa cafe)", necesidades: "alimentos", descripcion: "Mi esposo quedo sin trabajo y el es quien sustenta el hogar de alimentacion", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Santa Rosa de Cabal", codigo: "SOS-M4HBH", contacto: "Dora elsy cardona", ubicacion: "Cra 9# 17-43 (Casa esquinera)", necesidades: "alimentos", descripcion: "Somos 3 personas nos sacaron del apto oolo con ropa todas las pertenencia quedaron en el apto q esta afectado", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Sevilla", codigo: "SOS-YZZSM", contacto: "Luz anyeri agudelo marin", ubicacion: "Calle 56 # 51-14 barrio el carmen (Alfrente de colanta)", necesidades: "alimentos, medicamentos, bebe", descripcion: "Soy madre soltera tengo una bebê de 6 meses vivo con mi tia y mi primo mi tia es cieguita", requerimientos: "Alimentos Higiene Medicamentos para Asma Bebe pañales etapa 4", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Santa Rosa de Cabal", codigo: "SOS-GUVHV", contacto: "LILIANA GARCIA MONTOYA", ubicacion: "Vereda San Ramón hostal la cabaña (A 500 metros de termales Arbeláez)", necesidades: "agua, alimentos, higiene", descripcion: "El edificio donde vivimos 2 adultas y 2 mascotas hubo que evacuar Estamos con algunas cosas acá", requerimientos: "Aseo higiene alimentos", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Buenaventura", codigo: "SOS-5GHB8", contacto: "Azucena  Zuluaga", ubicacion: "Crra 16 #3B-52 (Santa Rosa parte alta)", necesidades: "agua, linterna, pilas", descripcion: "Somos un edificio donde vivimos alrededor de 15 personas quedó totalmente averiado con muchísimas afectaciones, se dañó pero aquí estamos", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-54KBS", contacto: "Leidy. jhoana Rodríguez Hernández", ubicacion: "Barrio nuevo Berlín mz 8 cz 6 (Casa esquinera alpie de la plasoleta)", necesidades: "alimentos", descripcion: "Somos 3 y estamos sin trabajo y no tenemos ni pagar arrendó ni comida", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-5EMM6", contacto: "Overth tabares tabares", ubicacion: "[Anserma (Caldas)] Finca el divino niño, vereda Marapra (Vereda Marapra 200m después del puesto de salud)", necesidades: "agua", descripcion: "A raíz del terremoto perdimos nuestra vivienda", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-2FG26", contacto: "Yhoana Andrea Valencia", ubicacion: "Asentamiento santa María Miranda Cll34 #3124 (Alá cuarta casa del colegio la cuyabra)", necesidades: "alimentos, colchoneta, cobijas", descripcion: "Dos personas y cuatro niños", requerimientos: "", status: "Contactado", estado: "Resuelto" },
+  { ciudad: "Dosquebradas", codigo: "SOS-C8TPN", contacto: "Maria Gloria Lopez", ubicacion: "Calle 46 # 19-57 san Fernando Dosquebradas", necesidades: "alimentos, medicamentos, higiene", descripcion: "Son dos personas una con movilidad reducida desafortunadamente la casa por el terremoto debe ser demolida , la casa es de tres pisos q estaban en renta lo cual era el sustento económico y en el Primer piso ello vivían y había una tienda q hacía parte del sustento , pero la casa quedó muy afectada", requerimientos: "Alimentos Pañal adulto talla M Pañitos húmeros Losartan de 50ml", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-RPQH2", contacto: "Andrea Carolina Guerrero Salcedo", ubicacion: "Manzana A casa 19 las violetas (Primer piso portón marrón al lado del apostar calle principal)", necesidades: "alimentos", descripcion: "Soy madre cabeza de hogar tengo 3 hijos ( 2 de ellos de 7 y 5 años de nacionalidad colombiana) y por el terremoto estoy sin trabajar, soy extranjera y no tengo familia aquí para apoyarne Ojo la casa dónde me arriendo no está afectada", requerimientos: "", status: "Contactado", estado: "Caso no requiere Atender" },
+  { ciudad: "Armenia", codigo: "SOS-MS7AK", contacto: "Kelly Jesenia Gil Martinez", ubicacion: "Calle 30 # 60 15 urbanización villa Cecilia torre 5 202 frente a mercar (Frente a mercar)", necesidades: "botiquin, bebe", descripcion: "Hola somos 4 personas dónde incluyo un menor de edad y una adulta mayor con alzahimer dónde mi situación estructural no está tan mal pero estoy sin trabajar ya que vivo de las ventas solo pido ayuda porfavor con pañales para adulto talla L y suplementos vitamínicos como glucerna o Ensure o otro.", requerimientos: "", status: "Contactado", estado: "Resuelto" },
+  { ciudad: "Chinchiná", codigo: "SOS-ZAWJK", contacto: "Andres Munoz Test", ubicacion: "123 Ave", necesidades: "agua, alimentos, botiquin", descripcion: "", requerimientos: "", status: "Llamada", estado: "Caso no requiere Atender" },
+  { ciudad: "Manizales", codigo: "SOS-6LYS5", contacto: "Sandra Paola Orozco", ubicacion: "CR 11 # 15 145 BL 4A AP 602 Conjunto Habitacional Campohermoso (Portería 2)", necesidades: "agua, alimentos, higiene", descripcion: "Somos un hogar conformado por mamá y dos menores de 5 y 14 años. Tenemos una mascota que es un gato. El Edificio sufrió serias afectaciones, al igual que todo el apartamento por lo cual tuvimos que ser evacuados.", requerimientos: "higiene alimentos", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-5A239", contacto: "Lady Jhoana Patiño", ubicacion: "Barrio popular calle 32 27 casa 62 B (Vas de esterilla)", necesidades: "alimentos, carpa", descripcion: "Mi casa está en alto riesgo agrietada,,estoy mal de salud quiero q me envíen ayudas por acá nadie a venido gracias", requerimientos: "Económico Comida Agua", status: "Evidencia", estado: "Resuelto" },
+  { ciudad: "Armenia", codigo: "SOS-J8H5L", contacto: "Paola Andréa Domínguez Barrios", ubicacion: "Manuela Beltrán (Manzana E7)", necesidades: "alimentos", descripcion: "Simós cuatro personas la casa quedó destrozada y tocó salír", requerimientos: "Económico", status: "Llamada", estado: "Dinero" },
+  { ciudad: "Pereira", codigo: "SOS-9CK63", contacto: "John Fredy Restrepo Araque", ubicacion: "Vereda la miranda, municipio marsella (Caserío la miranda)", necesidades: "alimentos, botiquin, colchoneta", descripcion: "Casa con averias paredes y techo, obstrucción total de cañerias de aguas negras en la casa hay menores de edad y animales", requerimientos: "Alimentos Higiene Reconstrucción (Zinc, cemento, ladrillos, tuberías PVC 4 pulgadas)", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Pereira", codigo: "SOS-R4NSH", contacto: "Blanca liliana molina Vásquez", ubicacion: "Cll 12 # 840 parque la libertad (Casa)", necesidades: "alimentos, bebe", descripcion: "5 adultos una bebe", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-NZW6C", contacto: "Jessica Duque", ubicacion: "Casa 11#12 barrio turbay Ayala (Por un parquesito por las arepas de doña Marta)", necesidades: "alimentos, botiquin, carpa", descripcion: "Tengo un niño con discapacidad y mi casa está que se cae por lo cula tengo que desocupar y no tengo para donde irme entonces me quedo en la casa mientras el niño duerme en otra parte", requerimientos: "Económico Medicamentos para fiebre - inhaladores - mantiene con rinitis", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Otras zonas", codigo: "SOS-UEU3N", contacto: "Amparo Marín y Álvaro Marín", ubicacion: "[Calarcá] Carrera 21 # 36-40 Barrio San José (Bajando una faldita puerta de reja tocarla fuerte I llamar a doña Amparo o don Álvaro fuerte ya que viven para adentro hacia el fondo muy escondidos.)", necesidades: "alimentos, colchoneta, carpa", descripcion: "Dos personas adultos mayores de escasos recursos en vivienda de esterilla que se derribó por el sismo. Les recomendaron desalojar por quedar inhabilitable. No tienen donde ir y su única oportunidad es volver a construir en un lote de tierra de enseguida.Solicitan todo tipo de material construcción", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-52CEX", contacto: "Kateryne Rico", ubicacion: "Cambulos de molinos manzana 5 casa 9 piso 1 (Frente a conjunto villalon)", necesidades: "medicamentos", descripcion: "Somos 4 personas mi esposo es paciente renal crónico con diálisis peritoneal una bebe de dos meses de edad y una niña de 7 años y mi persona la casa tuvo grietas no estamos en la calle pero perdimos el trabajo en esta oportunidad pido ayuda de dos medicamentos valsartan de 160mg y carvedilol de 25mg", requerimientos: "Medicamentos - Espironolactona 25 mg - Valsartán 160 mg - Levofloxacina 25 mg - Carvedilol 25 mg - Rosuvastatina 40 mg Alimentos", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Dosquebradas", codigo: "SOS-QYY8A", contacto: "Efrainmoscoso", ubicacion: "Conjunto el refujio casa 75 (Casa junto a laa virgen)", necesidades: "alimentos", descripcion: "", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-MGBTW", contacto: "Erika Bibiana Ibarra", ubicacion: "Manzana 18 casa 2 Monserrate villa Santana (Tubo de agua de Monserrate)", necesidades: "alimentos, higiene", descripcion: "Nosotros vivimos en una invacion y la casa se nos partió a la mitad y una de ellas se está llenado por un barranco vivo con mi esposa y dos hijos uno de 14 años y una niña de 4 años mi esposo está Desempleado hace más de dos meses y sufre de la precion y yo trabajaba tuvo averías el edificio", requerimientos: "Medicamentos Mercado Higiene", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-4J4BQ", contacto: "Cristian Vargas", ubicacion: "Panorama 1 .Manzana 8 casa 10 (Por las escaleras ,son unos bajos... casa De Madera)", necesidades: "alimentos, higiene, ropa", descripcion: "Somo 3 personas,El terreno donde esta nuestra casa quedo debil e inestable ,en riesgo y ademas ninguno tenemos empleo. NO ME CARGARON LAS FOTOS..Dios los bendiga", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-P7CGL", contacto: "Italo arnoldo  gutierrez zuñiga", ubicacion: "Barrio villa inglesa mz C casa 19 (Casa de esquina 3 pisos blanca con portón negro y rejas negras)", necesidades: "alimentos", descripcion: "Tengo grietas en el apartamento", requerimientos: "Económico", status: "Llamada", estado: "Dinero" },
+  { ciudad: "Pereira", codigo: "SOS-TCYHP", contacto: "Daniela Diaz", ubicacion: "Manzana 10 casa 43bello horizonte (Esquina)", necesidades: "alimentos, higiene", descripcion: "Los afectados somos 3 y estoy en la casa de mi mamá acá hay muchas personas", requerimientos: "Alimentacion Higiene", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-RYRTN", contacto: "Diana Milena Ruiz torres", ubicacion: "Cr5#7-20 (Casa antigua de patrimonio, por toda la quinta)", necesidades: "alimentos, carpa, higiene", descripcion: "Dónde vivimos que también es nuestra fuente de ingreso, para mí y mis dos hijos nos quedamos sin nada, no tiene casa, se calleron las paredes otras en riesgo", requerimientos: "alimentos, carpa y colchonetas", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-RTJGA", contacto: "Norbey Bonilla", ubicacion: "[El Águila] Barrio asprodica calle 3 # 3 .23 (Entrada para la pista de motos)", necesidades: "alimentos, botiquin, linterna", descripcion: "Somos 5 personas la casa quedó sin techo con grietas y se calleron dos paredes", requerimientos: "Materiales para reconstrucción (Zinc, cemento, varilla corrugada, ladrillos)", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-XNCSP", contacto: "Juan David foronda marin", ubicacion: "Calle 12 cra 8 esquina (Residencias la 12)", necesidades: "colchoneta, cobijas, carpa", descripcion: "Somo una pareja de trabajadores informales nos dedicamos a la venta de dulces en los buses en el paradero de el transporte hacia Santa Rosa residiamos en la residencias la doce y colapso el hotel agradecemos la ayuda perdimos la ropa y los documentos además de otros enceres", requerimientos: "Alimentacion Higiene", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-R4ZKR", contacto: "Sara Lucía restrepo", ubicacion: "Barrio las colinas manzana 1 sector 9 casa 54 (Una cuadra antes de la invasión)", necesidades: "alimentos, higiene", descripcion: "Somos 5 personas que vivimos en casa arrendada y perdimos el empleo uno de mis hijos salió hace poco del ejército tenemos que entregar la casa porque nos pudieron la casa los dueños vinieron recogieron areglaron y pintaron una pared y que necesitaban la casa porque donde ellos vivían se cayó", requerimientos: "Alimentacion Higiene", status: "Evidencia", estado: "Resuelto" },
+  { ciudad: "Otras zonas", codigo: "SOS-29YCE", contacto: "Tatiana Carolina Alvarez Cardona", ubicacion: "[Ansermanuevo] Ansermanuevo valle barrio salazar bajo ca 066 (En la segunda Y toda la esquina, depues de la cañada al frente del segundo reductor de velocidad)", necesidades: "alimentos, colchoneta, higiene", descripcion: "Solo 4 personas en la casa, se le cayó completamente nuestra vivienda", requerimientos: "Materiales para reconstrucción (cemento, varilla, arena)", status: "Contactado", estado: "Escalado" },
+  { ciudad: "Armenia", codigo: "SOS-NEZVK", contacto: "Paula Andrea López", ubicacion: "Conjunto residencial Santa Sofía bloque 4 apto 433 (La pavona)", necesidades: "alimentos, ropa", descripcion: "Soy madre cabeza de hogar con 2 hijos a cargo 7 y 15 años y 1 perrito ese es mi núcleo, me dedico a la belleza y no eh tenido ingresos está semana por lo que estoy requiriendo alimentación mañana es mi cumpleaños así que cualquier ropita en buen estado la recibiré con agrado 🙏🏻✨ soy talla L", requerimientos: "Alimentacion Aseo Comida perro", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Armenia", codigo: "SOS-7QED7", contacto: "Jennifer Tatiana Echeverri", ubicacion: "Urbanización Manantiales etapa 1 manzana B casa 7 primer piso (Casa)", necesidades: "botiquin, cobijas, carpa", descripcion: "Somos 3 personas el apto donde vivíamos se vio afectado y nos tocó salir logramos encontrar esta casa de urgencia", requerimientos: "Alimentacion Aseo", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Armenia", codigo: "SOS-MQ2JX", contacto: "Andres mauricio Zuluaga londoño", ubicacion: "Carrera 13 # 10 -53 a (Barrio buenos aires Detrás del exito cristal)", necesidades: "botiquin, bebe, ropa", descripcion: "Somos solo y adultos y tres niños la casa quedó con grietas en las paredes en la cocina presentamos averías actualmente estoy desempleado debido a un despido injustificado soy el que sostiene la casa me sería de gran ayuda que pudieran colaborarme en algo", requerimientos: "alimentos, ropa & medicamentos - acetaminofen para los niños botiquin gasas pito y demas", status: "Evidencia", estado: "Resuelto" },
+  { ciudad: "Armenia", codigo: "SOS-K2NZB", contacto: "Gustavo Castro", ubicacion: "Manzana 9 casa 127 barrio bosques de pinares (Tercer callejón detrás de la panadería)", necesidades: "alimentos", descripcion: "1 sola persona quedé sin trabajo porque hubo daños donde trabajaba", requerimientos: "Compra viga", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-FB3AK", contacto: "Alexánder valencia arango", ubicacion: "MZ F casa 8 piso 1 barrio Vallarta la badea (Por la panadería)", necesidades: "alimentos", descripcion: "", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Alcalá", codigo: "SOS-HJG4Z", contacto: "Yenny esmeralda Marin", ubicacion: "Cra 10 # 4-38 tercer piso (Apartamento)", necesidades: "alimentos, higiene", descripcion: "Vivimos mi madre mi hermano discapacitado mi hija menor de edad y yo. Somos arrendatarios, este apartamento quedó en alto riesgo y sin techo apenas se está arreglando un poco. Soy el único sustento de mi familia y he quedado sin trabajo, necesito apoyo para buscar un lugar seguro para mí familia y p", requerimientos: "Alimentacion", status: "Evidencia", estado: "Dinero" },
+  { ciudad: "Dosquebradas", codigo: "SOS-SCJWJ", contacto: "Mónica Patricia Restrepo Ramírez", ubicacion: "Calle 23 #32a-56 (Pradera Alta conjunto la Castilla manzana 7 casa 15)", necesidades: "alimentos, botiquin, linterna", descripcion: "Somos 4 personas , gracias a Dios estamos bien, pero por lo sucedido mi esposo no puede salir a trabajar, pues ahora las calles están colapsadas, ni hay vías el trabajaba Uber", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Alcalá", codigo: "SOS-H9C8Q", contacto: "Wilson de Jesús Marín", ubicacion: "Saman 2 invasión casa 45. Primer piso (Entra por el callejón y cuenta aproximadamente cinco casas hacia adentro)", necesidades: "alimentos, higiene", descripcion: "Somos cuatro personas mi hija de tres años mi mujer un tío discapacitado y yo. Mi casa está en riesgo y soy el único sustento de esta familia. Temo por la seguridad de todos aquí debido a la afectación de esta vivienda. He quedado sin trabajo y nadie ha venido a verificar mi caso", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-GL7U6", contacto: "Mercedes", ubicacion: "Carrera 5 -17-77centro (Frente a la pataconery)", necesidades: "alimentos, higiene", descripcion: "Somos 10 personas , porque acogimos una familia de 5 personas y todos que damos sin empleo a causa de los daños", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-LYSV8", contacto: "angela clemencia ramirez marin", ubicacion: "carrera 11bis #11b32 barrio san jose (casa)", necesidades: "linterna, colchoneta, carpa", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-BRVD2", contacto: "Mauricio Puerto Ramos", ubicacion: "CRA 9 #34-19", necesidades: "agua, medicamentos, pilas", descripcion: "Nuestro apto quedó inhabitable CRA 8 #23-40 centro estamos quedando en la casa de mi hermana y la dirección que dejó es donde guardamos la ropa que alcasamos a sacar. Las pastas que requieren son METROPOLOL de 50 MG Sentralina de 100 MG Ácido aceticilico. pilas grandes para radio tel (2)", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-D2FVW", contacto: "María Leonia Rivera", ubicacion: "Carrera 16 número 49 19 (Barrio los naranjos)", necesidades: "alimentos, medicamentos", descripcion: "Mi esposo tenía un local de verdura y la casa va a ser demolida era nuestro sustento", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-Z5NP2", contacto: "Neftali osorio", ubicacion: "Carrera 15# 19-34 BARRIO Olaya Herrera", necesidades: "agua", descripcion: "Personas que nos ayuden a desocupar", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-7BZEQ", contacto: "Francia florez", ubicacion: "Calle 2N##17-21 nueva cecilia (Diagonal a Oro pan)", necesidades: "alimentos, botiquin, higiene", descripcion: "Somos 2 personas el apartamento quedo sin poderse vivir en el", requerimientos: "Mesas donde poner sus maquinas para poder trabajar y ayuda para encontrar un lugar", status: "Evidencia", estado: "Dinero" },
+  { ciudad: "Manizales", codigo: "SOS-7CE3Z", contacto: "Angela Perez", ubicacion: "Cll 17 # 14 33 barrio las américas (Frente ala tienda de Noemí)", necesidades: "alimentos, carpa, higiene", descripcion: "Yo vivía en Dosquebradas Pero me tocó buscar para donde venirme a Manizales por qué no nos albergaron y tampoco tenía para conseguir un arriendo en el momento me encuentro en una casa con lo poquito que tengo y con mi hijo de 4 años la situación es muy dura y compleja por qué estamos sin tener vivie", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-X6S4K", contacto: "Ana Elizabeth Sotelo Torres", ubicacion: "Edificio Santa Maria apto 302 (Estación de servicio entrada de Armenia)", necesidades: "alimentos", descripcion: "2", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-4YAL4", contacto: "Luis Fernando Gallego", ubicacion: "Carrera 11 #13-59 (Por el éxito vuctoria calle 14)", necesidades: "alimentos, higiene", descripcion: "1 persona la casa esta destruida, requiero mercado para hacer comida e implementos de aseo personal, por este sector no llega nadie con este tipo de ayudas y los vecinos tambien necesitan", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-QQJV5", contacto: "Mauricio Perez", ubicacion: "Mz14 detrás de la casa6 barrio Portal de Pinares (Por el callejón de la casa esquinera de la mz 14)", necesidades: "alimentos, carpa", descripcion: "La cada quedó muy averiada", requerimientos: "Tejas eternit teja de zinc", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-F88TV", contacto: "Elcy Milena Giraldo", ubicacion: "Carrera 18 57-33 (Conjunto terrazino)", necesidades: "alimentos, carpa", descripcion: "Somos 5 personas vivienda con pérdida total", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-PBV7L", contacto: "Adriana Patricia melan valencia", ubicacion: "Málaga baja frente alas manzanas 4 y 5 invasión (Es una esquina en el guadual)", necesidades: "alimentos", descripcion: "Soy una mujer de 57 años y mi esposo de 56 años el es discapacitado si me pudieran ayudar con vivienda ya que no contamos con recursos", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-8CF92", contacto: "Nidia Duque Patiño", ubicacion: "Altagracia vereda rincón Santo recreo dos (La casa de todos.)", necesidades: "linterna, pilas, carpa", descripcion: "Domos 3 personas la casa quedo Destruida", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-JSSY4", contacto: "Luz Stella Loaiza Osorio", ubicacion: "Quintas de jardín colonial (Torre 4 apto 401)", necesidades: "agua, alimentos, higiene", descripcion: "Somos 3 adultos,el apartamento no es habitable estamos evacuados,el edificio está para demolición", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-KZS73", contacto: "Deicy Perez Millan", ubicacion: "Calle 5 13 52 segundo piso (Altos de Caldas Licores)", necesidades: "alimentos", descripcion: "Somos 2 personas adultos mayores Yo tenia un taller de costura que era mi sustento y todo se daño por un bloque de cemento que cayo del edificio de enseguida", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-2PZ6R", contacto: "Rubiela rojas", ubicacion: "[Versalles] Carrera 2 # 10 42 (Barrio guayabito)", necesidades: "carpa", descripcion: "Destruccion total de la casa, cualquier ayuda de materiales de contruccion nos seria buena. Gracias", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-NTNMN", contacto: "Edith Xiomara Contreras Ramirez", ubicacion: "Diagonal 29 a (Santa Isabel)", necesidades: "alimentos, botiquin, medicamentos", descripcion: "Buen día espero q usted y los suyos estén bien, 🙏🏾 luego d los terremotos en Venezuela tome la desicion d ir por mi hijo de 10 años q vivía en Caracas, devolví con el gracias a Dios pero dsd qbdevolví no he tenido trabajo, d verdad las responsabilidades han sido muy duro", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-SWWQK", contacto: "Nasly Gonzalez", ubicacion: "Vereda laguneta via Pereira Armenia sector el pesebre (Mi casa queda Serca a la escuela laguneta via Pereira Armenia)", necesidades: "alimentos", descripcion: "En mi casa se dañó varias hojas de sin, y el techo de mi cosina y sala se dañaron algunas , la estructura era en guadua y se partieron , se debe cambiar .", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-XY5S4", contacto: "gloria mercedes marim correa", ubicacion: "[Guática] vereda sirguia alta finca la merced (entrada el diamante)", necesidades: "colchoneta, carpa, higiene", descripcion: "la casa se nos va a desplomar estamos durmiendo afuera en la interperie ya q no hemos recibido ayudas humanitarias nos tienen olvidados", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-8WVQN", contacto: "Alexander quintero Giraldo", ubicacion: "Calle 18 Norte #3n25 (Edificio)", necesidades: "alimentos, ropa", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-EEAAC", contacto: "Andrea londoño zuluaga", ubicacion: "Parque infantil Lara Bonilla (Parque infantil Lara Bonilla MZ G casa 8)", necesidades: "alimentos, higiene, bebe", descripcion: "Somos 6 personas", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-89X58", contacto: "Jhon Fredy Duque Quintero", ubicacion: "Corregimiento de Arabia, parque central (Parque central)", necesidades: "alimentos, higiene, ropa", descripcion: "Son varias familias las afectadas que debimos de dejar nuestras viviendas", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-T9XTF", contacto: "Oscar david mesa", ubicacion: "Manzana 24 casa 18 campestre C (Casa)", necesidades: "medicamentos", descripcion: "Soy paciente vih no tengo medicamentos", requerimientos: "Formula de medicamentos VIH", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-9ZKR5", contacto: "Luisa fernanda marin tangarife", ubicacion: "Carrera 4 n 42 c 20 (Barrio las palmas)", necesidades: "agua, alimentos, higiene", descripcion: "Somos dos adultos que quedamos sin trabajo, tenemos los servicios básicos cortados, la estructura de la casa está dañada y no nos han censado", requerimientos: "Pagar servicios que no tienen con que pagarlo Alimentos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-8FTKL", contacto: "Jennifer Martínez Rodríguez", ubicacion: "MZ 1 Cs 22 campestre c (Tercer casa puerta negra(los bajos) después de la esquinera bonita..)", necesidades: "alimentos, higiene", descripcion: "Somos mi hijo y yo . Me veo afectada ya que los edificios donde trabajaba en el centro están desalojados y por esto no he podido trabajar.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-VQFNQ", contacto: "Maria del pilar gutierrez", ubicacion: "Mz 1 casa 56 bosques acuarela etapa 4 (Supermercado la moneda)", necesidades: "linterna", descripcion: "La pared del frente de la casa se daño, la puerta no cierra y estamos durmiendo con la puerta ajustada. Necesitamos una manito para poder arreglar la pared y la puerta", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-XBHQP", contacto: "Luz fanny Velasquez", ubicacion: "[Filandia] Barrio el mirador casa84 (Casa al final de todas las manzanas entrada a la izquierda.)", necesidades: "carpa", descripcion: "Realmente se necesita ayuda para la vivienda", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-LWDM6", contacto: "Martha Elena Cadavid Granada", ubicacion: "Calle 30 #15 urbanización la Alhambra manzana E casa 4 (Via a Montenegro entre el jeepao y Cooburquín)", necesidades: "alimentos, linterna, pilas", descripcion: "Somos dos personas, la casa se afectó en las tejas, caballetes de eternit y creemos también el alcantarillado interno, hay una corniza débil, somos independientes y el trabajo está muy frenado", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-QNN9J", contacto: "Jorge eduardo navarrete", ubicacion: "Carrera 31 # 82-14 casa 6 barrio perla del sur (Diagonal al colegio Carlos eduardo vasco de perla del sur)", necesidades: "alimentos, carpa", descripcion: "Somos cuatro personas 2 niños y dos adultos los niños nos toco mandarlos para donde un familiar", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-UT2DX", contacto: "Monica yulied toro", ubicacion: "Manzana 22 casa 6 barrio la isla (Alfrente de una cancha sintetica)", necesidades: "alimentos, higiene, ropa", descripcion: "Somos dos personas nos quedamos sin empleo y trabajabamos al diario gracias a Dios estamos bn solo estamos escasos de alimentos y de aseo", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Santa Rosa de Cabal", codigo: "SOS-HHZWZ", contacto: "Luis miguel londoño franco", ubicacion: "Calle 30A # 11B 04 (Casa esquinera)", necesidades: "alimentos, higiene", descripcion: "Somos 2 adultos y una niña de 2 años y medio", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Buenaventura", codigo: "SOS-Z5QRR", contacto: "Oscar marino sanchez franco", ubicacion: "Carrera sexta #1-11 centro (A lado de la tienda)", necesidades: "alimentos", descripcion: "Somos 4 personas y el edificio donde vivíamos quedo amuy afectado por el terremoto y nos tocó evacuar por el momento estamos enojados temporalmente donde alguien que nos brindo refugio temporalmente", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-ZKMZT", contacto: "Fernanda agudelo", ubicacion: "Mz 29 casa 11 las brisas (Casa esquinera. Al frente de la panadería 24 horas)", necesidades: "alimentos, bebe", descripcion: "Somos 5 personas, 3 niños de 8 años, 5 años y una bebé de 25 días de nacida. Mi esposo trabajaba al día a día en un restaurante y se quedó sin empleo. El cual era el sustento diario.", requerimientos: "Pañales alimentación", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-TZWJP", contacto: "Marina Ramirez Vasquez", ubicacion: "Cra 11 bis # 38-97 bloque 2 apto 501 (Patagonia mía restaurante)", necesidades: "alimentos, medicamentos", descripcion: "Vivo con mi hijo, fue a laborar el primer día pero el edificio se callo, me encuentro sin alimentos", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-JA7Z2", contacto: "Génesis maxbel Baez Duarte", ubicacion: "Mz 17 cs 8 sector e parque industrial (Por el parqueadero o el colegio boquia)", necesidades: "alimentos", descripcion: "Somos 4 personas,entre ellas un adulto mayor y una niña de 7 años Las otras 2 personas quedamos sin empleo debido al que edificio cerca donde trabajamos está que colapsa,no podemos trabajar así . Mi casa no tuvo daño ni afectaciónes no tiene grietas .", requerimientos: "Alimentacion Higiene", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-WX3AA", contacto: "Elías londoño", ubicacion: "Calle 25C No 21-15 (Casa)", necesidades: "medicamentos", descripcion: "En Pereira, una chica de la tropa scout requiere este medicamento, se Les agradece a este número se Comunican con quien lo requiere . Mil gracias", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-VAHVP", contacto: "Melany ortiz", ubicacion: "Conjunto el cielo bloque 1 apto 108 (Puerto espejo frente a chilacoa)", necesidades: "bebe", descripcion: "Somos tres personas pero en especial mi hija Hellen necesita ayuda con pañalitos cositas de aseo", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-KG5MP", contacto: "Maria zoraida ramos aguirre", ubicacion: "Paraíso bajo puente la soledad (En el puente vía quimbaya filandia puente la soledad)", necesidades: "colchoneta", descripcion: "Necesitamos un tanque para reservar agua por que nuestra agua es de nacimiento y senos daño", requerimientos: "Tanque de reserva para almacenar agua 500L", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-PJRKG", contacto: "Alexander bedoya", ubicacion: "Manzana 18a número 12 atras (Frnte a la plazoleta del colegio gustabo Matamoros)", necesidades: "alimentos", descripcion: "Somos 3 personas la casa esta muy averida y es de madera neaecito como organizar por q estoy fuera de mi vivienda", requerimientos: "perfiles, 6 tejas 6m y hojas de superboard Alimentacion e higiene", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-FACC5", contacto: "Laura Valentina Barrera Gutierrez", ubicacion: "Mz 10 cs 18 samaria 1 (Por el control de buses)", necesidades: "alimentos, linterna", descripcion: "Por causa del terremoto, min lugar de trabajo es en centro por el cuál me finalizaron el contrato y yo era el sustento de mi casa . En realidad a mi casa no le pasó nada y mi familia está bien pero se agotan los recursos económicos. Dios los bendiga y gracias.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Manizales", codigo: "SOS-VEXKY", contacto: "Rocío Franco López", ubicacion: "Calle 17 # 32-71 Barrio El carmen (Tercer Callejon)", necesidades: "alimentos, medicamentos, higiene", descripcion: "Somos 3 personas, yo trabajo en un puesto de tintos en la 19 y no he podido ir en estos días a trabajar para poder traer el alimento a mi familia,", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-VUACC", contacto: "Anyeli García Aragón", ubicacion: "Cl. 62B #1A9-365 sector 1 agrupación 4 torre B apto 4B44 urbanización los chiminangos II (Diagonal a la olímpica de Barranquilla)", necesidades: "alimentos, botiquin, pilas", descripcion: "4 personas, estamos durmiendo en carpas, el apartamento quedó agrietado ya lo inspeccionaron y está inhabitable", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-UKF5L", contacto: "Jhoanna Jaramillo", ubicacion: "Elvira etapa 3 mz 1 #4 2 piso (Sobre la variante,esquinera)", necesidades: "alimentos, higiene", descripcion: "Somos 2 adultos 2 menores, estamos sin trabajo y necesitamos alimentos,,,", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-6DXZQ", contacto: "Lina Marcela Henao Cardona", ubicacion: "Callé 5 #13-104san Judas parte baja (Detrás de la escuela entrada x la cancha subiendo una destapada segunda casa color azul y blanco)", necesidades: "alimentos, linterna, higiene", descripcion: "Somos 4 personas dos menores y dos adultas las cuáles dependen de mi quede sin trabajo la pared de la cosina y techo de los baños se calleron muchas x lo q me puedan colaborar 🙏🏻", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-JD4H8", contacto: "Kelly Dahiana Melchor", ubicacion: "Calle 30b#15b-32 san Nicolás (Casa esquina piso 1)", necesidades: "alimentos, botiquin", descripcion: "Son somos Dos personas la casa quedó con grietas y debido a la emergencia los Dos quedamos sin empleo que era lo que nos generaba la fuente de ingresos", requerimientos: "Alimentacion y aseo", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-ARKPX", contacto: "Geraldine Patiño", ubicacion: "Mz 18 casa 16 málaga parque industrial (Casa de 1 solo piso beige con naranja palido, ultimo pasaje cuadradero de buses)", necesidades: "alimentos, higiene", descripcion: "Somos 2 adultos,2 niños y 2 gatos", requerimientos: "Camion para sacar el trasteo Primer mes de renta", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-66V5Y", contacto: "Mary Ospina", ubicacion: "Barrio libertadores dosquebradas manzana 5 casa 1 (Al lado de una virgen)", necesidades: "alimentos, bebe", descripcion: "Soy una mujer con discapacidad y me estoy quedando sin comida y necesito pañales para mi y mi esposo se quedó sin trabajo", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-B5448", contacto: "Karent Giannina Ortiz", ubicacion: "Carrera 11 #35-66 apto 301 (Detrás del olímpica 30 agosto)", necesidades: "carpa", descripcion: "Mi apartamento quedó averiado y no puedo habitarlo...me toca desalojar", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-MBLZZ", contacto: "Juan Alberto Ríos", ubicacion: "Carrera 15 número 17-17 (Valher frente ala cancha)", necesidades: "alimentos", descripcion: "", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-CYQPF", contacto: "Alex Mauricio Grajales", ubicacion: "Calle 86 #3-02 (Vía Altagracia por guadalcanal viejo)", necesidades: "alimentos, higiene", descripcion: "Somos 2 personas mayores y un niño en co dicikn de calle prácticamente por qué la casa quedó destruida y tuvimos que desalojar solo con la ropa", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-A8E8D", contacto: "Ana María Maldonado Velez", ubicacion: "Calle 28 1 N 23 piso 2 nuevo peñol (La primera peatonal q hay después de toda la calle 28 con avenida del rio)", necesidades: "alimentos", descripcion: "Somos dos personas y una perrita pero en mi caso yo llevo la obligación de mi casa y me quedé sin empleo", requerimientos: "Alimentacion Dinero para pagar sus servicios", status: "Llamada", estado: "Dinero" },
+  { ciudad: "Santa Rosa de Cabal", codigo: "SOS-L3F54", contacto: "Lucero Gómez", ubicacion: "Cra24 #16_27 entrada la hermosa (Entrada al barrio la.hermosa)", necesidades: "alimentos", descripcion: "Somos 7 personas parte de la casa se vino abajo agectado la zona de la cocina", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-G7MRG", contacto: "José edgar Ortiz murillo", ubicacion: "Carrera 8a # 14-24 apartamento 204 (Parque de la libertad)", necesidades: "alimentos", descripcion: "El apartamento quedó averiado y no se puede habitar.yo pagaba arriendo ahí", requerimientos: "Alimentacion", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-GH3LP", contacto: "julio cesar lopez patiño", ubicacion: "carrera 10 8 47 (mita de cuadra)", necesidades: "alimentos", descripcion: "yo laboro en un taller de macanica en pereira y el taller quedo muy mal y no se puede laborar hay", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-CKET8", contacto: "diego fernando arango morcillo", ubicacion: "[Toro] Calle 13-2 sur # 123 barrio el chanco (Junto a la guardería por debajo)", necesidades: "medicamentos, carpa", descripcion: "Somos tres se destruyó closet y la cama de la niña", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Santa Rosa de Cabal", codigo: "SOS-EGVGY", contacto: "marthacordero", ubicacion: "cra14 #27-69", necesidades: "alimentos", descripcion: "soy sola y tengo 7 perritos", requerimientos: "Comida para perro Alimentacion", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-5X2SK", contacto: "olga Nolorbe", ubicacion: "Calle 66 # 10-181 (Edificio torres del bosque torre 3-103)", necesidades: "alimentos, higiene", descripcion: "Somos 4 personas, nuestra vivienda no está afectada pero nos quedamos sin empleo y no tenemos comida", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-ZBC5Q", contacto: "maria camila muñoz Bermúdez", ubicacion: "km 7 via armenia barrio yarumito bajo (casa esquina 4)", necesidades: "alimentos, higiene, bebe", descripcion: "Soy madre gestante de 8 meses tuvimos que deslaojar la vivienda donde viviamos antes por motivos por no poder habitarla era un 5 piso, en este momento me encuentro donde mi famila ya que no tenimaos mas donde ir la ubicación es la que puse en la información", requerimientos: "Ropa de bebe Leche de bebe Alimentacion Kits de aseo", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-X4XSK", contacto: "Alexánder valencia arango", ubicacion: "Vallarta la badea MZ f casa 8 piso 1 (Por la panaderia)", necesidades: "alimentos", descripcion: "", requerimientos: "Alimentacion aseo", status: "Llamada", estado: "Dinero" },
+  { ciudad: "Pereira", codigo: "SOS-9YUUY", contacto: "Adriana moreno sandoval", ubicacion: "Carrera 2 15-28 (Policía antidisturbios smat)", necesidades: "botiquin, medicamentos", descripcion: "Mi casa quedo que no se puede habitar tiene muchas problemas de la alcaldia nos d visitaron y nos hicieron desalojar en el momento estoy donde una vecina que me brindo apoyo mientras veo como soluciono el problema de vivienda", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-CXKGC", contacto: "Yusleidy Karina rojas carrillo", ubicacion: "Camilo torres plan 3 zona 4 casa 49 piso 2 (Dónde dan la vuelta los buses)", necesidades: "alimentos, bebe", descripcion: "Tuve agretiada en las paredes, soy madre de 2 niños y mi esposo trae el sustento al hogar y quedo sin empleos", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-4MHUS", contacto: "Carlos Mario Ocampo Muñoz", ubicacion: "Carrera 33 villa Andrea (Conjunto los árboles bloque 2 apartamento 302)", necesidades: "agua, alimentos, carpa", descripcion: "Somos 15 personas que dormimos en parqueadero torre sin agua edificio afectado", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-93PLJ", contacto: "Pia carolina Lecompte", ubicacion: "Conjunto residencial El Sinai Mz 8 cs 10 (Vía Montenegro)", necesidades: "alimentos", descripcion: "Somos 3 personas, nuestro apartamento y edificio en Circasia, Quindio fue declarado no habitable. Estamos temporalmente en casa de familiares", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-NYRLV", contacto: "Cruz Elena MORALES Andica", ubicacion: "[La Tebaida] Vía al valle entrada al nuevo amanecer (A la orilla de la variante)", necesidades: "alimentos, carpa, higiene", descripcion: "Somos dos personas el techo es de teja de barro entonces si fuera posible un plástico para poner encima de las tejas", requerimientos: "Plastico largo para tapar el techo 7 de largo * 6 ancho Loza licuadora", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-22CRV", contacto: "Juan de Jesús Gómez", ubicacion: "CRA 6 # 23-58 (Casa esquinera diagonal a la escuela)", necesidades: "alimentos, higiene", descripcion: "Somos dos abuelos de más de 80 años, mis hijas son quienes nos dan el sustento y quedaron sin trabajo Pero mi casa está bien, el daño en el techo que tenía ya nos ayudaron a arreglarlo", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-ETAYT", contacto: "Lorena castro", ubicacion: "Calle 42 con sesta (Casa blanca en la esquina)", necesidades: "alimentos, colchoneta", descripcion: "Somos una familia de 5 mi casa no se dañó pero quedé sin empleo y una de las camas de daño porque el armario se le vino encima", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-KUMBR", contacto: "Natalia marin", ubicacion: "Calle 32 casa 1 a belencito bajo (Esquina tienda)", necesidades: "alimentos, colchoneta, cobijas", descripcion: "Somos 10 personas la casa quedo muy inestable por el movimientos no dejaron quedar en otro lugar por que la casa quedo muy mal", requerimientos: "Materiales de construcción (cemento, arena hierro, malla, ladrillos, etc) y colchonetas.", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Otras zonas", codigo: "SOS-F4XQR", contacto: "Marisol Rodriguez", ubicacion: "[La Victoria] Carrera 5 # 9 - 24 (A dos cuadras del ARA)", necesidades: "carpa", descripcion: "Somos 3 adultos y 2 niños nuestro techo está afectado,tememos q llueva y nuestras cosas se dañen,gracias", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-KMFRR", contacto: "Yanet tabima Medina", ubicacion: "Villa elena in vasión (Casa de dos pisos pequeña esteriilla)", necesidades: "alimentos, colchoneta, carpa", descripcion: "Es la casa de mi sobrina qu vive en una invasión se cayó todo", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-UXGGQ", contacto: "Hayde Jhoana Ariza rios", ubicacion: "Avenida del rio 30 A 18 (Casa por el cai de galan)", necesidades: "alimentos, colchoneta, higiene", descripcion: "Una familia conformada de 1 niña de 4 años una niña de 16 dos adultos mayor de 63 y 66 con epoc un niño de 12 años y yo de 40 años que soy la cabeza del hogar", requerimientos: "Alimentos Aseo", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-UALA4", contacto: "Andrea Ortiz", ubicacion: "Barrio las margaritas mz F casa 12 (Detrás del ara de la unión)", necesidades: "alimentos, higiene", descripcion: "Somos 4 personas la casa quedo muy averiada la parte de atrás está cuñada con guadua y en seguida el barranco sedio y la casa está muy debil", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-X3XJV", contacto: "Amparo Echeverrí franco", ubicacion: "Avenida sur casa 6a-56 barrio el rosal (Casa 6a-56 barrio el rosal al frente de la universidad catolica)", necesidades: "alimentos", descripcion: "Vivimos mi esposo y yo en un apartamento somos dos personas de la tercera edad una pared se nos agretio y dependemos de mi nieta económicamente para todo y ella se quedó sin trabajo por lo sucedido con el terremoto muchas gracias", requerimientos: "Alimentos Higiene", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-VULJT", contacto: "John Camilo Oyuela Rojas", ubicacion: "Cr 10 # 35-81 1 piso (Frente parque buenos aires)", necesidades: "alimentos, higiene", descripcion: "Vivimos 4 personas entre ellas una niña de 5 años que en estos momentos está con la abuela, por qué me quedé sin mi sustento diario, ya que dónde surtía para trabajar diariamente quedó destruido y por la falta de energía se dañaron los alimentos que teníamos perecederos. Vivo del día a día y en esto", requerimientos: "Alimentacion Aseo", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-AZZQC", contacto: "Cristian andres marin Gomez", ubicacion: "Calle 32 casa 2 belencinto bajo (Por el colegio la cuyabra)", necesidades: "alimentos, colchoneta, ropa", descripcion: "", requerimientos: "Alimentación, colchonetas y cobijas. Útiles de asea y cocina. Material para reconstruir.", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Pereira", codigo: "SOS-CQWZB", contacto: "César Augusto Candia florian", ubicacion: "Av del río con calle 25 la esneda (Av río)", necesidades: "alimentos, colchoneta, ropa", descripcion: "Vivo solo con 2 perritos y no he podido trabajar desdel lunes", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-RBUTW", contacto: "Rosa del Carmen alejos López", ubicacion: "Barrio Santander calle 35#27.28 (Al frente del un apartamento)", necesidades: "alimentos, botiquin, carpa", descripcion: "", requerimientos: "Comida y artículos de aseo.", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Pereira", codigo: "SOS-56AMS", contacto: "Janeth Coromoto Laguado Aldana", ubicacion: "Carrera 24Bis #22-09. Boston, sector La Florida (A 10 MTS de la Plazoleta)", necesidades: "alimentos, botiquin, carpa", descripcion: "Vivimos en segundo piso, casa construida con guauda y esterilla Se encuentra sentida con el lovimiento Somos 4 personas 62, 53, 20 y 13 años", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-3N5RA", contacto: "María Fernanda Torres Madera", ubicacion: "Mz 4 Cs 7 altos de villa mariela (Frailes dosquebradas)", necesidades: "alimentos", descripcion: "El alimento está muy escaso y las cositas necesarias ya no hay y tengo un niño de 4 añitos", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-CPS8Q", contacto: "Diana María Ortiz Gómez", ubicacion: "Cuidadela Salamanca torre b 1 apartamento 202 (Via condina)", necesidades: "alimentos", descripcion: "Acabo de salir de la reclusion de mujeres la badea y vivo con mi madre , mi hija , hermana y dos sobrinos. Por causa del terremoto ellos han perdido sus empleos porq las estructuras se colapsaron. nuestro hogar no sufrió daños..y la única q está trabajando es mi madre de 68 años q vende arepas..", requerimientos: "Alimentos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-NAAUH", contacto: "Diana marcela molina", ubicacion: "Mz 22 cs 20 piso 3 samaria 1 (Escuelita de samaria 1)", necesidades: "alimentos, linterna, higiene", descripcion: "Soy una madre soltera cabeza de hogar, madre de dos una de 16by otra de 12, trabajo independientmte , muy enferma y nobhe podido trabajar", requerimientos: "Mercado, comida y agua.", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Armenia", codigo: "SOS-EG7AN", contacto: "Anstrong Alberto Gómez Rios", ubicacion: "CRA 6 NRO. 25N - 35 BLOQUE 9 APTO 302 (Conjunto alejandria)", necesidades: "agua, alimentos", descripcion: "Somos 3 personas en la familia que vivíamos en el apto, tuvimos que evacuar y estamos alojados dónde mi hija en Circasia", requerimientos: "Mercado, comida, agua. Son 6 que están conviviendo y les queda difícil.", status: "Evidencia", estado: "Resuelto" },
+  { ciudad: "Pereira", codigo: "SOS-CCHT4", contacto: "Luis Enrique Combat Pérez", ubicacion: "Km 7 vía Armenia -Tribunas (Finca el Regalo)", necesidades: "carpa", descripcion: "El techo está en malas condiciones y debe ser cambiado. Requerimos material de construcción, tejas de UPVC para poder empezar con la construcción del techo de la casa. Por causa de la lluvia, cae mucha agua dentro de la casa y estamos sosteniendo con unos listones de madera la estructura", requerimientos: "Tejas para el techo de upbc y tablones de madera para soportes. Tornillos, puntillas etc.", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Armenia", codigo: "SOS-X2Y44", contacto: "Felipe Jaramillo diaz", ubicacion: "Callé #33-16-51 (Tercera casa después de la cancha)", necesidades: "alimentos", descripcion: "Somos 4 estamos durmiendo todos juntos en una camita porque se nos cayó el techo y las paredes", requerimientos: "Tejas para arreglar el techo, maderas. Han estado recibiendo ayudas de comida y aseo.", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Pereira", codigo: "SOS-WPYJF", contacto: "Luís Gonzaga hoyos vanegas", ubicacion: "La ocarina manzana 13 casa 217a (Diagonal a donde goro)", necesidades: "alimentos, colchoneta, ropa", descripcion: "Somos 5 personas la casa quedó agrietada y se cayó una parte", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-6YMNR", contacto: "Sela Stephanie villarreal burgos", ubicacion: "Cra21 # 41-28 avenida los molinos (Casa 3 pisos blanca con rojo, es en primer piso)", necesidades: "alimentos, higiene", descripcion: "Somos 4 personas, 2 adultos y dos niños pero mi esposo y yo llevamos tiempo sin trabajo y ahora con esta situación se nos complicó aún más", requerimientos: "Alimentos, dinero para arriendo, el próximo més de Septiembre", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-V4C2Q", contacto: "Luz Miryam  Gamez R", ubicacion: "Carrera 27 # 36 52 barrio la clarita", necesidades: "alimentos", descripcion: "Somos 4 personas Escasea los alimentos por que mermo el trabajo de peluquería", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-6YP6U", contacto: "Luz ayde maigara Diaz", ubicacion: "Km 10 vía Armenia vereda guacari casa 61 casa 2 (Por la carnicería)", necesidades: "alimentos, higiene, bebe", descripcion: "", requerimientos: "Comida y comida para perro", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-CQHRB", contacto: "Carlos julio quintero hernandez", ubicacion: "[Viterbo (Caldas)] Calle 9#8-17 (Casa segundo piso)", necesidades: "alimentos, botiquin, higiene", descripcion: "Somos 2 adultos mayores y yo,nos tocó desalojar por riesgo de caída de la edificacion", requerimientos: "Materiales de construcción, Comida.", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Otras zonas", codigo: "SOS-PEHCW", contacto: "Ana bermudez Bermudez", ubicacion: "[Cartago] Barrio san José (Casa esquinera)", necesidades: "colchoneta, carpa, bebe", descripcion: "", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-NSYCE", contacto: "Libia alzate", ubicacion: "[La Virginia] Manzana 15 casa b (Enseguida de esquina)", necesidades: "alimentos, cobijas", descripcion: "Se callo el balcón", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-HTM7B", contacto: "Yovany Arias Rincon", ubicacion: "Vereda San Vicente combia alta (Tienda moroño)", necesidades: "alimentos, botiquin, higiene", descripcion: "Somos 6 personas que depende solo del padre", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-2FP48", contacto: "Carol tatiana Portela velez", ubicacion: "Calle 25#12-32 (Casa)", necesidades: "alimentos, higiene, bebe", descripcion: "En mi hogar somos 5 personas incluido un niño de 2 años mi hijo y yo estábamos trabajando ...y por lo de terremoto los lugares de trabajo se cayeron quedamos sin solventar la necesidad de la csa ...y la csa quedó agretiada la parte de arriba estoy preocupada por mi nieto q tiene solo 2 añitos", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-DHQ7F", contacto: "Juan pablo", ubicacion: "Mz 12 casa 10a bosques de la acuarela 2 etapa (Vía los pinos)", necesidades: "alimentos", descripcion: "Por cuestiones del terremoto no pude volver a trabajar y soy el sostén de toda una familia cinco integrantes más conmigo seis", requerimientos: "Alimentos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-R865N", contacto: "Meyvi corina montaño obando", ubicacion: "Cr 21 23 10", necesidades: "alimentos, cobijas, ropa", descripcion: "Somos 3 personas 2 niños y una adulta", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-FG68N", contacto: "OLGA LUCIA RODRIGUEZ HERNANDEZ", ubicacion: "CRA.2bis #13-51 2o piso (Segundo piso)", necesidades: "alimentos, medicamentos", descripcion: "Estábamos viendo en la CRA.8bis #31b-69 la casa quedó afectada en la partes internas se callo pared de cosina y sala paredes quebradas en corredor u un cuarto . No sabemos si debemos desalojar opot seguridad estamos donde un hermano en la calle 13 con 2da. Somos 3 personas adultos mayores.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-G5PQB", contacto: "Leidy Katherine Ávila Díaz", ubicacion: "[Ulloa] Crr 3 casa 835 barrio obelisco (Las escalas de la cruz)", necesidades: "carpa", descripcion: "Somos mi esposo con discapacidad visual de una vista una niña de 3 años y yo en estado de embarazo la casa está que se cae hacia un lado y se abrió el piso necesitamos ayuda porfavor", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-7N5NZ", contacto: "Paula Andrea cano", ubicacion: "Carrera 15 # 18-24 (Por la gobernacion)", necesidades: "medicamentos, cobijas, higiene", descripcion: "Somos 5 personas , papá mamá hermana esposo y mi persona y mi perrita la gata no la hemos podido encontrar, vivimos en el conjunto Lorena 3 el cual se cayó y perdimos todos nuestro enseres , gracias a Dios conseguimos dond estar y comida también tenemos .", requerimientos: "Medicamentos principalmente para su madre y ella.", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Dosquebradas", codigo: "SOS-7XEHZ", contacto: "Diego Restrepo Sánchez", ubicacion: "plan 3 zona 4 casa 4 (casa esquinera)", necesidades: "alimentos, colchoneta", descripcion: "", requerimientos: "Ropa, comida.", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-FXYL9", contacto: "Alexandra", ubicacion: "Carrera 8#4-42 (Casa)", necesidades: "alimentos", descripcion: "Somos una familia de 4 personas 2 adultos y 2 niños , nos quedamos sin trabajo cualquier ayuda les agradezco", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-LGLSW", contacto: "Raúl Esteban Ospina Pérez", ubicacion: "Cl. 9 #26-65, La Alameda, Cali, Valle del Cauca (Arriba de la joyería diana)", necesidades: "alimentos, carpa, higiene", descripcion: "Somos 3 personas dos adultos y un menor de edad, dos perras, la casa quedó agrietada, las columnas se dieron, y el inmueble lo tuvieron que cerrar por qué no es habitable...", requerimientos: "útiles escolares para el hijo. Cosas para hacer artesanías, para poder trabajar.", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-EHW77", contacto: "Orlando Valencia Herrera", ubicacion: "[Belalcázar (Caldas)] Vereda la Graciela finca el llanito (Entrada por Acapulco 1 cuadra después del peaje)", necesidades: "botiquin, carpa", descripcion: "Somos tres personas la casa se calló.", requerimientos: "Material de rio y cemento. Varilla para montar el techo", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Otras zonas", codigo: "SOS-J9W22", contacto: "Lucelina mosquera maturana", ubicacion: "[La Virginia] Carrera 3bis #10-52 Alfonso López (Casa 2 piso en el callejon de la bis)", necesidades: "alimentos", descripcion: "Soy una señora adulto la cual tiene su casa y tiene inquilinos la casa quedo muy destruida la parte de adelante tengo una pared apunto de caer pero no tengo la forma para que alguien con experiencia me ayude a tumbarla ojala pudieran venir a ver esta parte de la virginia que ay muchas personas", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-CEERV", contacto: "Luz Aída Gutiérrez", ubicacion: "Comuna villasantana (Barrio Veracruz alto m9#16)", necesidades: "alimentos, higiene, bebe", descripcion: "Soy madre cabeza de hogar vivo con mis hijos todos menores de edad y mi nieto de 8 meses mi ranchito casi se me cae quedo muy mal", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-NRVHQ", contacto: "Eliana Osorio", ubicacion: "Finca el manzano verdad la primavera (Por el barrio bella vista plan 2)", necesidades: "agua, alimentos", descripcion: "Somos dos personas la casa se cayó la mitad desde la cocina, baño, cuartos", requerimientos: "Alimentación y aseo.", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-2RB4C", contacto: "sandra milena martinez", ubicacion: "Mz 14 casa 6 piso 3 barrio padre Valencia cuba Pereira (Cerca a la cancha del barrio padre Valencia)", necesidades: "alimentos, medicamentos", descripcion: "Somos 4 adultos. Casa agrietada pero estable. Perdimos el mercado del mes por 4 días sin luz, afectando nuestra alimentación. Presento pánico constante y afectación psicológica desde el sismo. Solicitamos kit de alimentos y apoyo emocional y medicamentos para poder dormir bien", requerimientos: "Medicamento, paroxetina para la ansiedad. Mercado para la casa.", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Dosquebradas", codigo: "SOS-YDK3X", contacto: "Guillermo Franco Aristizabal", ubicacion: "Manzana 2 casa 26 Altos de la capilla (Solo paso peatonal por el parqoueadero)", necesidades: "alimentos, colchoneta, ropa", descripcion: "Éramos tres familias que vivíamos en un edificio en los naranjos DOSQUEBRADAS de 4 pisos y tocó salir porque el la estructura se colapzo estamos sin techo y estamos asinados", requerimientos: "Aseo, ropa y alimentos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-AMUAU", contacto: "Sandra Lucía Lopez Clavijo", ubicacion: "Cl 21 # 21 b 25", necesidades: "agua, alimentos, higiene", descripcion: "Somos 3 Personas, la casa quedó inhabitable con riesgo de colapso.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-LZ6Y5", contacto: "Yuri Gómez Franco", ubicacion: "Calle 71 Bis N 30-11 La Floresta Cuba (A una cuadra del mundo de los niños, la casa más estrecha.)", necesidades: "alimentos, higiene", descripcion: "Actualmente me encuentro viviendo en mi domicilio, no me puedo mover por mis mascotas, la casa se encuentra agrietada en paredes y techo; le informe a la dueña para que viniera pero ha presentado negligencia, no ha venido a revisar el estado de la casa hasta el día de hoy.", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-8RMZ2", contacto: "Diana Agudelo", ubicacion: "Manzana 5 casa 129 los laguitos (Frente escuelita)", necesidades: "alimentos, ropa", descripcion: "Somos 3 perdimos todo estamos de posada donde un amigo de mi hijo donde vivíamos se cayó tengo el video", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-5MU82", contacto: "Estephany Mayerly Zabala prieto", ubicacion: "[San José (Caldas)] Vereda el bosque", necesidades: "agua, alimentos, colchoneta", descripcion: "Quedamos sin vivienda", requerimientos: "Comida, dinero, colchoneta.", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-H2X3A", contacto: "Javier Alberto Ramírez Montaño", ubicacion: "Urbanización jardín 3 bloque 12 apto 202 (Carrera 18bis No 39-61)", necesidades: "alimentos", descripcion: "Somos dos personas igual la torre está en riesgo de colapsar", requerimientos: "", status: "Sin respuesta", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-H56Q3", contacto: "Alejandra María Rios Bustos", ubicacion: "Manzana 2A casa 2 (Barrió el dorado 1)", necesidades: "alimentos, colchoneta, ropa", descripcion: "Somos 6 personas y no podemos ingresar a la casa", requerimientos: "Comida y dinero para un arriendo para la mamá", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-MUQRF", contacto: "Armando hoyos", ubicacion: "Cl7 10 70", necesidades: "alimentos, medicamentos", descripcion: "Soy de pereira barrio cotocito dos adultos mayores desempleados", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-WBV4Y", contacto: "Mario Alberto Panesso", ubicacion: "Cra 19 No. 1 Norte_00 (Apto. Bloque 4 apto 103)", necesidades: "higiene", descripcion: "Somos 3 personas averías en el apto, estudio técnico pendiente", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-WSDV6", contacto: "Elias Fernández Alfonso", ubicacion: "Calle 5 norte #20-00 bloque 4. Apartamento 401. Ciudadela Sorrento (Coliseo del café)", necesidades: "agua, alimentos, carpa", descripcion: "Somos cuatro personas, estamos alojados en un cuarto de otra persona en otro barrio.", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-C8GL3", contacto: "Paula Andrea gil", ubicacion: "Barrio Santander carrera 29 #3626 (Diagonal al colegio la cuyabra)", necesidades: "alimentos, colchoneta, cobijas", descripcion: "Somos 6 personas entre ellas dos adultos mayores y mi casa se agrietó y hay q tumbarla es de guadua y esterilla", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-CMFRT", contacto: "Gloria Narváez", ubicacion: "Mz E casa 10 Barrio El Recreo Cuba (Casa esquinera atrás caseta comunal)", necesidades: "alimentos", descripcion: "Somos 3 familias la casa está agrietada el anden la parte del frente por invasión en la parte baja del terreno", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-VUVUL", contacto: "Claudia Lorena trejos toro", ubicacion: "Calle 50 51-80 Torre Orense Torre 1 apto 207 (Torre Orense Torre 1 apto 207)", necesidades: "alimentos, bebe", descripcion: "Gracias a Dios el lugar donde vivo no está afectado, mí emprendímiento era vender maquillaje ya q soy madre cuidadora de niño de 6 años autista y un bebé de 8 meses y no tengo en este momento recursos económicos para la compra de leche y pañales, anexo foto familiar ya q somos varios q estamos en el", requerimientos: "Comida, mercado.", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Pereira", codigo: "SOS-C2F9G", contacto: "Stiven Velasquez Suárez", ubicacion: "Coodelmar 4 manz 6 casa 13 segundo piso", necesidades: "alimentos, colchoneta, bebe", descripcion: "Somos varios que lo perdimos todo y nos dejaron quedar en la casa de una conocida mientras solucionamos la situación y tengo otros familiares en fincas duro de ingresar con niños y adultos que estamos haciéndoles llegar también cosas pa su sustento", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-94SJE", contacto: "German zuleta sanchez", ubicacion: "Carrera 8a #18-55 apto 18-02 (Edificio banco del comercio)", necesidades: "alimentos, higiene, ropa", descripcion: "Somos tres personas y hace 6 días que no podemos entrar al edificio vivimos en el piso 18-02 y no tenemos que ponernos y tampoco que comer vivimos con un familiar muy pobre qué nos acogió todo que do atrapado enel apto", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-K47XZ", contacto: "Robinson Cifuentes González", ubicacion: "calle 18 # 15-11 (Hotel Shalom)", necesidades: "alimentos", descripcion: "Somos 5 personas y el edificio lo van demoler por qué sufrió con el sismo yo administraba el hotel y tenía restaurante en el primer piso pero todo se acabó", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Sevilla", codigo: "SOS-LW5WZ", contacto: "Daladier ospina Zarate", ubicacion: "Manzana C casa 29 barrio las garzas (Segundo piso)", necesidades: "alimentos, medicamentos", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Caicedonia", codigo: "SOS-JFK7M", contacto: "Orlandy vanegas v", ubicacion: "Cll 7 #11 - 36 (Casa intermedia)", necesidades: "alimentos, carpa", descripcion: "Vivo en 1 piso la casa es de 3 pisos y el 2 y 3 piso la pared q comunica a mi patio se ve q esa paredes estan q se vienen abajo y l apared del comedor esta con una grieta y hasta ahora no han venido a personasen del peligro en q estamos con esas paredes😢", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-UHV5E", contacto: "María Alejandra Valencia Bermúdez", ubicacion: "Calle 34 #31 11B (Esquinera)", necesidades: "alimentos, colchoneta, carpa", descripcion: "Somos seis personas en la casa y un adulto mayor se agrietó el piso y se cayó un pedazo de pared el patio quedó muy dañado con riesgo de caerse", requerimientos: "Alimentos", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-LHLYM", contacto: "Carlos Alberto Ramírez", ubicacion: "Manzana 20 casa 2 tercer piso Malaga (Malaga parque industrial Pereira)", necesidades: "alimentos, higiene", descripcion: "Somos dos adultos y dos niños de 5 y 7 años no sufrimos daños materiales pero donde trabajábamos al día quedó destruido y tenemos problemas para conseguir alimentos.", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-JTXYQ", contacto: "Jaime Alberto Lopez Castano", ubicacion: "Vereda el rodeo medio finca la Adriana (Cerca al puente helicoidal via a santa rosa)", necesidades: "alimentos, botiquin, carpa", descripcion: "Somos dos personas la casa quedó muy dañada y dormimos en carpa o casa de un vecino,pero no se puede dejar sola por el riesgo a los delincuentes", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-J4E7A", contacto: "Alba lucia ariasa", ubicacion: "Calle 53#23-18 segundo piso (Diagonal iglesia san dieg)", necesidades: "alimentos, ropa", descripcion: "Mi hija se le daño su sitio de trabajo y tiene 4 niños dos de 8 años uno de 13 y otro de 17 soy su madre y vivo sola", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-KG3A8", contacto: "Alejandra Henao Orlas", ubicacion: "Barrio la union baja mz 5 casa 17 (Casa de dos pisos madera totalmente desentecjada)", necesidades: "colchoneta", descripcion: "Hola vivo con mi hijo mi mama y dos venezolanos q salieron afectados", requerimientos: "Soportes de las casas, tejas, cemento. Alimento y aseo agua por daño de tubería.", status: "Evidencia", estado: "Resuelto" },
+  { ciudad: "Armenia", codigo: "SOS-7C42B", contacto: "Jorge prieto", ubicacion: "Karrera43#30a06 villa angela (Por el ara de ciudad dorada)", necesidades: "alimentos", descripcion: "", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-AQ7X3", contacto: "Ana liria Ramirez de Parra", ubicacion: "Urbanización Maracay manzana L casa 7 (Después del D1segunda portería)", necesidades: "alimentos, botiquin, higiene", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-YEDC5", contacto: "Fredy García", ubicacion: "Barrio porta de la acuarela calle 72 carrera 37-88 casa 20 en Cuba (Al frente de las torres de la acuarela)", necesidades: "alimentos, botiquin, higiene", descripcion: "Somos 5 personas entre ellos 2 adultos mayores 1 un niño, nos quedamos sin trabajo", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-THM8H", contacto: "Alexis muñoz Rodriguez", ubicacion: "[Circasia] Barrio nuevo horizonte manzana b casa 9 (Entran por el barrio mujeres campesinas)", necesidades: "alimentos", descripcion: "Me gustaría q porfavor me ayuden con material para arreglar los daños de mi casa tengo dos columnas rotas", requerimientos: "Materiales para vivienda o mano de obra.", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Montenegro", codigo: "SOS-QTK76", contacto: "Johana paola", ubicacion: "Barrio marin calle 12 carrera 26A (En la mitad de la cuadra debajo de las casa q tiene escaleras las primeras q se ven en mitad de cuadra)", necesidades: "alimentos, carpa, ropa", descripcion: "Somos 3 personas un niño de 11 años mi espos o y uo la casa quedo destruida", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-LQTNT", contacto: "Diego alejandro gallego", ubicacion: "[Argelia] Finca la suiza (Tienda la floresta)", necesidades: "carpa", descripcion: "Somos tres personas, dos adultos de 70naños y yo, el techo está dañado", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-EQHAN", contacto: "Leidy Johana niño olaya", ubicacion: "Calle 71A carrera 20 07 el prado dosquebradas (Casa 2 piso)", necesidades: "alimentos", descripcion: "Mi situación actual gracias a Dios donde vivo no hubo afectaciones pero si necesito alimentos y un trabajo ya que no cuento con ayuda de nadie y debo arriendo no tengo comida", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-85JBG", contacto: "Dora Ayala", ubicacion: "Manz 14 casa 19 Altos de llano grande", necesidades: "alimentos, linterna, higiene", descripcion: "Somos varios vecinos afectados por un deslizamiento de tierra es una Manz completa", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-H9D8A", contacto: "Nancy coello", ubicacion: "Calle 16.bis.17.b.04.apartamento 201 (Serca de las oficinas del taxconsota)", necesidades: "alimentos, higiene, ropa", descripcion: "El edificio kedo inavitable .destruido.", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-MZFL9", contacto: "Michael Stiven castrillon", ubicacion: "Mz 2 casa 32 Miraflores (En la Graciela dosquebradas)", necesidades: "carpa", descripcion: "Somos 4 personas dos niños de 6 y 4 años, a nuestra casa no le pasó nada, pero debemos evacuar antes que se nos venga toda una montaña de casas y tierra, me gustaría obtener ayuda para pagar unos meses de arriendo en otro casa para tratar de salvar las cositas de mi hogar,", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-58RGW", contacto: "Cindi Yulieth Valencia fajardo", ubicacion: "Calle 1c oeste 100 bis tore 76 altos de santa Elena barrio melendez (Apartamentos)", necesidades: "pilas, colchoneta, carpa", descripcion: "Somos una familia de 6 personas que lo perdieron Todo", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-NDST5", contacto: "Anni yoeli montilla Hurtado", ubicacion: "Campestre D manzana 1 casa 39 (Frente al skeipar)", necesidades: "alimentos, colchoneta, higiene", descripcion: "Estoy en casa de una amiga somos 4 personas mis tres hijos y yo vivíamos en Pereira y el edificio colapso no puede ser habitado", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-4YM6V", contacto: "Juan Camilo Henao Gómez", ubicacion: "Calle 33 # 10-113 (Casa)", necesidades: "alimentos", descripcion: "Somos dos personas que fuimos damnificados con el terremoto y por ahora estamos refugiados en casa de un familiar", requerimientos: "N/A", status: "Llamada", estado: "Caso no requiere Atender" },
+  { ciudad: "Otras zonas", codigo: "SOS-JU4U7", contacto: "Margarita Campo Bejarano", ubicacion: "[La Victoria] Calle 5 #8-42 (Cerca al.Barrio Las Colinas)", necesidades: "alimentos", descripcion: "Las paredes de la casa quedaron muy averiadas y el techo se encuentra muy mal", requerimientos: "", status: "Sin contactar", estado: "En proceso" },
+  { ciudad: "Dosquebradas", codigo: "SOS-QPGV9", contacto: "Alexander Muñoz", ubicacion: "Calle 4 # 16-76 barrio Otún sanjudas (Casa)", necesidades: "alimentos, higiene", descripcion: "Mi casa se cayó y la deben de demoler la dirección que estoy dando es una hermana que tiene a mis hijos dandole dormida y alimentación y en el momento solo está trabajando su hija y ya se están agotando los insumos gracias", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-QCKJY", contacto: "Marthaliliana valderrama pineda", ubicacion: "Kra 5. #. 29. B. 36 esquina (Casa)", necesidades: "alimentos", descripcion: "", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-AY5TR", contacto: "Yorman corrales", ubicacion: "Bloques de tanambi salida a alcala (Estadio municipal James Brito pelaes)", necesidades: "alimentos, cobijas, higiene", descripcion: "La situación es por falta de alimentos ahí personas que nos quedamos sin empleo por lo tanto ahí escaces", requerimientos: "Medicamentos: Insulina x 5 casos Panales para Adulto Alimentos No perecederos Utules de aseo personal", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-S4U4Z", contacto: "Sandra Galvis", ubicacion: "CRA 12 número 22-26 centro sector Olaya herrera (Casa ubicada en el centro de Pereira)", necesidades: "agua, alimentos, higiene", descripcion: "9 personas y 5 perros entre ellos pitbull agresivo con otros perritos, 2 adultos mayores de 65 años que dependen de la venta de tintos en un kiosco ubicado en el parque que ahora es albergue, 2 niños de 7 y 13 años con una bebé de 13 meses que necesita urg leche. tiene pañales. Daño estructural.", requerimientos: "1.Medicamento paleperidona 100 2. Agua Potable. 3. Cosas para bebes. Leche, compotas. Cereales. Panales etapa. 4. Alimentos. 5. Vivienda. 6. Nuevas fuentes de ingresos. 7. Materiales de construcción.", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Caicedonia", codigo: "SOS-F8QYH", contacto: "Fabiola Serna", ubicacion: "Carrera 6c número 10 -21 (Piso 2)", necesidades: "alimentos, medicamentos, bebe", descripcion: "A causa del terremoto me quedé sin empleo", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-ARP46", contacto: "Lady johanna Marquez", ubicacion: "Avenida las Américas 44 51 casa thl102 (Al frente de constructor homecenter)", necesidades: "alimentos", descripcion: "Tods mi familia se vio gravemente afectada al igual que los hogares de mis 2 hermanas. No podemos habitar nuestros hogares. Y se tiene que demoler la vivienda donde vivíamos.", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-YM5D2", contacto: "Lizeth Reyes", ubicacion: "Casa 216 A Barrio Rocio alto (Via armenia a 30 casas de la iglesia del rocio alto)", necesidades: "colchoneta, cobijas, bebe", descripcion: "Somos 4 personas incluido un bebé de 6 meses y una niña de 13 años, tenemos el baño agrietado y paredes, las camas se le partieron las patas y los colchones se nos mojaron, estare agradecida si me ayuda con pañales y colchones muchas gracias que Dios me los bendiga hoy y siempre.", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-PYG53", contacto: "Jesus Aberto Castro", ubicacion: "Portales de Birmania manzana 11 casa 9A sanjoaquun cuba (Casa al lado de una que se derrumbo)", necesidades: "alimentos, higiene", descripcion: "Somos 3 la casa quedó con grietas y ordenaron desalojar dormimos donde una vecina en el suelo", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-P3KCV", contacto: "Héctor Fabio Londoño García", ubicacion: "Calle 21 bis número 15 b 10 (Casa esquinera detrás de la bomba de Terpel del parque Olaya)", necesidades: "alimentos, colchoneta, cobijas", descripcion: "A la casa no he podido entrar desde el día del terremoto esperando que la diger determine un diagnóstico si se puede habitar", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-K9XNR", contacto: "Sammy nieva", ubicacion: "Carrera 16#36/47 (Frente al casino manhatan)", necesidades: "medicamentos, colchoneta, bebe", descripcion: "Se agrietó la casa no evacuamos pero si está averiada llevo una semana sin poder trabajar osea para pagar arriendo este mes duro el local de la foto es donde trabajaba globos ahora nos toca empezar a desocuparlo antes que lo manden al piso por completo gracias", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-BCKJ2", contacto: "Luz piedad Gutiérrez", ubicacion: "Avenida del río manazana 3 casa 36 barrio nuevo Peñol calle 28 con avenida del río (Esquinera)", necesidades: "alimentos, botiquin, ropa", descripcion: "Somos 3 y estamos en una casa de arriendo porque la casa sufrió averiaciones", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-FEXWT", contacto: "Dora ines Pérez Giraldo", ubicacion: "Reservas el lago mz 6 casa 96 (Casa cerca al lago ala pradera por el romboy)", necesidades: "alimentos, higiene", descripcion: "Somos una familia que de 3 personas nuestra casa quedó de reparación tiene grietas piso levantado paredes fisuradas se entra el agua y nos tocó salir de allí por riesgos de edificaciones que están al lado de la. Vivienda nos da miedo que se valla a caer el edificio hay mismo teníamos el negocio", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-Z8FKA", contacto: "Elizabeth Lemos", ubicacion: "Rocio BajoCasa 25-45 (Tercera casa después del lago de pesca)", necesidades: "alimentos, medicamentos, higiene", descripcion: "Son 3 personas, 2 adultos mayores con condiciones de salud y una joven que quedó sin empleo, físicamente la vivienda no se derrumbó, fueron afectaciones leves sin embargo la situación que generó el desempleo fu el temblor y los adultos necesitan medicamentos para la presión e insumos de colostomia y", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-5JN3A", contacto: "Diana Mejia", ubicacion: "Manzana 4a casa 11 piso 3 en Belmonte (Casa de 3 pisos esquinera abajo minimercado)", necesidades: "alimentos", descripcion: "Vivimos 5 personas entre ellas 2 niños y un adulto mayor enferma vivimos en la parte de atrás de la casa porq el frente está una parte en caer", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Santa Rosa de Cabal", codigo: "SOS-2YXK3", contacto: "Martha Melan", ubicacion: "Cra 24 22 04 Villa diana la hermosa (A cuadra y media del Ara en toda la esquina a mano derecha)", necesidades: "carpa", descripcion: "Se me desplomó un techo en un 3 piso quedo en la plancha y se me esta entrando el agua hasta el 1 piso", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-Z7D68", contacto: "María sulay hurtado correa", ubicacion: "Carrera 6bis número 9-29 (Avenida rápida para ir a dosquebradas)", necesidades: "alimentos", descripcion: "Somos 6 personas adultas y sin empleo por lo que paso .en este sitio era nuestro punto de empleo", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-HKW5T", contacto: "Idalba Ardila Villaneda", ubicacion: "CRA 25A N 75B-04 Barrio Uribe II- Cuba (Arriba de la clínica San Rafael Cuba)", necesidades: "medicamentos, colchoneta, higiene", descripcion: "Solo somos 2 personas mi hijo de 17 años y yo. Medicamentos: levodopa/carbidopa/entacapona (Estaleva) 100/25/200 MG Venlafaxina x 75, pregabalina x 75, quetiapina x 200, rubisuvastatina y enalapril x 5 MG", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-YYFQT", contacto: "Amparo Cardona de Aguirre", ubicacion: "Mz 26 casa 349 leningrado 3 cuba (Vive diagonal a la caseta blanca de venta verduras)", necesidades: "alimentos, medicamentos", descripcion: "Mi mamá sufrio afrectaciones en toda su casa el piso esta para terminarse de dañar, unas paredes las vigas tienen grietas y el techo en una parte de la pared se cayó. igual y necesita el medicamento indacaterol glucopirronio ella tiene un epoc y ya tiene 86 años. Mi dios les pague por su aporte", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-BLAF2", contacto: "Lorena Fernández V.", ubicacion: "Carrera 19#15N-49 Conjunto Residencial Proviteq. Unidad 3 Bloque 2 apartamento 1B (Frente a ARA Avenida 19)", necesidades: "alimentos, medicamentos, cobijas", descripcion: "Saludo cordial, Somos tres personas y dos animalitos. Estamos en un apartamento el cual sufrió fisuras superficiales, desprendimiento de masposteria, desalineado del marco de la puerta principal.", requerimientos: "Alimentos Utiles de Aseo Personal Medicamentos para adulto mayor. Arreglo de vivienda. Lista de Medicamentos: 1.Losartan de 50mg 2. Metformina de 850mg 3. Pantoprazol de 40 4. Levotiroxina de 62mg 5. Aspirina 6. Rosuvastatina de 40mg 7. Atorvastatina de 40mg 8. Gaviscon 9. Dolex 10. Clopidogrel 11. Isoface de 20mg", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-9H8PS", contacto: "Leidy Cristina Garcés", ubicacion: "Vereda risaralda finca el Brazil (Finca)", necesidades: "agua, alimentos, medicamentos", descripcion: "Somos 8personas la casa quedó completamente en el suelo", requerimientos: "Alimentos Utiles de Aseo Personal Arreglo de vivienda. Medicamento especial para el Hijo con Discapacidad.", status: "Evidencia", estado: "Escalado" },
+  { ciudad: "Sevilla", codigo: "SOS-X63BN", contacto: "Ada Milena Beltrán", ubicacion: "Calle 51#50-36 (En el parque)", necesidades: "carpa", descripcion: "Techo colapsado", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Alcalá", codigo: "SOS-UG6D7", contacto: "Julio César grisales pelaez", ubicacion: "Vereda los sauces, parcelacion nogales lote 46 (Casa esquinera)", necesidades: "agua, alimentos, carpa", descripcion: "La casa q inhabitable ,estamos don de unos vecinos", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-UCY6F", contacto: "Hernan Arana Quiñones", ubicacion: "Casa 110 comuneros de frailes dos quebradas", necesidades: "alimentos, higiene", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-M3BPM", contacto: "Jose Danilo Culma Timote", ubicacion: "M8 c casa 37 barrio el remanso (Or el control de busetas)", necesidades: "alimentos, botiquin, higiene", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-8DRZX", contacto: "kevin arnol ramirez zapata", ubicacion: "barrio la mariela manzana palmas casa #5 (por la cancha enpaimenta)", necesidades: "carpa", descripcion: "zona de riego", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-EX3YK", contacto: "Amparo Paniagua Molina", ubicacion: "Calle 54 No 17-34", necesidades: "alimentos, linterna, colchoneta", descripcion: "Somos 11 personas la casa quedó en alto riesgo de colapsar y tuvimos que buscar ayuda donde un familiar", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-FVU9Q", contacto: "Lucila Castaño Arbelåez", ubicacion: "Carrera 13 #10-60 (Sector parque sucre)", necesidades: "alimentos", descripcion: "Somos dos personas y el apto quedó agrietado debemos evacuar definitivamente", requerimientos: "Dinero para un nuevo arriendo.", status: "Llamada", estado: "Dinero" },
+  { ciudad: "Chinchiná", codigo: "SOS-325CX", contacto: "Francia Lorena  Ramírez Muñoz", ubicacion: "Finca la popa vereda cartagena (Mínima que 50 metros hacia abajo vía Santagueda)", necesidades: "carpa", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-A5PJ9", contacto: "NIDIA Castro Garcia", ubicacion: "[Ansermanuevo] Calle 2#12-54 (Barrio gramalote)", necesidades: "cobijas", descripcion: "Se nos desplomó el techo de dos cuartos las paredes se agrietaron quedaron inahabltales", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-2786C", contacto: "Carlos Roldán", ubicacion: "Calle 81#18B-49 Olimpico 2 (Costado izquierdo puente de Corales)", necesidades: "alimentos", descripcion: "Desde 28 de julio me encuentro incapacitado por trauma de columna \" desviación por ende la recomendación es ser valorado por ortopedia Los medicamentos y ayudas han sido particular", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-4M5XH", contacto: "LUIS GILDARDO", ubicacion: "Manzana A casa 11 barrio el martillo (Casa esquinera)", necesidades: "alimentos, colchoneta, higiene", descripcion: "Somos dos personas mi madre y yo nuestra vivienda no sufrió ninguna afectación pero mi madre está reducida ala cama y yo no puedo trabajar tengo problemas en mis rodillas y no puedo trabajar y también por mi edad tengo ya 65 años espero mi ayuda por favor muchas gracias", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-7CUYH", contacto: "JUAN CAMILO PRADA MARTINEZ", ubicacion: "Calle 12 #8-67 (Residencia la 8)", necesidades: "alimentos, colchoneta, ropa", descripcion: "Somos 7 adultos, 2 niños, 7 perros adultos, 2 gatos, 4 gatos cachorros", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-UTXH8", contacto: "Angelica Cifuentes", ubicacion: "[Calarcá] Barrio velez 11 -23 (Bajos de la muebleria)", necesidades: "alimentos, higiene, bebe", descripcion: "Soy madre de dos y estoy sola y sin trabajo", requerimientos: "Artículos de aseo, pañales, pañitos", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Pereira", codigo: "SOS-SR94L", contacto: "Robinson Daniel guzman suarez", ubicacion: "Cl 24 bis #1b - 59 (Barrio San Jorge)", necesidades: "alimentos, botiquin, linterna", descripcion: "Somos 4 personas, la casa quedo afectada en el techo, escaleras, y piso de la segunda plata qye fue declarada inhabitable. Solo podemos usar el primer piso.", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-AFLKN", contacto: "Norma Bernal", ubicacion: "carrera 19 #11-45 apartamento 204 (encima de rodar y girar)", necesidades: "alimentos", descripcion: "somos 4 personas y 3 nos quedamos sin empleo", requerimientos: "Alimentos, ya que sus hijos quedaron sin trabajo y ella es el único sustento de la casa.", status: "Llamada", estado: "Escalado" },
+  { ciudad: "Cali", codigo: "SOS-X64J9", contacto: "Faisury Rodriguez", ubicacion: "Calle 18#42-06 (Segundo piso frente al polideportivo)", necesidades: "alimentos, higiene, bebe", descripcion: "Trabajo en una oficina donde trabajamos con víctimas y muchas familias tuvieron afectaciones, me gustaría juntar unos mercados, kit de aseo, para donarselos a ellos, son personas que ya lobpersieeon todo anteriormente por causa de la violencia, y ahora vuelven a perder por causa de la naturaleza", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-E3WJK", contacto: "David García P.", ubicacion: "Calle 3 N° 19-45 barrio Otún (San Judas)", necesidades: "alimentos", descripcion: "Mi casa sufrió daño parcial en toda el área de la sala, por debajo la tierra se undió y hay que demoler, soy de la economía informal y ya no tengo ingresos,mi prioridad son víveres...", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-G2HZ3", contacto: "Veronica Rua Lopez", ubicacion: "Mz 21 casa 1 parque industrial-grande (mirador de llano)", necesidades: "alimentos, higiene", descripcion: "Estoy desempleada ya que era independiente y el carro que manejaba no era mío, ya no puede manejarlo y por lo que pasa en la ciudad no hay forma de empleo", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-TUKTC", contacto: "Luis Fernando Quintero García", ubicacion: "Carrera 1 bis número 45 66 (Casa mitad cuadra)", necesidades: "alimentos, medicamentos", descripcion: "Somos 4 personas soy tapicero y quede sin empleo trabajaba en el parque de la libertad", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-8KCAR", contacto: "Johana Correa", ubicacion: "Vereda agua Azul, vía La Romelia casa La florida (Subiendo por las canchas de villa Carola)", necesidades: "agua, alimentos, bebe", descripcion: "Somos mi esposo y mi bebé de 5 meses, la casa está hecha de estructura liviana y quedó agrietada, de cayó el techo de adelante", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Caicedonia", codigo: "SOS-3GT5J", contacto: "Maria Durlandi velasquez M", ubicacion: "Finca bellavista vereda palo grande. A 600 emetros esta la entrada para la finca (Finca bellavista mi número de celular )", necesidades: "alimentos, carpa", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Dosquebradas", codigo: "SOS-Z3CDL", contacto: "Andrés Buitrago Arias", ubicacion: "Tv 24#25-10 (Barrio alta pradera 2 casa 54 apto 403)", necesidades: "alimentos, botiquin, bebe", descripcion: "Somos 3 personas tenemos una bebé de 15 días... Nuestra apartamento está en una zona de riesgo.", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-JJBVY", contacto: "Luis Fernando Quintero García", ubicacion: "Carrera 1bis número 45 66 barrio el triunfo (Casa mitad de cuadra)", necesidades: "alimentos, medicamentos", descripcion: "Somos 4 personas quede sin empleo soy tapicero trabajaba en el parque de la libertad", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Quimbaya", codigo: "SOS-LRYF5", contacto: "Noralba Suárez", ubicacion: "Quimbaya, Vereda el Jazmin inca la floresta (Vía quimbaya Alcalá por la entrada del paraíso del conde 5 km)", necesidades: "carpa", descripcion: "La casa de nosotros y de la familia de los trabajadores quedó destechada", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Sevilla", codigo: "SOS-7YTKY", contacto: "Oscar cubillos galvis", ubicacion: "Carrera 50a # 62-21,barrio san vicente, (Detras de la carcel mpal.)", necesidades: "alimentos", descripcion: "Se nos cayó el techo y cielo rrazo", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-FZJ3F", contacto: "Consuelo Guevara", ubicacion: "casa 24 n 84 c monserrate bajo villasantana (antes de dentrar a al barrio vellavista)", necesidades: "alimentos, colchoneta, bebe", descripcion: "se me cayo la cocina y me daño todo lo que losa mercado y ropa", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-ZJLSE", contacto: "Maria eugenia restrepo osorio", ubicacion: "Cra16#20-11 apto 2 (Queda al ado de la caseta comonunal)", necesidades: "alimentos, medicamentos", descripcion: "Soy hija jefe de familia y el lugar donde trabajaba se callo con el terremoto por consiguiente no cuento con trabajo y mi vivienda que do algo deteriorada puesto que el muero de las escaleras se nos vino a bajo y estamas a la espera de si debemos de evacuar o no", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-D8RHH", contacto: "Ana María Amaya cañas", ubicacion: "Calle 34 .3119 (Por el caminito con pared de teja azul)", necesidades: "alimentos, higiene", descripcion: "Cuatro personas en la casa y tuvo grietas", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-BVHJJ", contacto: "Blanca Patricia Murillo Devia", ubicacion: "Cra 18#9 Norte-73 (Edificio Santa Bárbara)", necesidades: "botiquin", descripcion: "Necesitamos que la unidad de gestión del riesgo venga a valorar nuestro edificio", requerimientos: "", status: "Contactado", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-9LQKY", contacto: "Leidy Jhoana Ballesteros", ubicacion: "Calle 34 #31-19 Barrio La Miranda Santa Maria (En Camino De Tierra casa Del Medio)", necesidades: "alimentos, colchoneta, higiene", descripcion: "Somos 2 personas la casaa quedo agrietada y se mueve mucho", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-C9ECU", contacto: "Ivan dario marulanda cañas", ubicacion: "Calle 34 31-15 (En segundo piso en donde ay unas sillas)", necesidades: "alimentos, medicamentos, bebe", descripcion: "4", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-YMZ8X", contacto: "Rubby Karina yovera castillo", ubicacion: "Barrio Calle 34.31.19 (Caminito la Miranda)", necesidades: "alimentos, carpa, higiene", descripcion: "4", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-7DC5G", contacto: "Viviana Cardona Cardona", ubicacion: "Calle 34 número 3125B (Asentamiento santa María miranda, después del colegio la cuyabra)", necesidades: "alimentos", descripcion: "Somos 5 personas, la casa se encuentra en riesgo de colapso hacia una cañada, no tenemos más donde quedarnos mientras tanto.", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-L9MQ2", contacto: "Luz Mary Tangarife", ubicacion: "Barrio Zuldemayda Mz 9 casa 8 (Esquina)", necesidades: "linterna", descripcion: "Somos 2 personas y un perro, en el momento necesitamos elementos para demoler y para volver a construir", requerimientos: "Estan buscando que les ayuden a demoler la parte de la casa afectada e implementos para realizarlo", status: "Evidencia", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-AV6GA", contacto: "Maria esneda cañas cortes", ubicacion: "Barrio calle 34-30-38 (Marrio miranda santamaria)", necesidades: "alimentos, botiquin, carpa", descripcion: "", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-W9FYD", contacto: "Edwin Enrique Gaviria de ossa", ubicacion: "Barrio santa María Miranda calle 34,31,19 (El caminito santa María Miranda)", necesidades: "alimentos, botiquin, higiene", descripcion: "", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-S4EBX", contacto: "Diana Isabel tovar cuartas", ubicacion: "Km7 via armenia vereda Altamira (Por La entrada a la casona mano derecha)", necesidades: "botiquin, linterna, pilas", descripcion: "La casa está que cae completamente", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-79Z9E", contacto: "Karol Silvana abad marin", ubicacion: "Poblado 2 MZ 7 CS 2 (Casa esquinera amarilla)", necesidades: "alimentos, botiquin, linterna", descripcion: "Somos 4 personas de las cuales ninguna estamos trabajando, solo estaba laborando yo por porcentaje, el sitio sufrió daños, no está abriendo, necesito alimentos por favor gracias. No tengo dinero para comprar comida mil gracias dios en los bendiga.", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-UQLWS", contacto: "Diana Ramirez", ubicacion: "Manzana 1 casa 17 villa de la paz baja (Barrio villa de la paz baja cuba avenida independencia)", necesidades: "alimentos, colchoneta, cobijas", descripcion: "Somos 4 personas dos niños menores de 7 y 6 años no tenemos vivienda quedo inavitable no tenemos empleo ni comida y lo poco q quedo nos lo guardo un familiar. Les agradezco su ayuda dios los bendiga necesitamos urgente su ayuda .también tengo 4 gaticos bebés", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-7GS9Q", contacto: "Juan Bautista cañas", ubicacion: "Barrio calle 34.31.16 (Santa María Miranda el caminito)", necesidades: "alimentos, carpa, higiene", descripcion: "", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-6HJUF", contacto: "Michel Dahiana Ballesteros", ubicacion: "Calle # 34-31-19 Barrio La Miranda Santa Maria (Por El Camino De Tierra En El Medio)", necesidades: "alimentos, carpa, bebe", descripcion: "Somos 2 Personas Y La Casa Quedo Muy Agrietada Y Se Mueve Con Nada", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Otras zonas", codigo: "SOS-S8ANR", contacto: "Dario Galvis", ubicacion: "[Palestina] Los Apartamentos (Estoy sin ubicacion)", necesidades: "carpa", descripcion: "Estábamos mi esposa, mis tres hijos pequeños (6, 4 y 3 años) y yo, ubicados en el hotel Bolivar por la cra 20, el cual se cayó el techo, afortunadamente a mi familia ni a yo tuvimos lesiones físicas pero quedamos a la intemperie, estamos en Palestina donde un familiar, debemos viajar a Girardot", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-B9YX8", contacto: "Paula andrea cañas garcias", ubicacion: "Barrio santander bajo.carrera 29.casa 31.19 (De agonal del colegio la cuyabra)", necesidades: "alimentos, cobijas, higiene", descripcion: "", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-6NRCC", contacto: "Guillermo Castaño Garcia", ubicacion: "CR 18 CLL 35 - 25 (Enseguida del hotel mirador paisa, hay unas escaleras, bajan las escaleras y es en la última casa)", necesidades: "alimentos, botiquin", descripcion: "Somos 7 personas 2 adultos mayores, 3 niños y 2 adultos. Necesitamos de su ayuda ya que somos muy pobres ese sector es el barrio santafe, y nuestra casa tuvo daños y el techo está peligroso de que pueda caerse", requerimientos: "", status: "No contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-RRTF9", contacto: "Anderson Díaz Ardila", ubicacion: "Cra 17 bis #19B-38 Apartamento 501-Edificio los Periodistas Pereira (Barrio Belalcázar)", necesidades: "higiene", descripcion: "Necesitamos con urgencia vivienda. Vivíamos pagando arrendo y el apartamento tuvo pérdida total", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-8H66C", contacto: "Yanetzi López", ubicacion: "Calle 9 con once casa 11.27 (Restaurante maxi)", necesidades: "alimentos", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-VQG8U", contacto: "NORIS MARIANYIS PARRA PARRAGA", ubicacion: "Barrio el Santander calle 35 # 27 28 (Frente de unos departamentos)", necesidades: "alimentos, carpa, bebe", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-PEEGZ", contacto: "Freilyn Alejandra Orozco Ramírez", ubicacion: "Barrió Santander Calle 35 número 27-28 (Frente a unos apartamentos)", necesidades: "alimentos, higiene, bebe", descripcion: "Somos 5 personas incluyendo 3 niñas y una con discapacidad🥺 Las paredes agrietadas y muy frágil", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-C6WGR", contacto: "María Camila Gil cardona", ubicacion: "Calle 30 a Cr 43/54 (En todo el semáforo)", necesidades: "alimentos, higiene", descripcion: "Somos 3 personas el techo se calló dormimos en el otro lado que no fue afectado", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-F9NJE", contacto: "cristian marin losada", ubicacion: "+5direccion bar barrio Montevideo MZ 13 número 4 c (Por la cancha de pavimento del barrio montevideo a el.fondo)", necesidades: "alimentos", descripcion: "Somos 4 personas neaeictamos material para reparar la parte tracera ahy un adulto mayor", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Pereira", codigo: "SOS-JYFX8", contacto: "Yasmilen alejandra Hernández", ubicacion: "Manzana 5 casa 6 mirador de llano grande (Casa)", necesidades: "alimentos, colchoneta, cobijas", descripcion: "6", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-ADDMW", contacto: "Iván bario marulanda cañas", ubicacion: "Barrio miranda calle 34 31-15 (Cambuche segundo piso)", necesidades: "alimentos, medicamentos, bebe", descripcion: "", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-N64K8", contacto: "Brahyan Marulanda", ubicacion: "Miranda calle 34 31 15 (Esquina)", necesidades: "alimentos, medicamentos, bebe", descripcion: "Vivimos cuatro personas (una discapacitada), quedamos desempleados por el terremoto", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-XTD7D", contacto: "Yeny Paola Martínez", ubicacion: "Barrio Nueva libertad MZ 22#2B (Cai de policía de la Unión)", necesidades: "alimentos, higiene, bebe", descripcion: "Somos 5 personas, teníamos un apartamento en la parte de atrás de la casa de mi mamá pero el 90% del apartamento se desprendió del resto de la casa y no es seguro estar ahí, por lo que nos está tocando estar junto con mi mamá y abuela en la parte delantera de la casa donde solo hay una habitación.", requerimientos: "", status: "Sin contactar", estado: "Pendiente" },
+  { ciudad: "Montenegro", codigo: "SOS-8ANLD", contacto: "Daniela Bolaños Hurtado", ubicacion: "Calle 21 # 6-44 (Por la Galería)", necesidades: "alimentos, higiene", descripcion: "Somos solo mi mamá y yo,dos gatitos y un perrito, el lugar donde vivimos no sufrio daños graves (solo grietas) pero donde trabaja mi mamá si hubo mas daños y por ahora le dijeron que no había mas empleo hasta que no se organice el lugar para poder abrir al público. Yo tampoco tengo empleo.", requerimientos: "", status: "", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-P8Y39", contacto: "Rosa Rodríguez", ubicacion: "Carrera 21 48 57 (Barrio farallones)", necesidades: "alimentos, higiene", descripcion: "Somos 6 personas estamos en alto riesgo con la casa averiada", requerimientos: "", status: "", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-V3SXH", contacto: "Argenida Perdomo", ubicacion: "Manzana 18a manzana 12 (Por el colegio gustabo Matamoros por la emtrada de la biblioteca)", necesidades: "alimentos", descripcion: "Estamos sin poder trabajar somos imformales se nos dañaron una parte de la casa somos 4 personas", requerimientos: "", status: "", estado: "Pendiente" },
+  { ciudad: "Cali", codigo: "SOS-DC2NS", contacto: "Indira quijano", ubicacion: "Calle 9a #66b-62 (Unidad residencial reserva del limonar)", necesidades: "alimentos, carpa", descripcion: "Somos 2 adultos y un niño , fuimos evacuados del apartamento mientras evalúan la estructuras de los bloques .", requerimientos: "", status: "", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "SOS-HSRMU", contacto: "Gerdy Tatiana Pineda Salgado", ubicacion: "Barrio la Cecilia M25 Casa 16 Piso 1 (Cuadra Ancha)", necesidades: "alimentos", descripcion: "Somos 3 Personas 2 Adultos 1 Menor Me Encuentro Sin Trabajo Mi Pareja También Dónde Estábamos Trabajando Todo Se Daño", requerimientos: "", status: "", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "", contacto: "Senelia", ubicacion: "", necesidades: "", descripcion: "", requerimientos: "Ladrillo farol 150 // bloque tejas de zinc cemento Arena Alambre", status: "Llamada", estado: "Pendiente" },
+  { ciudad: "Armenia", codigo: "", contacto: "Jose Ivan Loaiza Salazar", ubicacion: "Salvador allende", necesidades: "", descripcion: "Alejandra Palacio voluntario evidencio el daño de las viviendas", requerimientos: "Tejas de Zinc 15 Cemento 6 bultos cemento Ladrillo farol 150", status: "Llamada", estado: "Pendiente" }
+];
+
+// Convierte cualquiera de los valores crudos de "Estado del caso" en uno de los
+// 4 grupos simples que se muestran al donante: Resuelto / En proceso / Pendiente / Descartado.
+function estadoSimplificado(estadoCrudo) {
+  if (estadoCrudo === "Resuelto") return "Resuelto";
+  if (["Escalado", "Asesorias", "En proceso"].includes(estadoCrudo)) return "En proceso";
+  if (["Dinero", "Caso no requiere Atender"].includes(estadoCrudo)) return "Descartado";
+  return "Pendiente"; // Pendiente, Sin estado, o cualquier valor no contemplado
+}
+
+const ESTADO_INFO = {
+  "Resuelto": { clase: "estado-resuelto", icono: "✅", es: "Resuelto", en: "Resolved" },
+  "En proceso": { clase: "estado-proceso", icono: "🔧", es: "En proceso", en: "In progress" },
+  "Pendiente": { clase: "estado-planeacion", icono: "🕒", es: "Pendiente", en: "Pending" },
+  "Descartado": { clase: "estado-descartado", icono: "🚫", es: "Descartado", en: "Discarded" },
+};
 const COMUNIDADES = [
   { ciudad: "Armenia", barrio: "Turbay Ayala", total: 10, items: {"Mercado / alimentos": 7, "Kits de aseo": 3, "Otros": 1, "Carpas": 1, "Botas/herramienta": 1, "Agua": 1}, ejemplos: [{ texto: "María Julia Córdoba Kit adulto Mercado", foto: "fotos/armenia/armenia_turbay-ayala_20260818-011700_00003028.jpg" }, { texto: "Erika Maldonado Barrio turbay ayala , esta a cargo de 5 ancianos", foto: "fotos/armenia/armenia_turbay-ayala_20260818-011700_00003029.jpg" }, { texto: "Meria Leticia Guzmán. Mercado", foto: "fotos/armenia/armenia_turbay-ayala_20260818-011700_00003030.jpg" }] },
   { ciudad: "Armenia", barrio: "Otras zonas", total: 7, items: {"Mercado / alimentos": 5, "Kits de aseo": 2, "Otros": 2, "Carpas": 1}, ejemplos: [{ texto: "Kit mercado", foto: "fotos/armenia/armenia_20260818-044227_00003085.jpg" }, { texto: "Mercado , kit de aseo", foto: "fotos/armenia/armenia_20260818-050557_00003086.jpg" }, { texto: "Carlos granado Kit construcción y mercado", foto: "fotos/armenia/armenia_20260818-051135_00003087.jpg" }] },
@@ -1191,14 +1755,19 @@ function totalFamilias() {
 }
 
 function renderCiudades() {
-  const todas = [...new Set([...Object.keys(GASTADO_POR_CIUDAD), ...ITEMS.map(i => i.ciudad)])];
-  const ciudades = ciudadActivaCategorias === "Todas" ? todas : [ciudadActivaCategorias];
+  const todas = [...new Set([
+    ...Object.keys(GASTADO_POR_CIUDAD),
+    ...ITEMS.map(i => i.ciudad),
+    ...COMUNIDADES.map(c => c.ciudad),
+  ])];
+  const ciudades = ciudadesSeleccionadas.size === 0 ? todas : todas.filter(c => ciudadesSeleccionadas.has(c));
   document.getElementById("ciudades-grilla").innerHTML = ciudades.map(c => {
     const gastado = GASTADO_POR_CIUDAD[c] || 0;
     return `
-      <div class="tarjeta-ciudad">
-        <div class="ciudad-nombre">📍 ${c}</div>
-        <div class="ciudad-monto">${fmtUSD(gastado)}</div>
+      <div class="tarjeta-metric">
+        <div class="ciudad-compacta-nombre">📍 ${c}</div>
+        <div class="tarjeta-metric-label">${t("invertidoCiudad")}</div>
+        <div class="tarjeta-metric-valor">${fmtUSD(gastado)}</div>
       </div>
     `;
   }).join("");
@@ -1248,18 +1817,32 @@ function renderGratitud() {
 }
 
 function renderTabsCategorias() {
-  const todas = [...new Set([...Object.keys(GASTADO_POR_CIUDAD), ...ITEMS.map(i => i.ciudad)])];
-  const ciudades = ["Todas", ...todas];
-  document.getElementById("tabs-ciudad-categorias").innerHTML = ciudades.map(c => {
-    const etiqueta = c === "Todas" ? t("tabTodas") : c;
-    return `<button class="tab-ciudad ${c === ciudadActivaCategorias ? "activo" : ""}" data-ciudad="${c}">${etiqueta}</button>`;
-  }).join("");
-  document.querySelectorAll(".tab-ciudad").forEach(btn => {
+  const todas = [...new Set([
+    ...Object.keys(GASTADO_POR_CIUDAD),
+    ...ITEMS.map(i => i.ciudad),
+    ...COMUNIDADES.map(c => c.ciudad),
+  ])];
+  document.getElementById("tabs-ciudad-categorias").innerHTML = `
+    <button class="tab-ciudad ${ciudadesSeleccionadas.size === 0 ? "activo" : ""}" data-ciudad="Todas">${t("tabTodas")}</button>
+    ${todas.map(c => `<button class="tab-ciudad ${ciudadesSeleccionadas.has(c) ? "activo" : ""}" data-ciudad="${c}">${c}</button>`).join("")}
+  `;
+  document.querySelectorAll("#tabs-ciudad-categorias .tab-ciudad").forEach(btn => {
     btn.addEventListener("click", () => {
-      ciudadActivaCategorias = btn.dataset.ciudad;
+      const ciudad = btn.dataset.ciudad;
+      if (ciudad === "Todas") {
+        ciudadesSeleccionadas.clear();
+      } else if (ciudadesSeleccionadas.size === 1 && ciudadesSeleccionadas.has(ciudad)) {
+        // ya estaba sola seleccionada: tocarla de nuevo vuelve a "Todas"
+        ciudadesSeleccionadas.clear();
+      } else {
+        // selección exclusiva: reemplaza cualquier ciudad anterior
+        ciudadesSeleccionadas.clear();
+        ciudadesSeleccionadas.add(ciudad);
+      }
       renderTabsCategorias();
       renderCiudades();
       renderNecesidades();
+      renderComunidades();
     });
   });
 }
@@ -1367,7 +1950,7 @@ function iconoParaGrupo(nombre) {
 function gruposPorCategoria() {
   const mapa = {};
   ITEMS.forEach(i => {
-    if (ciudadActivaCategorias !== "Todas" && i.ciudad !== ciudadActivaCategorias) return;
+    if (ciudadesSeleccionadas.size > 0 && !ciudadesSeleccionadas.has(i.ciudad)) return;
     if (!i.categoria) return; // los ítems sin categoría no generan tarjeta propia
     const clave = i.categoria;
     if (!mapa[clave]) mapa[clave] = { nombre: clave, gastadoUSD: 0, unidadesEntregadas: 0, icono: iconoParaGrupo(clave) };
@@ -1381,7 +1964,7 @@ function gruposPorCategoria() {
 
 function itemsDeGrupo(nombreGrupo) {
   return ITEMS.filter(i => {
-    const coincideCiudad = ciudadActivaCategorias === "Todas" || i.ciudad === ciudadActivaCategorias;
+    const coincideCiudad = ciudadesSeleccionadas.size === 0 || ciudadesSeleccionadas.has(i.ciudad);
     return i.categoria === nombreGrupo && coincideCiudad;
   });
 }
@@ -1459,6 +2042,56 @@ function nombreItemTraducido(nombre) {
   return nombre;
 }
 
+const INSTITUCION_RE = /colegio|fundaci[oó]n|coliseo|comunidad|jac |ie fabio|albergue|escuela|hospital|cl[ií]nica|avivamiento/i;
+
+// Nombre limpio y tipo de ayuda (sin cantidades) para cada comunidad/institución real detectada.
+const INSTITUCION_LIMPIA = {
+  "Yaneth torres comunidad emeberA": { nombre: "Comunidad indígena Emberá (Avivamiento Valle)", categorias: ["Pañales"] },
+  "4 pacas pañales 3 pacas pañitos 5 botiquines 3 cajas crema dental 5 cepillos de dientes JAC Malaga Jorge Marin": { nombre: "JAC Málaga", categorias: ["Kits de aseo", "Medicamentos"] },
+  "Colegio IE Fabio Vasquez Botero": { nombre: "Colegio IE Fabio Vásquez Botero", categorias: [] },
+  "Fundación el rocio Camila Ocampo": { nombre: "Fundación El Rocío", categorias: [], sinBarrio: true },
+  "10 colchones 5 cobijas 1 caja ibuprofeno x50 1 caja acetaminophen 1 caja lozartan 50mg Coliseo cuba 14 familias desalojadas": { nombre: "Coliseo Cuba", categorias: ["Colchones/colchonetas", "Cobijas", "Medicamentos"] },
+  "Dos colchones para llevar a caseta de acción comunal, barrio Santa fe. Están habilitando como albergue, aún no tenían cosas para las personas. Esteban gañan.": { nombre: "Caseta de Acción Comunal", categorias: ["Colchones/colchonetas"] },
+  "Comunidad Montenegro": { nombre: "Comunidad Montenegro", categorias: [] },
+  "Este señor fue el de hoy Con este carrito nos colaboró con la entrega en el hospital": { nombre: "Clínica Los Rosales", categorias: ["Medicamentos"], sinBarrio: true },
+  "Entrega avivamiento Valle, colchonetas, agua, pañales y cobijas": { nombre: "Avivamiento Valle (albergue)", categorias: ["Colchones/colchonetas", "Agua", "Pañales", "Cobijas"] },
+};
+
+function extraerBarrioDeFotoUrl(fotoUrl, ciudadSlug) {
+  if (!fotoUrl) return null;
+  const nombre = fotoUrl.split("/").pop();
+  const prefijo = ciudadSlug + "_";
+  if (!nombre.startsWith(prefijo)) return null;
+  const resto = nombre.slice(prefijo.length);
+  const partes = resto.split("_");
+  return partes.length === 3 ? partes[0].replace(/-/g, " ") : null;
+}
+
+function extraerNombreFamilia(textoOriginal) {
+  const STOP = new Set([
+    "kit","barrio","barrios","familia","parque","se","ahi","ahí","colegio","comunidad",
+    "fundacion","fundación","coliseo","entrega","entregada","entregado","entregando","mercado","vereda",
+    "casa","sector","dos","tres","cuatro","cinco","seis","siete","recogiendo","ya","estamos","hola",
+    "este","esta","esa","esas","esto","tel","ok",
+    "dagua","cagua","montenegro","quimbaya","calarca","calarcá","turbay","terranova","tanambi",
+    "santa","elena","aguablanca","melendez","meléndez","siloe","siloé","buga","pance","olaya",
+    "malaga","málaga","providencia","pinares","bellavista","altagracia","libertad","dosquebradas",
+    "cuba","america","américa"
+  ]);
+  const texto = textoOriginal.replace(/^Familia de\s+/i, "");
+  const m = texto.match(/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]*(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]*)*/);
+  if (!m) return null;
+  const partes = m[0].split(/\s+/);
+  const nombre = [];
+  for (const p of partes) {
+    if (STOP.has(p.toLowerCase())) break;
+    nombre.push(p);
+  }
+  if (nombre.length === 0) return null;
+  const resultado = nombre.join(" ");
+  return resultado.length >= 3 ? resultado : null;
+}
+
 const CIUDAD_RESUMEN = {
   Armenia: {
     es: "Entre el 18 y el 19 de agosto, el equipo atendió 17 solicitudes formales de ayuda en Armenia, Quimbaya, Montenegro y Calarcá, con entregas puerta a puerta de mercado, agua, artículos de aseo y apoyo para vivienda. Participaron Mateo Betancourt, Mario Morales, Alejandra Palacio y Andrés Galindo, quienes también coordinaron el traslado de suministros desde Cali y Pereira.",
@@ -1483,25 +2116,9 @@ function obtenerFotosCiudad(ciudad, limite) {
   return [...conBarrio, ...resto].slice(0, limite);
 }
 
-function renderTabsComunidades() {
-  const todas = [...new Set(COMUNIDADES.map(c => c.ciudad))];
-  const ciudades = ["Todas", ...todas];
-  document.getElementById("tabs-ciudad-comunidades").innerHTML = ciudades.map(c => {
-    const etiqueta = c === "Todas" ? t("tabTodas") : c;
-    return `<button class="tab-ciudad ${c === ciudadActivaComunidades ? "activo" : ""}" data-ciudad="${c}">${etiqueta}</button>`;
-  }).join("");
-  document.querySelectorAll("#tabs-ciudad-comunidades .tab-ciudad").forEach(btn => {
-    btn.addEventListener("click", () => {
-      ciudadActivaComunidades = btn.dataset.ciudad;
-      renderTabsComunidades();
-      renderComunidades();
-    });
-  });
-}
-
 function renderComunidades() {
   const todasCiudades = [...new Set(COMUNIDADES.map(c => c.ciudad))];
-  const ciudades = ciudadActivaComunidades === "Todas" ? todasCiudades : [ciudadActivaComunidades];
+  const ciudades = ciudadesSeleccionadas.size === 0 ? todasCiudades : todasCiudades.filter(c => ciudadesSeleccionadas.has(c));
 
   document.getElementById("comunidades-grilla").innerHTML = ciudades.map(ciudad => {
     const barrios = COMUNIDADES.filter(c => c.ciudad === ciudad).slice().sort((a, b) => b.total - a.total);
@@ -1522,6 +2139,35 @@ function renderComunidades() {
       `;
     }).join("");
 
+    const entregasCiudad = ENTREGAS.filter(e => e.ciudad === ciudad);
+    const ciudadSlug = ciudad.toLowerCase();
+    const instituciones = entregasCiudad.filter(e => INSTITUCION_RE.test(e.texto));
+    const familias = entregasCiudad.filter(e => !INSTITUCION_RE.test(e.texto));
+
+    const institucionesHtml = instituciones.map(e => {
+      const limpio = INSTITUCION_LIMPIA[e.texto];
+      const nombre = limpio ? limpio.nombre : e.texto;
+      const categorias = limpio ? limpio.categorias : [];
+      const barrio = limpio && limpio.sinBarrio ? null : extraerBarrioDeFotoUrl(e.fotoUrl, ciudadSlug);
+      const chips = categorias.length > 0
+        ? categorias.map(c => `<span class="tabla-chip">${ITEM_ICONO[c] || "📦"} ${nombreItemTraducido(c)}</span>`).join("")
+        : `<span class="tabla-chip">📦 ${idiomaActivo === "en" ? "Humanitarian aid" : "Ayuda humanitaria"}</span>`;
+      return `
+        <div class="info-institucion-fila">
+          <strong>${nombre}</strong>${barrio ? ` <span class="barrio-tag">· ${barrio.charAt(0).toUpperCase() + barrio.slice(1)}</span>` : ""}
+          <div style="margin-top:5px;">${chips}</div>
+        </div>
+      `;
+    }).join("");
+
+    const nombresFamilias = [...new Set(familias.map(e => extraerNombreFamilia(e.texto)).filter(Boolean))];
+    const limiteVisible = 20;
+    const visibles = nombresFamilias.slice(0, limiteVisible);
+    const restantes = nombresFamilias.slice(limiteVisible);
+    const familiasVisiblesHtml = visibles.map(n => `<span class="familia-pill">${n}</span>`).join("");
+    const familiasExtraHtml = restantes.map(n => `<span class="familia-pill">${n}</span>`).join("");
+    const idExtra = `familias-extra-${ciudadSlug}`;
+
     const fotos = obtenerFotosCiudad(ciudad, 12);
     _fotosPorBloqueCiudad[ciudad] = fotos;
     const fotosHtml = fotos.length > 0 ? fotos.map((f, idx) => `
@@ -1541,6 +2187,22 @@ function renderComunidades() {
           </thead>
           <tbody>${filasTabla}</tbody>
         </table>
+        ${instituciones.length > 0 ? `
+          <div class="info-bloque">
+            <div class="info-titulo">🏛️ ${idiomaActivo === "en" ? "Communities and institutions helped" : "Comunidades e instituciones atendidas"}</div>
+            ${institucionesHtml}
+          </div>
+        ` : ""}
+        ${nombresFamilias.length > 0 ? `
+          <div class="info-bloque">
+            <div class="info-titulo">👤 ${idiomaActivo === "en" ? "Families helped by name" : "Familias atendidas por nombre"}</div>
+            <div class="familia-pills">
+              ${familiasVisiblesHtml}
+              ${restantes.length > 0 ? `<span class="familia-pill familia-pill-mas" data-target="${idExtra}">+${restantes.length} ${idiomaActivo === "en" ? "more" : "más"}</span>` : ""}
+            </div>
+            ${restantes.length > 0 ? `<div class="familia-pills oculto" id="${idExtra}" style="margin-top:6px;">${familiasExtraHtml}</div>` : ""}
+          </div>
+        ` : ""}
         ${fotos.length > 0 ? `
           <div class="ciudad-fotos-titulo">${idiomaActivo === "en" ? "Photos from " + ciudad : "Fotos de " + ciudad}</div>
           <div class="ciudad-fotos-grilla">${fotosHtml}</div>
@@ -1558,6 +2220,177 @@ function renderComunidades() {
       document.getElementById("lightbox-fondo").classList.add("abierto");
     });
   });
+
+  document.querySelectorAll("#comunidades-grilla .familia-pill-mas").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const extra = document.getElementById(btn.dataset.target);
+      if (extra) extra.classList.toggle("oculto");
+    });
+  });
+}
+
+// ===== Colombia Se Levanta (solicitudes de la plataforma externa) =====
+
+const STATUS_INFO = {
+  "Contactado": { color: "#1F9D55", es: "Contacted", en: "Contacted" },
+  "Sin contactar": { color: "#FFCD00", es: "Sin contactar", en: "Not contacted" },
+  "Llamada": { color: "#003893", es: "Llamada", en: "Called" },
+  "Evidencia": { color: "#0A1F4D", es: "Evidencia", en: "Evidence" },
+  "Duplicado": { color: "#B7BEC9", es: "Duplicado", en: "Duplicate" },
+  "No contactar": { color: "#CE1126", es: "No contactar", en: "Do not contact" },
+  "Sin respuesta": { color: "#E67E22", es: "Sin respuesta", en: "No response" },
+  "Sin dato": { color: "#5A6478", es: "Sin dato", en: "No data" },
+};
+
+function renderCSLTablaHead() {
+  const en = idiomaActivo === "en";
+
+  const conteosCiudad = {};
+  SOLICITUDES.forEach(s => { conteosCiudad[s.ciudad] = (conteosCiudad[s.ciudad] || 0) + 1; });
+  const ciudadesOrdenadas = Object.keys(conteosCiudad)
+    .filter(c => c !== "Otras zonas")
+    .sort((a, b) => conteosCiudad[b] - conteosCiudad[a]);
+  if (conteosCiudad["Otras zonas"]) ciudadesOrdenadas.push("Otras zonas");
+  const etiquetaTodasCiudades = en ? "All cities" : "Todas las ciudades";
+  const opcionesCiudad = `
+    <option value="Todas">${etiquetaTodasCiudades} · ${SOLICITUDES.length}</option>
+    ${ciudadesOrdenadas.map(c => `<option value="${c}">${c} · ${conteosCiudad[c]}</option>`).join("")}
+  `;
+
+  const conteosEstado = {};
+  SOLICITUDES.forEach(s => {
+    const e = estadoSimplificado(s.estado);
+    conteosEstado[e] = (conteosEstado[e] || 0) + 1;
+  });
+  const estadosOrdenados = Object.keys(conteosEstado).sort((a, b) => conteosEstado[b] - conteosEstado[a]);
+  const etiquetaTodosEstados = en ? "All statuses" : "Todos los estados";
+  const opcionesEstado = `
+    <option value="Todas">${etiquetaTodosEstados} · ${SOLICITUDES.length}</option>
+    ${estadosOrdenados.map(e => {
+      const info = ESTADO_INFO[e];
+      const etiqueta = en ? info.en : info.es;
+      return `<option value="${e}">${info.icono} ${etiqueta} · ${conteosEstado[e]}</option>`;
+    }).join("")}
+  `;
+
+  const conteosContacto = {};
+  SOLICITUDES.forEach(s => {
+    const k = s.status || "Sin dato";
+    conteosContacto[k] = (conteosContacto[k] || 0) + 1;
+  });
+  const contactoOrdenado = Object.keys(conteosContacto)
+    .filter(k => k !== "Sin dato")
+    .sort((a, b) => conteosContacto[b] - conteosContacto[a]);
+  const etiquetaTodoContacto = en ? "All contact" : "Todos los contactos";
+  const opcionesContacto = `
+    <option value="Todas">${etiquetaTodoContacto} · ${SOLICITUDES.length}</option>
+    ${contactoOrdenado.map(k => {
+      const info = STATUS_INFO[k];
+      const etiqueta = en ? info.en : info.es;
+      return `<option value="${k}">${etiqueta} · ${conteosContacto[k]}</option>`;
+    }).join("")}
+  `;
+
+  const tabla = document.getElementById("csl-tabla");
+  if (!tabla.querySelector("colgroup")) {
+    tabla.insertAdjacentHTML("afterbegin", `
+      <colgroup>
+        <col style="width:13%;">
+        <col style="width:14%;">
+        <col style="width:17%;">
+        <col style="width:21%;">
+        <col style="width:18%;">
+        <col style="width:17%;">
+      </colgroup>
+    `);
+  }
+  let thead = tabla.querySelector("thead");
+  if (!thead) {
+    thead = document.createElement("thead");
+    tabla.appendChild(thead);
+  }
+  thead.innerHTML = `
+    <tr>
+      <th><input type="text" class="th-filtro-input" id="csl-buscar-caso" placeholder="${en ? "Case ▾" : "Caso ▾"}" value="${cslCasoBusqueda}" /></th>
+      <th><select class="th-filtro-select" id="tabs-ciudad-csl">${opcionesCiudad}</select></th>
+      <th>${en ? "Name" : "Nombre"}</th>
+      <th>${en ? "Needs" : "Necesidades"}</th>
+      <th><select class="th-filtro-select" id="csl-filtro-contacto">${opcionesContacto}</select></th>
+      <th><select class="th-filtro-select" id="csl-filtro-estado">${opcionesEstado}</select></th>
+    </tr>
+  `;
+
+  const inputBuscar = document.getElementById("csl-buscar-caso");
+  inputBuscar.oninput = () => {
+    cslCasoBusqueda = inputBuscar.value;
+    renderCSLTablaFilas();
+  };
+
+  const selectCiudad = document.getElementById("tabs-ciudad-csl");
+  selectCiudad.value = cslCiudadActiva;
+  selectCiudad.onchange = () => {
+    cslCiudadActiva = selectCiudad.value;
+    renderCSLTablaFilas();
+  };
+
+  const selectContacto = document.getElementById("csl-filtro-contacto");
+  selectContacto.value = cslStatusActivo;
+  selectContacto.onchange = () => {
+    cslStatusActivo = selectContacto.value;
+    renderCSLTablaFilas();
+  };
+
+  const selectEstado = document.getElementById("csl-filtro-estado");
+  selectEstado.value = cslEstadoActivo;
+  selectEstado.onchange = () => {
+    cslEstadoActivo = selectEstado.value;
+    renderCSLTablaFilas();
+  };
+}
+
+function renderCSLTablaFilas() {
+  const en = idiomaActivo === "en";
+  let lista = cslCiudadActiva === "Todas" ? SOLICITUDES : SOLICITUDES.filter(s => s.ciudad === cslCiudadActiva);
+  if (cslEstadoActivo !== "Todas") lista = lista.filter(s => estadoSimplificado(s.estado) === cslEstadoActivo);
+  if (cslCasoBusqueda.trim()) {
+    const q = cslCasoBusqueda.trim().toLowerCase();
+    lista = lista.filter(s => (s.codigo || "").toLowerCase().includes(q));
+  }
+  if (cslStatusActivo !== "Todas") {
+    lista = lista.filter(s => (s.status || "Sin dato") === cslStatusActivo);
+  }
+
+  const sinEspecificar = en ? "Not specified" : "Sin especificar";
+  const filas = lista.map(s => {
+    const info = ESTADO_INFO[estadoSimplificado(s.estado)];
+    const etiqueta = en ? info.en : info.es;
+    const contactoKey = s.status || "Sin dato";
+    const contactoInfo = STATUS_INFO[contactoKey];
+    const contactoEtiqueta = en ? contactoInfo.en : contactoInfo.es;
+    return `
+      <tr>
+        <td class="td-codigo">${s.codigo || "—"}</td>
+        <td>${s.ciudad}</td>
+        <td>${s.contacto || sinEspecificar}</td>
+        <td>${s.necesidades || sinEspecificar}</td>
+        <td><span class="csl-barra-punto" style="background:${contactoInfo.color};"></span> ${contactoEtiqueta}</td>
+        <td class="td-estado"><span class="estado-badge ${info.clase}">${info.icono} ${etiqueta}</span></td>
+      </tr>
+    `;
+  }).join("");
+
+  const tabla = document.getElementById("csl-tabla");
+  let tbody = tabla.querySelector("tbody");
+  if (!tbody) {
+    tbody = document.createElement("tbody");
+    tabla.appendChild(tbody);
+  }
+  tbody.innerHTML = filas || `<tr><td colspan="6">${en ? "No cases match this filter." : "Ningún caso coincide con este filtro."}</td></tr>`;
+}
+
+function renderCSLTabla() {
+  renderCSLTablaHead();
+  renderCSLTablaFilas();
 }
 
 document.getElementById("lightbox-cerrar").addEventListener("click", () => {
@@ -1591,11 +2424,12 @@ document.getElementById("toggle-financiero").addEventListener("click", function(
 function renderTodo() {
   renderStats();
   renderGratitud();
+  renderVistaToggle();
   renderCiudades();
   renderTabsCategorias();
   renderNecesidades();
-  renderTabsComunidades();
   renderComunidades();
+  renderCSLTabla();
   renderDetalleFinanciero();
   document.getElementById("ultima-actualizacion").textContent =
     "Actualizado " + new Date().toLocaleString("es-CO", { dateStyle: "medium", timeStyle: "short" });
