@@ -673,8 +673,10 @@ async function leerDonacionesRecibidas() {
     const celdas = filas[i].c;
     if (!celdas) continue;
     const nombre = celdas[idxNombre] ? celdas[idxNombre].v : null;
-    if (nombre === "Total" || nombre === null) break; // se detiene en la fila "Total" o al acabarse los datos
-    const valor = celdas[idxValor] ? Number(celdas[idxValor].v) : 0;
+    const valorCelda = celdas[idxValor] ? celdas[idxValor].v : null;
+    if (nombre && String(nombre).trim().toLowerCase() === "total") break; // fila de cierre real
+    if (nombre === null && valorCelda === null) continue; // fila vacía suelta, no es el cierre: se salta sin detener el conteo
+    const valor = Number(valorCelda) || 0;
     total += valor;
     donantes += 1;
   }
@@ -682,6 +684,18 @@ async function leerDonacionesRecibidas() {
 }
 
 async function cargarDatosEnVivo() {
+  // Al cargar la página, si el navegador ya tiene guardado un monto real de
+  // una visita anterior exitosa, lo usamos de entrada en vez del valor fijo
+  // ($75,250) escrito en el código — así, incluso si la lectura en vivo de
+  // ahora falla, se ve el último dato REAL conocido, no un número genérico.
+  try {
+    const guardado = localStorage.getItem("csl_totalRecaudadoUSD");
+    if (guardado) {
+      TOTAL_RECAUDADO_USD = Number(guardado);
+      renderTodo();
+    }
+  } catch (e) { /* localStorage puede no estar disponible; no es grave */ }
+
   // Cada pestaña del Sheet se procesa por separado: si una falla, la otra
   // igual se aplica. Antes, con Promise.all, un fallo en cualquiera de las
   // dos descartaba las dos — incluyendo el monto recaudado aunque sí hubiera
@@ -706,6 +720,7 @@ async function cargarDatosEnVivo() {
 
   if (resDonaciones.status === "fulfilled") {
     TOTAL_RECAUDADO_USD = resDonaciones.value.total;
+    try { localStorage.setItem("csl_totalRecaudadoUSD", String(TOTAL_RECAUDADO_USD)); } catch (e) { /* no es grave */ }
   } else {
     console.warn("No se pudo leer 'Donaciones Recibidas', usando últimos datos guardados:", resDonaciones.reason);
     errores.push("Donaciones Recibidas");
@@ -2168,7 +2183,7 @@ function renderComunidades() {
     const familiasExtraHtml = restantes.map(n => `<span class="familia-pill">${n}</span>`).join("");
     const idExtra = `familias-extra-${ciudadSlug}`;
 
-    const fotos = obtenerFotosCiudad(ciudad, 12);
+    const fotos = obtenerFotosCiudad(ciudad, 500);
     _fotosPorBloqueCiudad[ciudad] = fotos;
     const fotosHtml = fotos.length > 0 ? fotos.map((f, idx) => `
       <div class="ciudad-foto-item" data-ciudad="${ciudad}" data-idx="${idx}">
