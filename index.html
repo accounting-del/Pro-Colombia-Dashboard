@@ -169,11 +169,24 @@
   .galeria-vacia { grid-column: 1 / -1; }
   .lightbox-fondo {
     display: none; position: fixed; inset: 0; background: rgba(7,22,56,0.9); z-index: 100;
-    align-items: center; justify-content: center; padding: 20px;
+    align-items: center; justify-content: center; padding: 20px; flex-direction: column; gap: 12px;
   }
   .lightbox-fondo.abierto { display: flex; }
-  .lightbox-fondo img { max-width: 100%; max-height: 80vh; border-radius: 12px; }
+  .lightbox-fondo img { max-width: 100%; max-height: 72vh; border-radius: 12px; }
+  .lightbox-descripcion { color: #fff; font-size: 14px; text-align: center; max-width: 480px; padding: 0 40px; }
   .lightbox-cerrar { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 28px; cursor: pointer; background: none; border: none; }
+  .lightbox-flecha {
+    position: absolute; top: 50%; transform: translateY(-50%); color: #fff; font-size: 40px;
+    cursor: pointer; background: rgba(255,255,255,0.12); border: none; border-radius: 50%;
+    width: 48px; height: 48px; line-height: 1; display: flex; align-items: center; justify-content: center;
+  }
+  .lightbox-flecha:hover { background: rgba(255,255,255,0.25); }
+  .lightbox-flecha-izq { left: 12px; }
+  .lightbox-flecha-der { right: 12px; }
+  .lightbox-contador {
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+    color: #fff; font-size: 13px; background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 999px;
+  }
 
   /* ===== Informe de Entregas (tabla + resumen + fotos por ciudad) ===== */
   .ciudad-bloque { margin-bottom: 36px; }
@@ -400,7 +413,11 @@
 
 <div class="lightbox-fondo" id="lightbox-fondo">
   <button class="lightbox-cerrar" id="lightbox-cerrar">✕</button>
+  <button class="lightbox-flecha lightbox-flecha-izq" id="lightbox-anterior" aria-label="Anterior">‹</button>
   <img id="lightbox-img" src="" alt="Foto ampliada" />
+  <div class="lightbox-descripcion" id="lightbox-descripcion"></div>
+  <button class="lightbox-flecha lightbox-flecha-der" id="lightbox-siguiente" aria-label="Siguiente">›</button>
+  <div class="lightbox-contador" id="lightbox-contador"></div>
 </div>
 
 <script>
@@ -2136,11 +2153,7 @@ function renderComunidades() {
 
   document.querySelectorAll(".ciudad-foto-item").forEach(item => {
     item.addEventListener("click", () => {
-      const ciudad = item.dataset.ciudad;
-      const foto = _fotosPorBloqueCiudad[ciudad][item.dataset.idx];
-      document.getElementById("lightbox-img").src = foto.src;
-      document.getElementById("lightbox-img").alt = foto.caption;
-      document.getElementById("lightbox-fondo").classList.add("abierto");
+      abrirLightbox(item.dataset.ciudad, Number(item.dataset.idx));
     });
   });
 
@@ -2315,6 +2328,47 @@ function renderCSLTabla() {
   renderCSLTablaHead();
   renderCSLTablaFilas();
 }
+
+let _lightboxCiudad = null;
+let _lightboxIdx = 0;
+
+function abrirLightbox(ciudad, idx) {
+  const fotos = _fotosPorBloqueCiudad[ciudad];
+  if (!fotos || !fotos[idx]) return;
+  _lightboxCiudad = ciudad;
+  _lightboxIdx = idx;
+  const foto = fotos[idx];
+  document.getElementById("lightbox-img").src = foto.src;
+  document.getElementById("lightbox-img").alt = foto.caption;
+  document.getElementById("lightbox-descripcion").textContent = foto.caption + (foto.ciudad ? " · " + foto.ciudad : "");
+  document.getElementById("lightbox-contador").textContent = `${idx + 1} / ${fotos.length}`;
+  document.getElementById("lightbox-anterior").style.display = idx === 0 ? "none" : "flex";
+  document.getElementById("lightbox-siguiente").style.display = idx === fotos.length - 1 ? "none" : "flex";
+  document.getElementById("lightbox-fondo").classList.add("abierto");
+}
+
+function moverLightbox(delta) {
+  if (_lightboxCiudad === null) return;
+  const fotos = _fotosPorBloqueCiudad[_lightboxCiudad];
+  const nuevoIdx = _lightboxIdx + delta;
+  if (nuevoIdx < 0 || nuevoIdx >= fotos.length) return;
+  abrirLightbox(_lightboxCiudad, nuevoIdx);
+}
+
+document.getElementById("lightbox-anterior").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  moverLightbox(-1);
+});
+document.getElementById("lightbox-siguiente").addEventListener("click", (ev) => {
+  ev.stopPropagation();
+  moverLightbox(1);
+});
+document.addEventListener("keydown", (ev) => {
+  if (!document.getElementById("lightbox-fondo").classList.contains("abierto")) return;
+  if (ev.key === "ArrowLeft") moverLightbox(-1);
+  if (ev.key === "ArrowRight") moverLightbox(1);
+  if (ev.key === "Escape") document.getElementById("lightbox-fondo").classList.remove("abierto");
+});
 
 document.getElementById("lightbox-cerrar").addEventListener("click", () => {
   document.getElementById("lightbox-fondo").classList.remove("abierto");
